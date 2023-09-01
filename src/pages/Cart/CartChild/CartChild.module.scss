@@ -1,3 +1,79 @@
+@mixin responsive-style() {
+    &__column1 {
+        &::before {
+            content: "Xóa:";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column2 {
+        &__img {
+            width: 20vw;
+        }
+
+        &::before {
+            content: "Image: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column3 {
+        &::before {
+            content: "Name: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+    &__column4{
+        &::before {
+            content: "Price: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column5{
+        &::before {
+            content: "Discount: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column6 {
+        &::before {
+            content: "Quantity: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column7 {
+        &::before {
+            content: "Total: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 8px 18px;
+    }
+
+}
+
 .cartChild {
     position: relative;
     font-size: 1.4rem;
@@ -67,6 +143,18 @@
             }
             
         }
+    }
+
+    @media screen  and (max-width: 431px) {
+        @include responsive-style();
+    }
+    
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style();
+    }
+    
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style();
     }
 }
 

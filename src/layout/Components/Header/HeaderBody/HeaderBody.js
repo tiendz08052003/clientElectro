@@ -159,15 +159,18 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                     const res2 = await CartServices.getCart();
                     let sum = 0;
                     res2.map(childCart => {
-                        res1.map(childProduct => {
-                            if(childCart.idProduct === childProduct._id)
-                            {
-                                sum += childProduct.price * childCart.count - childProduct.discount;
-                            }
-                        })
+                        if(childCart.idAuth === user._id)
+                        {
+                            res1.map(childProduct => {
+                                if(childCart.idProduct === childProduct._id)
+                                {
+                                    sum += childProduct.price * childCart.count - childProduct.discount;
+                                }
+                            })
+                        }
                     })
                     setSubtotal(sum);
-                    setQuality(res2.length);
+                    setQuality(res2.filter(x => x.idAuth === user._id).length);
                 }
                 fetchAPI2();
             }

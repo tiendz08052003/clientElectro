@@ -150,7 +150,7 @@ function HomeShop({result, reloadCart, setReloadCart}) {
                 if(flag === false)
                 {
                     const fetchAPI2 = async () => {
-                        await CartServices.addCart(user?.accessToken, {idProduct: id, count: 1}, axiosJWT);
+                        await CartServices.addCart(user?.accessToken, {idAuth: user._id, idProduct: id, count: 1}, axiosJWT);
                         setContent("Success");
                         setTitle("Thêm vào giỏ hàng thành công!");
                         setBool(true);

@@ -134,7 +134,7 @@ function CartChild({resultCart, setReload, reload}) {
                     </td>
                     <td className={cx("cartChild__column5", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {listResultCart.discount}
+                            {listResultCart.discount ? listResultCart.discount : 0}
                         </div>
                     </td>
                     <td className={cx("cartChild__column6", "cartChild__column")}>

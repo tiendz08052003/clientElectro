@@ -33,16 +33,19 @@ function Cart() {
                 const fetchAPI2 = async () => {
                     const res2 = await CartServices.getCart();
                     let sum = 0;
-                    res2.map(childCart =>{
-                        res1.map(childProduct => {
-                            if(childCart.idProduct === childProduct._id)
-                            {
-                                sum += childProduct.price * childCart.count - childProduct.discount;
-                            }
-                        })
+                    res2.map(childCart => {
+                        if(childCart.idAuth === user._id)
+                        {
+                            res1.map(childProduct => {
+                                if(childCart.idProduct === childProduct._id)
+                                {
+                                    sum += childProduct.price * childCart.count - childProduct.discount;
+                                }
+                            })
+                        }
                     })
                     setSubtotal(sum);
-                    setListResultCart(res2);
+                    setListResultCart(res2.filter(x => x.idAuth === user._id));
                 }
                 fetchAPI2();
             }
@@ -74,7 +77,7 @@ function Cart() {
                             <>
                                 {
                                     listResultCart.map((resultCart, index) => (
-                                        <CartChild key={resultCart._id} resultCart={resultCart} setReload={setReload} reload={reload}/>
+                                    <CartChild key={resultCart._id} resultCart={resultCart} setReload={setReload} reload={reload}/>
                                     ))
                                 }
                                 <tr className={cx("cart__tableRow3")}>
@@ -87,9 +90,6 @@ function Cart() {
                                                 </div>
                                             </div>
                                             <div className={cx("cart__tableRow3__column1__child__right")}>
-                                                <div className={cx("cart__tableRow3__column1__child__right__update")}>
-                                                    Update cart
-                                                </div>
                                                 <div className={cx("cart__tableRow3__column1__child__right__pay")}>
                                                     <a href="./" className={cx("cart__tableRow3__column1__child__right__pay__link--link")}>
                                                         <div className={cx("cart__tableRow3__column1__child__right__pay__link")}>

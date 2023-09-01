@@ -1,3 +1,13 @@
+@mixin responsive-style() {
+    &__tableRow1 {
+        display: none;
+    }
+
+    &__topic {
+        margin-bottom: 31px !important;
+    }
+}
+
 .wishlist {
     
     &__topic {
@@ -22,7 +32,6 @@
         }
     }
     
-    
     &__tableRow1 {
         font-size: 1.4rem;
         line-height: 2.4rem;
@@ -42,5 +51,17 @@
             text-align: left;
             padding: 8px;
         }
+    }
+
+    @media screen  and (max-width: 431px) {
+        @include responsive-style();
+    }
+    
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style();
+    }
+    
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style();
     }
 }

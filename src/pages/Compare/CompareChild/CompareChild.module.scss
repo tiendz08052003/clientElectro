@@ -1,3 +1,60 @@
+@mixin responsive-style() {
+    &__column1 {
+        &::before {
+            content: "Xóa:";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column2 {
+        &__img {
+            width: 20vw;
+        }
+
+        &::before {
+            content: "Image: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column3 {
+        &::before {
+            content: "Name: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+    &__column4{
+        &::before {
+            content: "Price: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column5{
+        &::before {
+            content: "Discount: ";
+            float: left;
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+    }
+
+    &__column {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 8px 18px;
+    }
+}
+
 .compareChild {
     position: relative;
     font-size: 1.4rem;
@@ -34,45 +91,20 @@
     &__column2,
     &__column3,
     &__column4,
-    &__column5,
-    &__column6,
-    &__column7 {
+    &__column5 {
         padding: 35px 8px 18px;
     }
-    
-    &__column6__input {
-        display: flex;
-        align-items: center;
-        width: 100px;
-        padding: 7px 14px;
-        line-height: 1.4rem;
-        border-radius: 2.2rem;
-        border: 1px solid #ddd;
-        &__child {
-            width: 100%;
-            height: 100%;
-            font-size: 1.4rem;
-            line-height: 1.6rem;
-            border: none;
-            outline: none;
-        }
-        
-        &__upDown {
-            text-align: center;
-        }
-        
-        &__upDown__iconUp {
-            width: 100%;
-        }
-        
-        &__upDown__iconDown {
-            width: 100%;
-        }
+
+    @media screen  and (max-width: 431px) {
+        @include responsive-style();
     }
     
-    &__column7 {
-        padding: 35px 8px 18px;
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style();
+    }
     
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style();
     }
 }
 

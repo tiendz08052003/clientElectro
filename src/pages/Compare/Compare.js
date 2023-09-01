@@ -38,9 +38,11 @@ function Compare() {
                     {compare.length > 0 ? (compare.map((compareChild, index) => (
                         <CompareChild key={compareChild._id} compareChild={compareChild} setReload={setReload} reload={reload}/> 
                     ))) : (
-                        <td className={cx("compare__table--noData")} colSpan="5">
-                            Không có dữ liệu
-                        </td>
+                        <tr>
+                            <td className={cx("compare__table--noData")} colSpan="5">
+                                Không có dữ liệu
+                            </td>
+                        </tr>
                     )}
                 </tbody>
             </table>

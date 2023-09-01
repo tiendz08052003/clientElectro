@@ -233,8 +233,7 @@
 
             &__compare,
             &__heart,
-            &__acc,
-            &__cart {
+            &__acc {
                 @include visit(relative);
                 @include selec-all();
                 width: 50px;
@@ -242,6 +241,8 @@
             }
 
             &__cart {
+                @include visit(relative);
+                @include selec-all();
                 padding-left: 10px;
 
                 &__content {

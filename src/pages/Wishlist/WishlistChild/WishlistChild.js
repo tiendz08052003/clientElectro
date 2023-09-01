@@ -97,7 +97,7 @@ function WishlistChild({resultWishlist, setReload, reload}) {
                     </td>
                     <td className={cx("wishlistChild__column5", "wishlistChild__column")}>
                         <div className={cx("wishlistChild__column__content")}>
-                            {listResultCart.discount}
+                            {listResultCart.discount ? listResultCart.discount : 0}
                         </div>
                     </td>
                 </Fragment>

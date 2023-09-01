@@ -17,6 +17,10 @@
 }
 
 @mixin responsive-style() {
+    &__tableRow1 {
+        display: none;
+    }
+
     &__tableRow4__column1__total {
         padding-top: 40px !important;
         justify-content: center !important;
@@ -108,58 +112,40 @@
         }
     }
 
-    & {
-        display: none;
-    }
+    &__tableRow3 {
+        &__column1 {
+            &__child {
+                display: flex;
+                flex-direction: column;
+                
+                &__right {
+                    &__update {
+                      width: 100%;  
+                      margin: 0;
+                      margin-top: 20px;
+                    }
 
-    &__tableRow2 {
-        &__column2 {
-            display: none !important;
-        }
-    
-        &__column {
-            display: block;
-        }
-    
-        &__table tbody td {
-            border-bottom: none;
-        }
-    
-        &__column1__exit,
-        &__column__content,
-        &__column5--input {
-            text-align: end;
-        }
-    
-        &__column3::before {
-            content: "Product: ";
-            
-        }
-        &__column4::before {
-            content: "Price: ";
-            @include style-column-before();
-        }
-        &__column5::before {
-            content: "Quantity: ";
-            @include style-column-before();
+                    &__pay {
+                        display: none;
+                    }
+                }
 
-        }
-        
-        &__column6::before {
-            content: "Subtotal: ";
-            @include style-column-before();
-        }
-    
-        &__column5 {
-            @include visited();
-        }
-    
-        &__column6  {
-            border-bottom: 1px solid #ddd !important;
-        }
-    
-        &__column {
-            padding: 15px 8px 18px !important;
+                &__left {
+                    &__input {
+                        display: flex;
+                        flex-direction: column;
+                        
+                        &__content {
+                            border-radius: 2.2rem;
+                            margin-top: 20px;
+                        }
+
+                        &__child{
+                            border-radius: 2.2rem;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -220,30 +206,28 @@
                     text-align: left;
                     &__input {
                         display: flex;
-                        flex: 1;
-                        text-align: end; 
+
+                        &__child {
+                            flex: 1;
+                            padding: 12px 32px;
+                            font-size: 1.6rem;
+                            border-top-left-radius: 2.2rem;
+                            border-bottom-left-radius: 2.2rem;
+                            outline: none;
+                            border: 1px solid #ddd;
+                        }
+                        
+                        &__content {
+                            padding: 12px 32px;
+                            font-size: 1.6rem;
+                            border-top-right-radius: 2.2rem;
+                            border-bottom-right-radius: 2.2rem;
+                            border: none;
+                            background-color: #333e48;
+                            color: white;
+                        }
                     }
                     
-                    &__input__child {
-                        flex: 1;
-                        padding: 12px 32px;
-                        font-size: 1.6rem;
-                        border-top-left-radius: 2.2rem;
-                        border-bottom-left-radius: 2.2rem;
-                        transform: translateX(3px);
-                        outline: none;
-                        border: 1px solid #ddd;
-                    }
-                    
-                    &__input__content {
-                        padding: 12px 32px;
-                        font-size: 1.6rem;
-                        border-top-right-radius: 2.2rem;
-                        border-bottom-right-radius: 2.2rem;
-                        border: none;
-                        background-color: #333e48;
-                        color: white;
-                    }
                 }
                 
                 

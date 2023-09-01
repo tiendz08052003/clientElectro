@@ -89,7 +89,7 @@ function CompareChild({compareChild, setReload, reload}) {
                     </td>
                     <td className={cx("compareChild__column5", "compareChild__column")}>
                         <div className={cx("compareChild__column__content")}>
-                            {listResultCart.discount}
+                            {listResultCart.discount ? listResultCart.discount : 0}
                         </div>
                     </td>
                 </Fragment>
