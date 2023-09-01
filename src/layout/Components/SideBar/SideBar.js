@@ -60,8 +60,6 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
         }
     }
 
-    console.log(typePage);
-
     return ( 
         <div className={cx("sidebar", "grid__column-2")} onClick={handleOnClickFilterOnTabletOrMobile}>
             <div className={cx("sidebar__wrapper")} onClick={handleOnClickSideBarOnTabletOrMobile}>
