@@ -84,7 +84,7 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
                         </div>
                     </div>
                 )}
-                {typePage === "Home" && (
+                {typePage === ("ad" || "Home") && (
                     <div className={cx("sidebar__wrapper__filter")}>
                         <span className={cx("sidebar__wrapper__filter__topic")}>
                             <span>Filters</span>
