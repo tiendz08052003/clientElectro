@@ -47,7 +47,7 @@ function Path({name}) {
                     <Fragment>
                         <FontAwesomeIcon icon={faAngleRight} className={cx("path--icon")} />
                         <div className={cx("path__shop")}>
-                            {name === ("Home" || "ad") ? "Shop" : ((name === "hd" && "Compare") || (name === "sd" && "Wishlist") || (name === "I_" && "Cart"))}
+                            {name === "Home" || name === "ad" ? "Shop" : ((name === "hd" && "Compare") || (name === "sd" && "Wishlist") || (name === "I_" && "Cart"))}
                         </div>
                     </Fragment>
                 )
