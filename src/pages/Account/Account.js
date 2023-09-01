@@ -94,6 +94,7 @@ function Account() {
                 email: email,
                 password: password,
             })
+            console.log(res);
             if(res !== undefined)
             {
                 console.log(res)
