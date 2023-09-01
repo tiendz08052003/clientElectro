@@ -1,0 +1,22 @@
+.headerBodyHistory {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    & + & {
+        border-top: 1px solid #b6b4b4;
+    }
+    &__content {
+        flex: 1;
+    }
+    
+    & {
+        &:hover &__child {
+            opacity: 1;
+        }
+        
+        &__child {
+            opacity: 0.5;
+        }
+    }
+}
+

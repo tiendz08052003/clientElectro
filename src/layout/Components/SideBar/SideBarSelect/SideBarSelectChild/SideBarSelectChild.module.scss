@@ -1,0 +1,11 @@
+.sideBarSelectChild {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    line-height: 2.2rem;
+    padding: 5px 0;
+    
+    &__input {
+        margin-right: 5px;
+    }
+}

@@ -1,0 +1,29 @@
+@mixin font() {
+    .HeaderFooterSelectMenuCatalog {
+        font-size: 1.6rem;
+    }
+}
+/* Phần hover */
+
+.HeaderFooterSelectMenuCatalog {
+    list-style-type: none;
+    padding: 5px 0;
+    opacity: 0.7;
+}
+
+
+@media screen  and (max-width: 431px) {
+    @include font();
+}
+
+@media screen  and (min-width: 431px) and (max-width: 631px){
+    @include font();
+}
+
+@media screen  and (min-width: 631px) and (max-width: 931px){
+    @include font();
+}
+
+@media screen  and (min-width: 931px) and (max-width: 1231px){
+    @include font();
+}

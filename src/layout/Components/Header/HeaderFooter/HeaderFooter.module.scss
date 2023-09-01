@@ -1,0 +1,66 @@
+@mixin responsive-style() {
+    &::before {
+        position: fixed;
+        content: "";
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 100vh;
+        background-color: rgba(0,0,0,.7);
+        z-index: 999;
+    }
+
+
+    &__child {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 70%;
+        height: 100vh;
+        background-color: var(--primary-color);
+        overflow-y: auto;
+        z-index: 99999;
+
+        &__selec {
+            display: block;
+        }
+    }
+}
+
+.paddingClick {
+    padding-bottom: 15px;
+}
+
+.header__footer {
+    width: 100%;
+    background-color: #fed700;
+
+    &__child {
+        position: relative;
+        &__selec {
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            padding: 0 15px;
+            margin: 0;
+            list-style-type: none;
+        }
+    }
+
+    @media screen  and (max-width: 431px) {
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 931px) and (max-width: 1231px){
+        @include responsive-style();
+    }
+}

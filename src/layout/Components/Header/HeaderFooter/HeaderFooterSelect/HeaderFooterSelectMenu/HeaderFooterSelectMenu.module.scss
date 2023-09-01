@@ -1,0 +1,82 @@
+@mixin responsive-style() {
+    &__img{
+        display: none;
+    }
+    
+    & {
+        width: 100%;
+    }
+
+    &__list {
+        padding-left: 15px;
+        
+        &:first-child {
+            padding-top: 10px;
+        }
+
+        & + & {
+            border-top: .5px solid #bfbaba;
+            border-bottom: .5px solid #bfbaba;
+            padding-top: 10px !important;
+            margin-top: 10px !important;
+            padding-bottom: 10px;
+        }
+        
+        &__child {
+            font-size: 1.6rem;
+        }
+    }
+}
+
+/* Phần hover */
+
+.HeaderFooterSelectMenu {
+    width: 25%;
+    list-style-type: none;
+
+    &__name {
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    &__list {
+        padding: 0;
+        margin-bottom: 15px;
+        
+        & + &{
+            margin-top: 20px;
+        }
+        &__child {
+            list-style-type: none;
+            padding: 5px 0;
+            opacity: 0.7;
+            &:first-child {
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+
+
+    &__img {
+        width: 100%;
+    } 
+
+
+    @media screen  and (max-width: 431px) {
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style();
+    }
+
+    @media screen  and (min-width: 931px) and (max-width: 1231px){
+        @include responsive-style();
+    }
+}

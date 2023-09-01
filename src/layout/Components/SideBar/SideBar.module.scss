@@ -1,0 +1,144 @@
+@mixin responsive-style-1() {
+    &::before {
+        position: fixed;
+        content: "";
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,.7);
+        height: 100vh;
+        width: 100vw;
+        z-index: 99;
+    }
+    
+    &__wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        background-color: white;
+        z-index: 999;
+        width: 70%;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 10px;
+        padding: 20px 10px;
+    }
+}
+
+@mixin responsive-style-2() {
+    &::before {
+        position: fixed;
+        content: "";
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,.7);
+        height: 100vh;
+        width: 100vw;
+        z-index: 99;
+    }
+    
+    &__wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        background-color: white;
+        z-index: 999;
+        width: 40%;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 10px;
+        padding: 20px 10px;
+    }
+}
+
+// pc
+
+.grid__column-2 {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 16.6667%;
+}
+
+/* sản phẩm */
+.sidebar {
+    margin-bottom: 20px !important;
+    &__wrapper__child {
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 35px;
+    }
+    
+    &__wrapper__child__header {
+        font-size: 1.6rem;
+        padding: 14px 10px;
+        opacity: 0.6;
+        border-bottom: 1px solid #ddd;
+    
+    }
+    
+    &__wrapper__child__body {
+        font-size: 1.2rem;
+        margin: 7px 14px;
+    }
+    
+    &__wrapper__child__body__list {
+        font-size: 1.4rem;
+        opacity: 0.6;
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+    
+    &__wrapper__child__body__list__select {
+        line-height: 2.2rem;
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+    }
+    
+    &__wrapper__child__body__list__select__parent {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Phần filter */
+    &__wrapper__filter {
+        font-size: 1.4rem;
+    }
+    
+    &__wrapper__filter__topic {
+        font-size: 1.8rem;
+        margin-bottom: 35px;
+        border-bottom: 1px solid #ddd;
+        display: block;
+        opacity: 0.7;
+    }
+    
+    &__wrapper__filter__all {
+        border-bottom: 1px solid #ddd;
+        opacity: 0.7;
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+    // pc
+    
+    @media screen  and (max-width: 431px) {
+        @include responsive-style-1();
+    }
+    
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include responsive-style-1();
+    }
+    
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include responsive-style-2();
+    }
+    
+    @media screen  and (min-width: 931px) and (max-width: 1231px){
+        @include responsive-style-2();
+    }
+}
+
+

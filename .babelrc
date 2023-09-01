@@ -1,0 +1,13 @@
+// Cấu hình path thay thế cho vd: "../"
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "~": "./src"
+        }
+      }
+    ]
+  ]
+}

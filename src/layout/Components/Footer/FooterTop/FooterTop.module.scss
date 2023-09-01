@@ -1,0 +1,107 @@
+@mixin visited() {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@mixin ticket() {
+    &__ticket {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+// Phần banner
+.footer__top {
+    width: 100%;
+    background-color: #fed700;
+
+    &__ticket {
+        @include visited();
+        padding: 15px 0;
+    
+
+        &__content {
+            @include visited();
+            font-size: 1.6rem;
+            opacity: 0.7;
+            padding: 12px 0;
+
+            &__left {
+                display: flex;
+                align-items: center;
+                margin-right: 50px;
+                &--icon {
+                    margin-right: 15px;
+                }
+                &__content {
+                    font-size: 2.2rem;
+                    line-height: 2.6rem;
+                }
+            }
+
+            &__right {
+                line-height: 2rem;
+            }
+        }
+
+        &__input {
+            display: flex;
+            text-align: end;    
+            justify-content: end;
+            flex: 1;
+            margin-left: 10px;
+            &__child {
+                width: 45%;
+                padding: 12px 32px;
+                font-size: 1.6rem;
+                border-top-left-radius: 2.2rem;
+                border-bottom-left-radius: 2.2rem;
+                transform: translateX(3px);
+                outline: none;
+                border: none;
+                flex: 1;
+            }
+    
+    
+            &__content {
+                padding: 12px 32px;
+                font-size: 1.6rem;
+                border-top-right-radius: 2.2rem;
+                border-bottom-right-radius: 2.2rem;
+                border: none;
+                background-color: #333e48;
+                color: white;
+            }
+        }
+        /* footer page */
+    }
+
+
+    @media screen  and (max-width: 431px) {
+        @include ticket();
+        &__ticket {
+            &__content {
+                flex-direction: column;
+            }
+        }
+    }
+
+    @media screen  and (min-width: 431px) and (max-width: 631px){
+        @include ticket();
+        &__ticket {
+            &__content {
+                flex-direction: column;
+            }
+        }
+    }
+
+    @media screen  and (min-width: 631px) and (max-width: 931px){
+        @include ticket();
+    }
+
+    @media screen  and (min-width: 931px) and (max-width: 1231px){
+        @include ticket();
+    }
+
+}
