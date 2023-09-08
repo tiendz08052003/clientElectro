@@ -29,6 +29,17 @@
             font-weight: 400;
             color: #747474;
         }
+        &__body tr td{
+            border: 1px solid;
+            border-collapse: collapse;
+            text-align: center;
+            padding: 10px 10px;
+
+            & ul {
+                list-style-type: none;
+                text-align: start;
+            }
+        }
     }
     
     

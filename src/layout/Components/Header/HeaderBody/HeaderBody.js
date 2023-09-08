@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from "./HeaderBody.module.scss";
 import { IconLogo } from "~/Components/Icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faCartShopping, faHeart, faMagnifyingGlass, faRepeat, faSort, faSpinner, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faCartShopping, faHeart, faL, faMagnifyingGlass, faRepeat, faSort, faSpinner, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import HeaderBodyHistory from "./HeaderBodyHistory/HeaderBodyHistory";
 import * as SearchServices from "~/services/SearchServices";
@@ -26,6 +26,7 @@ const cx = classNames.bind(styles);
 
 function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     const [pcWidth, setPcWidth] = useState(true);
+    const [onAccount, setOnAccount] = useState(false);
     const [onSearch, setOnSearch] = useState(true);
     const [selections, setSelections] = useState([]);
     const [styleHistory, setStyleHistory] = useState(false);
@@ -46,14 +47,19 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
 
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
+    const styleHover = {
+        display: "flex",
+    }
+
     useEffect(() => {
         if(window.innerWidth <= 1230)
         {
-            setPcWidth(false)
+            setPcWidth(false);
         }
         else
         {
-            setPcWidth(true)
+            setOnAccount(false);
+            setPcWidth(true);
         }
     })
     
@@ -61,11 +67,12 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
         const handleOnReSize = () => {
             if(window.innerWidth <= 1230)
             {
-                setPcWidth(false)
+                setPcWidth(false);
             }
             else
             {
-                setPcWidth(true)
+                setOnAccount(false);
+                setPcWidth(true);
             }
         }
         
@@ -179,6 +186,12 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     }, [reloadCart])
 
 
+    const handleOnClickAccount = () => {
+        if(!pcWidth)
+        {
+            setOnAccount(!onAccount);
+        }
+    }
     return ( 
         <div className={cx("header__middle")}>
             <div className={cx("wrapper")}>
@@ -299,43 +312,35 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                 <div className={cx("header__middle__child__selec__heart__hover")}>Wishlist</div>                                        
                             </div>
                         </a>
-                        {!pcWidth ? (
-                            <a href="/account?type=login" className={cx("link-href")}>
-                                <div className={cx("header__middle__child__selec__acc")}>
-                                    <FontAwesomeIcon icon={faUser} className={cx("header__middle__child__selec__icon")}/>
-                                </div>
-                            </a>
-                        ):(
-                            <div className={cx("header__middle__child__selec__acc")}>
-                                <FontAwesomeIcon icon={faUser} className={cx("header__middle__child__selec__icon")}/>
-                                    { user === null ? (
-                                        <div className={cx("header__middle__child__selec__acc__hover")}>
-                                            <a href="/account?type=login" className={cx("link-href")}>
-                                                <div className={cx("header__middle__child__selec__acc__hover__login")}>
-                                                    Đăng nhập
-                                                </div>
-                                            </a>
-                                            <a href="/account?type=register" className={cx("link-href")}>
-                                                <div className={cx("header__middle__child__selec__acc__hover__register")}>
-                                                    Đăng ký
-                                                </div>
-                                            </a>
-                                        </div>       
-                                    ) : (
-                                        <div className={cx("header__middle__child__selec__acc__hover")}>
-                                            <div className={cx("header__middle__child__selec__acc__hover__userName")}>
-                                                {user.userName}
+                        <div className={cx("header__middle__child__selec__acc")} onClick={handleOnClickAccount}>
+                            <FontAwesomeIcon icon={faUser} className={cx("header__middle__child__selec__icon")}/>
+                                { user === null ? (
+                                    <div className={cx("header__middle__child__selec__acc__hover")} style={onAccount ? styleHover : {}}>
+                                        <a href="/account?type=login" className={cx("link-href")}>
+                                            <div className={cx("header__middle__child__selec__acc__hover__login")}>
+                                                Đăng nhập
                                             </div>
-                                            <div className={cx("header__middle__child__selec__acc__hover__info")}>
-                                                Thông tin cá nhân
+                                        </a>
+                                        <a href="/account?type=register" className={cx("link-href")}>
+                                            <div className={cx("header__middle__child__selec__acc__hover__register")}>
+                                                Đăng ký
                                             </div>
-                                            <div className={cx("header__middle__child__selec__acc__hover__logout")} onClick={handleOnClickLogout}>
-                                                logout
-                                            </div>
-                                        </div> 
-                                    )}
-                            </div>
-                        )}
+                                        </a>
+                                    </div>       
+                                ) : (
+                                    <div className={cx("header__middle__child__selec__acc__hover")} style={onAccount ? styleHover : {}}>
+                                        <div className={cx("header__middle__child__selec__acc__hover__userName")}>
+                                            {user.userName}
+                                        </div>
+                                        <div className={cx("header__middle__child__selec__acc__hover__info")}>
+                                            Thông tin cá nhân
+                                        </div>
+                                        <div className={cx("header__middle__child__selec__acc__hover__logout")} onClick={handleOnClickLogout}>
+                                            logout
+                                        </div>
+                                    </div> 
+                                )}
+                        </div>
                         <a href="/cart" className={cx("link-href")}>
                             <div className={cx("header__middle__child__selec__cart")} >
                                 <div className={cx("header__middle__child__selec__cart__icon")}>

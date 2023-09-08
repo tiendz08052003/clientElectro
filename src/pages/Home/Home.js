@@ -684,7 +684,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                         Shop
                     </div>
                     <div className={cx("home__shop__name--right")}>
-                        Showing 1–{typeHome === null ? products.listProduct?.length : searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
+                        Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
                     </div>
                 </div>
                 <div className={cx("home__shop__selec")}>
@@ -740,7 +740,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                 </ul>
                 <div className={cx("home__shop__page")}>
                     <div className={cx("home__shop__page--left")}>
-                        Showing 1–{typeHome === null ? products.listProduct?.length : searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
+                    Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
                     </div>
                     <div className={cx("home__shop__page--right")}>
                         {listNumberPage.map((x, index) => (

@@ -12,7 +12,7 @@ import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
 
 const cx = classNames.bind(styles);
 
-function CompareChild({compareChild, setReload, reload}) {
+function CompareChild({compareChild, setReload, reload, handleOnClickCheckBox, index}) {
     const [listResultCart, setListResultCart] = useState({});
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState("");
@@ -75,7 +75,7 @@ function CompareChild({compareChild, setReload, reload}) {
                         </div>
                     </td>
                     <td className={cx("compareChild__column2", "compareChild__column")}> 
-                        <Image alt = "ảnh sản phẩm" src={imgs.anhSound} className={cx("compareChild__column2__img")} />
+                        <Image alt = "ảnh sản phẩm" src={listResultCart.image} className={cx("compareChild__column2__img")} />
                     </td>
                     <td className={cx("compareChild__column3", "compareChild__column")}>
                         <div className={cx("compareChild__column__content")}>
@@ -91,6 +91,9 @@ function CompareChild({compareChild, setReload, reload}) {
                         <div className={cx("compareChild__column__content")}>
                             {listResultCart.discount ? listResultCart.discount : 0}
                         </div>
+                    </td>
+                    <td className={cx("compareChild__column5", "compareChild__column")} >
+                        <input type="checkbox" onClick={handleOnClickCheckBox} className={cx("compareChild__column__checkbox")} index={index}/>
                     </td>
                 </Fragment>
             )}
