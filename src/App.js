@@ -82,7 +82,7 @@ function App() {
               {
                 Layout = EleRoute.layout;
               }
-              console.log((<Page />).type.name);
+              console.log((<Page />));
               if((<Page />).type.name === "Home" || (<Page />).type.name === "a_" || (<Page />).type.name === "ad")
               {
                 return (
