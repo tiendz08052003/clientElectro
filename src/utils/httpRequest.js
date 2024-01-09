@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpRequest = axios.create({
-    baseURL: "https://be-electro-api.onrender.com/",
+    baseURL: "https://be-electro-api.onrender.com/api/",
     withCredentials: true,
 })
 
