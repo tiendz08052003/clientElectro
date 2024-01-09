@@ -266,7 +266,7 @@ function Chat() {
                     </div>
                     <div className={cx("chat__main__top__icon")}>
                         {
-                            User.admin && (
+                            User && User.admin && (
                                 collapse ? (
                                     <div className={cx("chat__main__top__icon__cut")} onClick={handleClickCollapse}>
                                         <IconCollapseRightChat className={cx("chat__main__top__icon__cut__details")}/>
