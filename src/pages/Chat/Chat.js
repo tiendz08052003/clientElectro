@@ -345,7 +345,7 @@ function Chat() {
                         </div>
                     )}
                     {collapse && (
-                        nameUser !== "" || User.admin === false ? (
+                        nameUser !== "" || (User && User.admin === false) ? (
                             <div className={cx("chat__main__bottom__content")}>
                                 <div className={cx("chat__main__bottom__content__option")}>
                                     {nameUser === "" ? (
@@ -366,7 +366,7 @@ function Chat() {
                                     ) }
                                 </div>
                                 <div className={cx("chat__main__bottom__content__main")} >
-                                    <div ref={refMainMessage} style={{display: boolChatting || User.admin === false ? "block" : "none"}}>
+                                    <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}}>
                                     {
                                         listMessageChat.length !== 0 && (
                                             listMessageChat.map((x, index) => (
