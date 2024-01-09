@@ -108,3 +108,135 @@ export const IconNext = (({width="21px", height="14px", className}) => (
     </svg>
 
 ))
+
+
+export const IconCollapseRightChat = (({width="16px", height="16px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 16 16" 
+        focusable="false" 
+        fill="currentColor"
+    >
+    <path 
+        d="M14 1a1 1 0 011 1v12a1 1 0 01-1 1H9v-1h5V2H9V1h5zM2 13v1h1v1H2a1 1 0 01-.993-.883L1 14v-1h1zm6 1v1H4v-1h4zM2 3.999V12H1V3.999h1zm5.854 1.319l2.828 2.828a.5.5 0 010 .708l-2.828 2.828a.5.5 0 11-.708-.707L9.121 9H4.5a.5.5 0 010-1h4.621L7.146 6.025a.5.5 0 11.708-.707zM3 1v1H2v.999H1V2a1 1 0 01.883-.993L2 1h1zm5 0v1H4V1h4z">
+    </path>
+    </svg>
+))
+
+export const IconCollapseLeftChat = (({width="16px", height="16px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 16 16" 
+        focusable="false" 
+        fill="currentColor"
+    >
+    <path 
+        d="M14 1a1 1 0 011 1v12a1 1 0 01-1 1H9v-1h5V2H9V1h5zM2 13v1h1v1H2a1 1 0 01-.993-.883L1 14v-1h1zm6 1v1H4v-1h4zM2 3.999V12H1V3.999h1zm4.975 1.319a.5.5 0 01.707.707L5.707 8h4.621a.5.5 0 010 1h-4.62l1.974 1.975a.5.5 0 01-.707.707L4.146 8.854a.5.5 0 010-.708zM3 1v1H2v.999H1V2a1 1 0 01.883-.993L2 1h1zm5 0v1H4V1h4z">
+    </path>
+    </svg>
+))
+
+export const IconHideChat = (({width="16px", height="16px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 16 16" 
+        focusable="false" 
+        fill="currentColor"
+    >
+        <path 
+            d="M14 1a1 1 0 011 1v12a1 1 0 01-1 1H2a1 1 0 01-1-1V2a1 1 0 011-1h12zm0 1H2v12h12V2zm-2.904 5.268l-2.828 2.828a.5.5 0 01-.707 0L4.732 7.268a.5.5 0 11.707-.707l2.475 2.475L10.39 6.56a.5.5 0 11.707.707z">
+        </path>
+    </svg>
+))
+
+
+
+export const IconFace = (({width="18px", height="18px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        viewBox="0 0 18 18" 
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="currentColor"
+    >
+        <path 
+            d="M9 1a8 8 0 110 16A8 8 0 019 1zm0 1.6a6.4 6.4 0 100 12.8A6.4 6.4 0 009 2.6zM5 9.8h8a4 4 0 01-7.995.2L5 9.8h8-8zm1.2-4a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4zm5.6 0a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z">
+        </path>
+    </svg>
+))
+
+export const IconImage = (({width="18px", height="18px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        viewBox="0 0 24 24" 
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="currentColor"
+    >
+        <path 
+            d="M19 18.974V5H5v14h.005l4.775-5.594a.5.5 0 01.656-.093L19 18.974zM4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm11.5 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z">
+        </path>
+    </svg>
+))
+
+export const IconVideo = (({width="18px", height="18px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        viewBox="0 0 24 24" 
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="currentColor"
+    >
+        <path 
+            fillRule="evenodd" 
+            clipRule="evenodd" 
+            d="M19.974 3h-16a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V4a1 1 0 00-1-1zm-15 16V5h14v14h-14z">
+
+        </path>
+        <path 
+            d="M15.42 11.733a.3.3 0 010 .534L9.627 15.24a.3.3 0 01-.437-.267V9.027a.3.3 0 01.437-.267l5.793 2.973z">
+        </path>
+    </svg>
+))
+
+export const IconCart = (({width="18px", height="18px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        viewBox="0 0 18 18"   
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="currentColor" 
+    >
+        <path 
+            d="M14.442 2c.413 0 .753.322.776.735l.692 12.444a.778.778 0 01-.734.82l-.043.001H2.777a.778.778 0 01-.772-.687L2 15.2l.692-12.466A.778.778 0 013.47 2h10.973zm-.736 1.556H4.204L3.734 12h10.441l-.469-8.444zm-1.64 1.556v1.042l-.004.149C11.978 7.825 10.601 9 8.955 9c-1.698 0-3.11-1.252-3.11-2.846V5.12H7.4v1.034l.005.103c.063.646.716 1.187 1.55 1.187.879 0 1.556-.6 1.556-1.29V5.111h1.555z">
+        </path>
+    </svg>
+))
+
+export const IconPrint = (({width="18px", height="18px", className}) => (
+    <svg 
+        className= {className}
+        width={width} 
+        height={height} 
+        viewBox="0 0 18 18"   
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="currentColor" 
+    >
+        <path 
+            d="M5.111 2.003v1.365h7.778V2.003h2.333c.43 0 .778.354.778.79v8.44a2 2 0 01-.575 1.404l-2.726 2.767a2 2 0 01-1.425.596H2.778A.784.784 0 012 15.21V2.794c0-.436.348-.79.778-.79H5.11zm9.333 2.944H3.556v9.474H11V11.5a.5.5 0 01.5-.5h2.944V4.947zM12.89 8.105v1.58H5.11v-1.58h7.778zM11.61 1a.5.5 0 01.5.5v1.079H5.89V1.5a.5.5 0 01.5-.5h5.222z">
+        </path>
+    </svg>
+))

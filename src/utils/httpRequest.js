@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpRequest = axios.create({
-    baseURL: "https://be-electro-api.onrender.com/api/",
+    baseURL: "http://localhost:3001/api/",
     withCredentials: true,
 })
 
@@ -32,6 +32,17 @@ export const patch = async (path, data, options, axiosJWT) => {
         return res.data;
     }
     const res = await axiosJWT.patch(path, data, options);
+    return res.data;
+    
+}
+
+export const put = async (path, data, options, axiosJWT) => {
+    if(axiosJWT === undefined)
+    {
+        const res = await httpRequest.put(path, data, options);
+        return res.data;
+    }
+    const res = await axiosJWT.put(path, data, options);
     return res.data;
     
 }

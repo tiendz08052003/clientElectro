@@ -94,10 +94,8 @@ function Account() {
                 email: email,
                 password: password,
             })
-            console.log(res);
             if(res !== undefined)
             {
-                console.log(res)
                 dispatch(loginAccount(res))
                 setEmail("");
                 setPassword("");

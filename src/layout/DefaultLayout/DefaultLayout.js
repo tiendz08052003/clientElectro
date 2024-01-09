@@ -4,6 +4,7 @@ import styles from "./DefaultLayout.module.scss";
 import classNames from "classnames/bind";
 import SideBar from "../Components/SideBar/SideBar";
 import Path from "../Components/Path";
+import Chat from "~/pages/Chat";
 import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
@@ -59,6 +60,7 @@ function DefaultLayout({ onSideBar, handleOnClickFilterOnTabletOrMobile, childre
                 </div>
             </div>
             <Footer />
+            <Chat />
         </div>
     );
 }
