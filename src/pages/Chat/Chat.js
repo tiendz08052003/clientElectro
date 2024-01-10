@@ -129,9 +129,9 @@ function Chat() {
             setMessageSummary(data.messageInput)
             const x = refMainMessage.current;
             if(data.User._id === User._id)
-                x.innerHTML += `<div class="Chat_chat__main__bottom__content__main__div__WrdLi" style="justify-content: right;"><span class="Chat_chat__main__bottom__content__main__div__content__ds1OG" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
+                x.innerHTML += `<div class="chat__main__bottom__content__main__div" style="justify-content: right;"><span class="chat__main__bottom__content__main__div__content" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
             else
-                x.innerHTML += `<div class="Chat_chat__main__bottom__content__main__div__WrdLi"><span class="Chat_chat__main__bottom__content__main__div__content__ds1OG">${data.messageInput}</span></div>`
+                x.innerHTML += `<div class="chat__main__bottom__content__main__div"><span class="chat__main__bottom__content__main__div__content">${data.messageInput}</span></div>`
         })
 
         socket.on("sever-send-client-finishChat", () => {
