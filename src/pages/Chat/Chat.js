@@ -394,6 +394,9 @@ function Chat() {
                                             ))
                                         ) 
                                     }
+                                    <div dangerouslySetInnerHTML={
+                                        { __html: htmlContent }
+                                    } />
                                     </div>
                                 </div>
                                 {
