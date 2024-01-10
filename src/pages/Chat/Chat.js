@@ -32,7 +32,6 @@ function Chat() {
     const [listMessageChat, setListMessageChat] = useState([]);
     const [showSidebar, setShowSidebar] = useState(1);
     const [valueInput, setValueInput] = useState("");
-    const [htmlContent, setHtmlContent] = useState("");
     const [collapse, setCollapse] = useState(true);
     const ref = useRef(null);
     const refMainMessage = useRef(null);
@@ -128,17 +127,11 @@ function Chat() {
 
         socket.on("sever-send-client-message", (data) => {
             setMessageSummary(data.messageInput)
+            const x = refMainMessage.current
             if(data.User._id === User._id)
-            {
-                let x = htmlContent + `<div class="chat__main__bottom__content__main__div" style="justify-content: right;"><span class="chat__main__bottom__content__main__div__content" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
-                setHtmlContent(x)
-            }
+                x.innerHTML += `<div class="chat__main__bottom__content__main__div" style="justify-content: right;"><span class="chat__main__bottom__content__main__div__content" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
             else
-            {
-                // eslint-disable-next-line no-unused-vars
-                let x = htmlContent + `<div class="chat__main__bottom__content__main__div"><span class="chat__main__bottom__content__main__div__content">${data.messageInput}</span></div>`
-                setHtmlContent(x)
-            }
+                x.innerHTML += `<div class="chat__main__bottom__content__main__div"><span class="chat__main__bottom__content__main__div__content">${data.messageInput}</span></div>`
         })
 
         socket.on("sever-send-client-finishChat", () => {
@@ -401,9 +394,6 @@ function Chat() {
                                             ))
                                         ) 
                                     }
-                                    <div dangerouslySetInnerHTML={
-                                        { __html: htmlContent }
-                                    } />
                                     </div>
                                 </div>
                                 {
