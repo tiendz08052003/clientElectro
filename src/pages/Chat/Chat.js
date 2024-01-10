@@ -35,6 +35,7 @@ function Chat() {
     const [collapse, setCollapse] = useState(true);
     const ref = useRef(null);
     const refMainMessage = useRef(null);
+    let htmlContent = "";
     socket.connect();
 
     const User = useSelector(getUser);
@@ -127,11 +128,11 @@ function Chat() {
 
         socket.on("sever-send-client-message", (data) => {
             setMessageSummary(data.messageInput)
-            const x = refMainMessage.current;
             if(data.User._id === User._id)
-                x.innerHTML += `<div class="chat__main__bottom__content__main__div" style="justify-content: right;"><span class="chat__main__bottom__content__main__div__content" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
+                htmlContent +=  `<div class="chat__main__bottom__content__main__div" style="justify-content: right;"><span class="chat__main__bottom__content__main__div__content" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
             else
-                x.innerHTML += `<div class="chat__main__bottom__content__main__div"><span class="chat__main__bottom__content__main__div__content">${data.messageInput}</span></div>`
+                // eslint-disable-next-line no-unused-vars
+                htmlContent += `<div class="chat__main__bottom__content__main__div"><span class="chat__main__bottom__content__main__div__content">${data.messageInput}</span></div>`
         })
 
         socket.on("sever-send-client-finishChat", () => {
