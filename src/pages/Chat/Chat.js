@@ -253,6 +253,7 @@ function Chat() {
     return ( 
         <div className={cx("chat")} style={styleChat}>
             <div className={cx("chat__main")} style={{display: view ? "block": "none"}}>
+            
                 <div className={cx("chat__main__top")}>
                     <div className={cx("chat__main__top__title")}>
                         Chat •
@@ -283,159 +284,170 @@ function Chat() {
                         </div>
                     </div>
                 </div>
-                <div className={cx("chat__main__bottom")}>
-                    {User && User.admin && (
-                        <div className={cx("chat__main__bottom__account")}>
-                            <div className={cx("chat__main__bottom__account__search")}>
-                                <div className={cx("chat__main__bottom__account__search__txtSearch")}>
-                                    <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("chat__main__bottom__account__search__txtSearch__icon")} />
-                                    <input value={valueInput} type="text" className={cx("chat__main__bottom__account__search__txtSearch__input")} onFocus={handleFocusInput} onBlur={handleBlurInput} onInput={handleInput}/>
-                                </div>
-                                <div className={cx("chat__main__bottom__account__search__filter")} style={styleFilter}>
-                                    <select className={cx("chat__main__bottom__account__search__filter__select")} onClick={handleClickOption}>
-                                        <option value={1}>
-                                            Tất cả
-                                        </option>
-                                        <option value={2}>
-                                            Đang chat
-                                        </option>
-                                        <option value={3}>
-                                            Khách hàng đợi
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            {idUserChat && (showSidebar == 1 || showSidebar == 2) && (
-                                users.map((ur) => (
-                                    idUserChat === ur._id && ur.admin === false && (
-                                        <div className={cx("chat__main__bottom__account__details")} key={ur._id} onClick={handleOnClickChatting}>
-                                            <div className={cx("chat__main__bottom__account__details__avatar")}>
-                                                <Image src="https://cf.shopee.vn/file/792b99e3c472e88995b2e55d341f670e_tn" className={cx("chat__main__bottom__account__details__avatar__details")}/>
+            {
+                User ? (
+                        <div className={cx("chat__main__bottom")}>
+                            {User && User.admin && (
+                                <div className={cx("chat__main__bottom__account")}>
+                                    <div className={cx("chat__main__bottom__account__search")}>
+                                        <div className={cx("chat__main__bottom__account__search__txtSearch")}>
+                                            <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("chat__main__bottom__account__search__txtSearch__icon")} />
+                                            <input value={valueInput} type="text" className={cx("chat__main__bottom__account__search__txtSearch__input")} onFocus={handleFocusInput} onBlur={handleBlurInput} onInput={handleInput}/>
+                                        </div>
+                                        <div className={cx("chat__main__bottom__account__search__filter")} style={styleFilter}>
+                                            <select className={cx("chat__main__bottom__account__search__filter__select")} onClick={handleClickOption}>
+                                                <option value={1}>
+                                                    Tất cả
+                                                </option>
+                                                <option value={2}>
+                                                    Đang chat
+                                                </option>
+                                                <option value={3}>
+                                                    Khách hàng đợi
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {idUserChat && (showSidebar == 1 || showSidebar == 2) && (
+                                        users.map((ur) => (
+                                            idUserChat === ur._id && ur.admin === false && (
+                                                <div className={cx("chat__main__bottom__account__details")} key={ur._id} onClick={handleOnClickChatting}>
+                                                    <div className={cx("chat__main__bottom__account__details__avatar")}>
+                                                        <Image src="https://cf.shopee.vn/file/792b99e3c472e88995b2e55d341f670e_tn" className={cx("chat__main__bottom__account__details__avatar__details")}/>
+                                                    </div>
+                                                    <div className={cx("chat__main__bottom__account__details__content")}>
+                                                        <div className={cx("chat__main__bottom__account__details__content__name")}>
+                                                            {ur.userName}
+                                                        </div>
+                                                        <div className={cx("chat__main__bottom__account__details__content__summary")}>
+                                                            {messageSummary}
+                                                        </div>
+                                                    </div>
+                                                </div>      
+                                            )
+                                        ))
+                                    )}
+                                    {
+                                        (showSidebar == 1 || showSidebar == 3) && (
+                                            <div className={cx("chat__main__bottom__account__listQueue")}>
+                                                <div className={cx("chat__main__bottom__account__listQueue__title")}>Khách hàng đang đợi: {listUser.length}</div>
+                                                <ul className={cx("chat__main__bottom__account__listQueue__list")}>
+                                                    {
+                                                        listUser.map((id) => (
+                                                            users.map((ur) => (
+                                                                id === ur._id && ur.admin === false && (
+                                                                    <ChatGuest key={id} User={User} ur={ur} setNameUser={setNameUser} setBoolChatting={setBoolChatting} setIdRoom={setIdRoom}/>
+                                                                )
+                                                            ))
+                                                        ))
+                                                    }
+                                                </ul>
                                             </div>
-                                            <div className={cx("chat__main__bottom__account__details__content")}>
-                                                <div className={cx("chat__main__bottom__account__details__content__name")}>
-                                                    {ur.userName}
-                                                </div>
-                                                <div className={cx("chat__main__bottom__account__details__content__summary")}>
-                                                    {messageSummary}
-                                                </div>
-                                            </div>
-                                        </div>      
-                                    )
-                                ))
+                                        )
+                                    }
+                                </div>
                             )}
-                            {
-                                (showSidebar == 1 || showSidebar == 3) && (
-                                    <div className={cx("chat__main__bottom__account__listQueue")}>
-                                        <div className={cx("chat__main__bottom__account__listQueue__title")}>Khách hàng đang đợi: {listUser.length}</div>
-                                        <ul className={cx("chat__main__bottom__account__listQueue__list")}>
+                            {collapse && (
+                                nameUser !== "" || (User && User.admin === false) ? (
+                                    <div className={cx("chat__main__bottom__content")}>
+                                        <div className={cx("chat__main__bottom__content__option")}>
+                                            {nameUser === "" ? (
+                                                <>
+                                                    <Loading />
+                                                    <span className={cx("chat__main__bottom__content__option__topic")}>
+                                                        Đang đợi nhân viên hỗ trợ
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className={cx("chat__main__bottom__content__option__name")}>
+                                                        {nameUser}
+                                                    </div>
+                                                    <FontAwesomeIcon icon={faChevronCircleDown}/>
+                                                    {boolChatting && (<div className={cx("chat__main__bottom__content__option__finish")} onClick={handleOnClickFinishChat}>Kết thúc</div>)}
+                                                </>
+                                            ) }
+                                        </div>
+                                        <div className={cx("chat__main__bottom__content__main")} >
+                                            <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}}>
                                             {
-                                                listUser.map((id) => (
-                                                    users.map((ur) => (
-                                                        id === ur._id && ur.admin === false && (
-                                                            <ChatGuest key={id} User={User} ur={ur} setNameUser={setNameUser} setBoolChatting={setBoolChatting} setIdRoom={setIdRoom}/>
+                                                listMessageChat.length !== 0 && (
+                                                    listMessageChat.map((x, index) => (
+                                                        x.admin ? (
+                                                            User.admin ? (
+                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
+                                                                    <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.admin}</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")}>
+                                                                    <span className={cx("chat__main__bottom__content__main__div__content")}>{x.admin}</span>
+                                                                </div>
+                                                            )
+                                                        ) : (
+                                                            !User.admin ? (
+                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
+                                                                    <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.user}</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")}>
+                                                                    <span className={cx("chat__main__bottom__content__main__div__content")}>{x.user}</span>
+                                                                </div>
+                                                            )
                                                         )
                                                     ))
-                                                ))
+                                                ) 
                                             }
-                                        </ul>
+                                            </div>
+                                        </div>
+                                        {
+                                            boolChatting === true  || User.admin === false ? (
+                                                <div className={cx("chat__main__bottom__content__input")}>
+                                                    <div className={cx("chat__main__bottom__content__input__import")}>
+                                                        <textarea type="text" placeholder="Nhập nội dung tin nhắn" className={cx("chat__main__bottom__content__input__import__text")} ref={ref} value={messageInput} onInput={handleOnInputText}></textarea>
+                                                        {
+                                                            styleSend && (
+                                                                <div className={cx("chat__main__bottom__content__input__import__send")} onClick={handleOnClickSend}>
+                                                                    <FontAwesomeIcon icon={faPaperPlane} className={cx("chat__main__bottom__content__input__import__send__icon")}/>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
+                                                    <div className={cx("chat__main__bottom__content__input__option")}>
+                                                        <IconFace className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconFace")}/>
+                                                        <IconImage className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconImage")}/>
+                                                        <IconVideo className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconVideo")}/>
+                                                        <IconCart className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconCart")}/>
+                                                        <IconPrint className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconPrint")}/>
+                                                    </div>
+                                                </div>
+
+                                            ) : (
+                                                <div className={cx("chat__main__bottom__content__button")}>
+                                                    <button className={cx("chat__main__bottom__content__button__details")} onClick={handleClickChatClient}>
+                                                        Tư vấn khách hàng
+                                                    </button>
+                                                </div>
+                                            ) 
+                                        }
+                                    </div>
+                                ) : (
+                                    <div className={cx("chat__main__bottom__content")}>
+                                        <div className={cx("chat__main__bottom__content__empty")}>
+                                            Chưa có đoạn chat nào
+                                        </div>
                                     </div>
                                 )
-                            }
+                            )}
                         </div>
-                    )}
-                    {collapse && (
-                        nameUser !== "" || (User && User.admin === false) ? (
-                            <div className={cx("chat__main__bottom__content")}>
-                                <div className={cx("chat__main__bottom__content__option")}>
-                                    {nameUser === "" ? (
-                                        <>
-                                            <Loading />
-                                            <span className={cx("chat__main__bottom__content__option__topic")}>
-                                                Đang đợi nhân viên hỗ trợ
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className={cx("chat__main__bottom__content__option__name")}>
-                                                {nameUser}
-                                            </div>
-                                            <FontAwesomeIcon icon={faChevronCircleDown}/>
-                                            {boolChatting && (<div className={cx("chat__main__bottom__content__option__finish")} onClick={handleOnClickFinishChat}>Kết thúc</div>)}
-                                        </>
-                                    ) }
-                                </div>
-                                <div className={cx("chat__main__bottom__content__main")} >
-                                    <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}}>
-                                    {
-                                        listMessageChat.length !== 0 && (
-                                            listMessageChat.map((x, index) => (
-                                                x.admin ? (
-                                                    User.admin ? (
-                                                        <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
-                                                            <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.admin}</span>
-                                                        </div>
-                                                    ) : (
-                                                        <div key={index} className={cx("chat__main__bottom__content__main__div")}>
-                                                            <span className={cx("chat__main__bottom__content__main__div__content")}>{x.admin}</span>
-                                                        </div>
-                                                    )
-                                                ) : (
-                                                    !User.admin ? (
-                                                        <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
-                                                            <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.user}</span>
-                                                        </div>
-                                                    ) : (
-                                                        <div key={index} className={cx("chat__main__bottom__content__main__div")}>
-                                                            <span className={cx("chat__main__bottom__content__main__div__content")}>{x.user}</span>
-                                                        </div>
-                                                    )
-                                                )
-                                            ))
-                                        ) 
-                                    }
-                                    </div>
-                                </div>
-                                {
-                                    boolChatting === true  || User.admin === false ? (
-                                        <div className={cx("chat__main__bottom__content__input")}>
-                                            <div className={cx("chat__main__bottom__content__input__import")}>
-                                                <textarea type="text" placeholder="Nhập nội dung tin nhắn" className={cx("chat__main__bottom__content__input__import__text")} ref={ref} value={messageInput} onInput={handleOnInputText}></textarea>
-                                                {
-                                                    styleSend && (
-                                                        <div className={cx("chat__main__bottom__content__input__import__send")} onClick={handleOnClickSend}>
-                                                            <FontAwesomeIcon icon={faPaperPlane} className={cx("chat__main__bottom__content__input__import__send__icon")}/>
-                                                        </div>
-                                                    )
-                                                }
-                                            </div>
-                                            <div className={cx("chat__main__bottom__content__input__option")}>
-                                                <IconFace className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconFace")}/>
-                                                <IconImage className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconImage")}/>
-                                                <IconVideo className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconVideo")}/>
-                                                <IconCart className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconCart")}/>
-                                                <IconPrint className={cx("chat__main__bottom__content__input__option__icon", "chat__main__bottom__content__input__option__iconPrint")}/>
-                                            </div>
-                                        </div>
-
-                                    ) : (
-                                        <div className={cx("chat__main__bottom__content__button")}>
-                                            <button className={cx("chat__main__bottom__content__button__details")} onClick={handleClickChatClient}>
-                                                Tư vấn khách hàng
-                                            </button>
-                                        </div>
-                                    ) 
-                                }
-                            </div>
-                        ) : (
-                            <div className={cx("chat__main__bottom__content")}>
-                                <div className={cx("chat__main__bottom__content__empty")}>
-                                    Chưa có đoạn chat nào
-                                </div>
-                            </div>
-                        )
-                    )}
-                </div>
+                ) : (
+                    <div className={cx("chat__main__register")}>
+                        <div className={cx("chat__main__register__content")}>
+                            Hãy <a href="./account?type=register">đăng ký</a> hoặc <a href="./account?type=login">đăng nhập</a> tài khoản 
+                        </div>
+                    </div>
+                )
+            }
+                
             </div>
             <div className={cx("chat__button")} onClick={handleClickButtonChat} style={{display: view === false ? "flex" : "none"}}>
                 <div className={cx("chat__button__icon")}>

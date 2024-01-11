@@ -60,6 +60,17 @@
             }
         }
 
+        &__register {
+            display: flex;
+            align-items: center;  
+            height: 460px;
+            background-color: white;
+
+            &__content {
+                padding: 20px;
+            } 
+        }
+
         &__bottom {
             display: flex;
             height: 460px;
