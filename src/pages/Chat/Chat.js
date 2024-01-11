@@ -41,16 +41,19 @@ function Chat() {
 
     const handleClickButtonChat = () => {
         setView(!view);
-        setFresh(true)
-        if(!fresh)
+        if (User) 
         {
-            setBoolChatting(true);
-            const fetchAPI = async () => {
-                const res = await ChatServices.getChat();
-                socket.emit('client-to-sever', {res, User});
-            }   
-            fetchAPI();
-        } 
+            setFresh(true)
+            if(!fresh)
+            {
+                setBoolChatting(true);
+                const fetchAPI = async () => {
+                    const res = await ChatServices.getChat();
+                    socket.emit('client-to-sever', {res, User});
+                }   
+                fetchAPI();
+            } 
+        }
     }
 
     const handleClickButtonCloseChat = () => {
