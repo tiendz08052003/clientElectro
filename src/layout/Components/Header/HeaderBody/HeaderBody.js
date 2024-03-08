@@ -18,7 +18,7 @@ import { loginAccount, logoutAccount } from "~/pages/Account/accountSlice";
 import { getResultSearch, getConditionSearch, getValueSearch } from "../headerSlice";
 import { combineAllCaseSearch } from "~/redux/selector";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 
 
@@ -160,26 +160,23 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     useEffect(() => {
         if (user?.accessToken)
         {
+            let sum = 0;
             const fetchAPI1 = async () => {
                 const res1 = await ProductServices.shop();
-                const fetchAPI2 = async () => {
-                    const res2 = await CartServices.getCart();
-                    let sum = 0;
-                    res2.map(childCart => {
-                        if(childCart.idAuth === user._id)
-                        {
-                            res1.map(childProduct => {
-                                if(childCart.idProduct === childProduct._id)
-                                {
-                                    sum += childProduct.price * childCart.count - childProduct.discount;
-                                }
-                            })
-                        }
-                    })
-                    setSubtotal(sum);
-                    setQuality(res2.filter(x => x.idAuth === user._id).length);
-                }
-                fetchAPI2();
+                const res2 = await CartServices.getCart();
+                res2.map(childCart => {
+                    if(childCart.idAuth === user._id)
+                    {
+                        res1.map(childProduct => {
+                            if(childCart.idProduct === childProduct._id)
+                            {
+                                sum += childProduct.price * childCart.count - childProduct.discount;
+                            }
+                        })
+                    }
+                })
+                setSubtotal(sum);
+                setQuality(res2.filter(x => x.idAuth === user._id).length);
             }
             fetchAPI1();
         }
@@ -214,9 +211,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                         <input type="text" placeholder="Search for Products" className={cx("header__middle__child__search__child__input", "header__middle__child__search__child__input--handle")} value={contentSearch} onChange={handleOnChangeValueInput}/>
                                         {
                                             searchResult.products?.length !== 0 ? (
-                                                <NavLink to="/?type=searchProducts" className={cx("link-href")} onClick={handleOnClickSearchOnTabletOrMobile}>
+                                                <a href="/?type=searchProduct" className={cx("link-href")} onClick={handleOnClickSearchOnTabletOrMobile}>
                                                     <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("header__middle__child__search__child__search")}/>
-                                                </NavLink>    
+                                                </a>    
                                             ) : (
                                                 <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("header__middle__child__search__child__search")}/>
                                             )
@@ -241,9 +238,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                                     })}
                                                 </ul>
                                                 {searchResult.products?.length > 5 && (
-                                                    <NavLink to="/?type=searchProduct" className={cx("link-href")}>
+                                                    <a href="/?type=searchProduct" className={cx("link-href")}>
                                                         <div className={cx("header__middle__child__search__child__history__result")} >Xem thêm {searchResult.products?.length - 5} kết quả</div>
-                                                    </NavLink>
+                                                    </a>
                                                 )}
                                             </div>
                                         )}
@@ -271,9 +268,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                                 })}
                                             </ul>
                                             {searchResult.products?.length > 5 && (
-                                                <NavLink to="/?type=searchProduct" className={cx("link-href")}>
+                                                <a href="/?type=searchProduct" className={cx("link-href")}>
                                                     <div className={cx("header__middle__child__search__child__history__result")} >Xem thêm {searchResult.products?.length - 5} kết quả</div>
-                                                </NavLink>
+                                                </a>
                                             )}
                                         </div>
                                     )}
@@ -290,9 +287,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                             {!pcWidth ? (onSearch ? <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("header__middle__child__search__search--iconSearch")} onClick={handleOnClickSearchOnTabletOrMobile}/> : <FontAwesomeIcon icon={faXmark} className={cx("header__middle__child__search__search--iconExit")} onClick={handleOnClickSearchOnTabletOrMobile}/>) : 
                             (
                                 searchResult.products?.length !== 0 ? (
-                                    <NavLink to="/?type=searchProducts" className={cx("link-href")}>
+                                    <a href="/?type=searchProduct" className={cx("link-href")}>
                                         <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("header__middle__child__search__search--iconSearch")}/>
-                                    </NavLink>    
+                                    </a>    
                                 ) : (
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className={cx("header__middle__child__search__search--iconSearch")}/>
                                 )

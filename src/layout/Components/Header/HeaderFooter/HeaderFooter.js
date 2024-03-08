@@ -1,14 +1,13 @@
 import classNames from "classnames/bind";
 import styles from "./HeaderFooter.module.scss";
 import HeaderFooterSelect from "./HeaderFooterSelect";
-import { useEffect, useState } from "react";
-import * as SelectionServices from "~/services/SelectionServices"
+import { useSelector } from "react-redux";
+import { getSelection } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
 function HeaderFooter({pcWidth, status, setStatus, handleOnClickIconMenu}) {
-    const [listChild, setListChild] = useState([]);
-
+    const listChild = useSelector(getSelection);
 
     const handleOnClickMenu = (e) => {
         e.stopPropagation();
@@ -17,14 +16,6 @@ function HeaderFooter({pcWidth, status, setStatus, handleOnClickIconMenu}) {
     const styleMenu = {
         display: pcWidth ? "block" : (status ? "block" : "none")
     }
-
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const res = await SelectionServices.getSelection();
-            setListChild(res);
-        }
-        fetchAPI();
-    }, [])
 
     return ( 
         <div style={styleMenu} className={cx("header__footer")} onClick={handleOnClickIconMenu}>

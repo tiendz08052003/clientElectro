@@ -4,36 +4,34 @@
     import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
     import { faAngleRight, faChevronDown } from "@fortawesome/free-solid-svg-icons";
     import SideBarCateChild from "./SideBarCateChild";
-    import * as TypeServices from '~/services/TypeServices';
-    import { Link, NavLink } from "react-router-dom";
+    import { getType } from "~/redux/selector"; 
+    import { NavLink } from "react-router-dom";
     import config from "~/config/config";
+    import { useSelector } from "react-redux";
     
     const cx = classNames.bind(styles);
 
-    function SideBarCate({selection, handleOnclickCaseSelection, handleOnclickCaseType, sideBarSelect, sideBarT}) {
+        function SideBarCate({selection, handleOnclickCaseSelection, handleOnclickCaseType, sideBarSelect, sideBarT}) {
 
         const [styleType, setStyleType] = useState(false);
         const [listChild, setListChild] = useState([]);
-        
 
+        const listTypes = useSelector(getType);
+        
         const handleOnclickSelection = () => {
             setStyleType(!styleType);
         }
 
         useEffect(() => {
-            const fetchAPI = async () => {
-                const res = await TypeServices.getType();
-                let list = [];
-                res.map((data, index) => {
-                    if(data.idSelection === selection._id)
-                    {
-                        list.push(data)
-                    }
-                })
-                setListChild(list);
-            }
-            fetchAPI();
-        }, [])
+            let list = [];
+            listTypes.map((data, index) => {
+                if(data.idSelection === selection._id)
+                {
+                    list.push(data)
+                }
+            })
+            setListChild(list);
+        }, [listTypes])
 
         return ( 
             <li className={cx("sidebarCate")}>

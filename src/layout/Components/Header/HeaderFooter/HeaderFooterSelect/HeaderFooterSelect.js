@@ -1,25 +1,21 @@
-import { imgs } from "~/assest/imgs";
 import classNames from "classnames/bind";
 import styles from "./HeaderFooterSelect.module.scss";
-import Image from "~/Components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import * as TypeServices from "~/services/TypeServices";
-import * as MenuServices from "~/services/MenuServices";
-import * as CatalogServices from "~/services/CatalogServices";
 import HeaderFooterSelectMenu from "./HeaderFooterSelectMenu";
+import { useSelector } from "react-redux";
+import { getMenu } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
 function HeaderFooterSelect({child, setStatus}) {
     
     const [listMenu, setListMenu] = useState([]);
-    const [listType, setListType] = useState([]);
     const [openMenu, setOpenMenu] = useState(false); // dùng để bật tắt menu
     const [pcWidth, setPcWidth] = useState(true); // kiểm tra xem có đang trên màn pc không
     let styleOpenMenuOnTablet;
-    let list = [];
+    let listMu = useSelector(getMenu);
 
     //lắng nghe kích thước khi mới khởi động web
     useEffect(() => {
@@ -70,16 +66,18 @@ function HeaderFooterSelect({child, setStatus}) {
     }
 
     useEffect(() => {
-        const fetchAPI1 = async () => {
-            const res = await MenuServices.getMenu();
-            let array = [];
-            res.map(menu => {
-                menu.idSelection === child._id &&  array.push(menu);
-            })
-            setListMenu(array);
+        if(listMu)
+        {
+            const fetchAPI = async () => {
+                let array = [];
+                listMu.map(menu => {
+                    menu.idSelection === child._id &&  array.push(menu);
+                })
+                setListMenu(array);
+            }
+            fetchAPI();
         }
-        fetchAPI1();
-    }, [])
+    }, [listMu])
 
     return (
         <li className={cx("headerFooterSelect")} onClick={handleOnClickOpenMenuOnTablet}> 

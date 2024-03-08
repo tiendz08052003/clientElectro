@@ -4,6 +4,9 @@ import * as ProductServices from '~/services/ProductServices';
 import * as BrandServices from '~/services/BrandServices';
 import * as ColorServices from '~/services/ColorServices';
 import * as TypeServices from '~/services/TypeServices';
+import * as SelectionServices from '~/services/SelectionServices';
+import * as CatalogServices from '~/services/CatalogServices';
+import * as MenuServices from '~/services/MenuServices';
 
 const homeSlice = createSlice({
     name: 'products',
@@ -13,6 +16,9 @@ const homeSlice = createSlice({
         brandList: [],
         colorList: [],
         typeList: [],
+        selectionList: [],
+        catalogList: [],
+        menuList: [],
         typeSort: "",
         quality: 20,
         numberPage: 0,
@@ -50,6 +56,20 @@ const homeSlice = createSlice({
                 state.status = 'fulfilled';
                 state.numberPage = action.payload;
             })
+            .addCase(getSelection.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.selectionList = action.payload;
+            })
+
+            .addCase(getCatalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.catalogList = action.payload;
+            })
+
+            .addCase(getMenu.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.menuList = action.payload;
+            })
     }
 })
 
@@ -84,6 +104,22 @@ export const getQuality = createAsyncThunk("ColorList/getQuality", (data) => {
 export const getNumberPage = createAsyncThunk("ColorList/getNumberPage", (data) => {
     return data
 })
+
+export const getSelection = createAsyncThunk("ColorList/getSelection", async () => {
+    const res = await SelectionServices.getSelection(); 
+    return res;
+})
+
+export const getCatalog = createAsyncThunk("ColorList/getCatalog", async () => {
+    const res = await CatalogServices.getCatalog(); 
+    return res;
+})
+
+export const getMenu = createAsyncThunk("ColorList/getMenu", async () => {
+    const res = await MenuServices.getMenu(); 
+    return res;
+})
+
 
 
 export default homeSlice

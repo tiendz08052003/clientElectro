@@ -1,14 +1,12 @@
 import style from './SideBarSelectChild.module.scss';
 import classNames from 'classnames/bind';
-import { brandList, colorList } from '../../sideBarSlice';
+import { listBrand, listColor } from '../../sideBarSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { sideBarBrandList, sideBarColorList } from '~/redux/selector';
 
 const cx = classNames.bind(style);
 
 function SideBarSelectChild({child, name}) {
-    const [checked, testChecked] = useState(false)
     const dispatch = useDispatch();
 
     const brand = useSelector(sideBarBrandList);
@@ -19,7 +17,7 @@ function SideBarSelectChild({child, name}) {
         {
             case "Brand":
             {
-                dispatch(brandList({
+                dispatch(listBrand({
                     type: "custom",
                     name: e.target.value
                 })) 
@@ -27,7 +25,7 @@ function SideBarSelectChild({child, name}) {
             }
             case "Color":
             {
-                dispatch(colorList(
+                dispatch(listColor(
                 {
                     type: "custom",
                     name: e.target.value

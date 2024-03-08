@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 
 function SideBarSelect({name}) {
     const [list, setList] = useState([]);
+    const [showMore, setShowMore] = useState(false);
 
 
     useEffect(() => {
@@ -36,17 +37,35 @@ function SideBarSelect({name}) {
         }
     }, [])  
 
+    const handleClickShowMore = () => {
+        setShowMore(!showMore)
+    }
+
     return ( 
         <li className={cx("sidebarSelect")}>
             <div className={cx("sidebarSelect__content")}>
                 <strong>{name}</strong>
             </div>
             <ul className={cx("sidebarSelect__list")}>
-                {list && list.map((child, index) => (
-                    <SideBarSelectChild key={index} child={child} name={name}/>
-                ))}
+                {list && list.map((child, index) => {
+                    if(!showMore)
+                    {
+                        if(index < 4)
+                            return <SideBarSelectChild key={index} child={child} name={name}/>
+                    }
+                    else
+                        return <SideBarSelectChild key={index} child={child} name={name}/>
+                })}
             </ul>
-            <div className={cx("sidebarSelect__list__showMore")}>+ Show more</div>
+            {
+                list.length > 4 && (
+                    !showMore ? (
+                        <div className={cx("sidebarSelect__list__showMore")} onClick={handleClickShowMore}>+ Show more</div>
+                    ) : (
+                        <div className={cx("sidebarSelect__list__showMore")} onClick={handleClickShowMore}>- Compact</div>
+                    )  
+                ) 
+            }
         </li>
      );
 }

@@ -7,9 +7,12 @@
         padding: 0;
         margin: 0;
         margin-left: 5px;
+
+        &__showMore {
+            cursor: pointer;
+            margin: 16px 0;
+        }
     }
     
-    &__list__showMore {
-        margin: 16px 0;
-    }
+    
 }

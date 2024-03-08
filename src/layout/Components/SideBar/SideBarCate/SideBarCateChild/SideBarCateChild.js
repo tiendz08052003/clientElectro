@@ -1,7 +1,5 @@
 import classNames from "classnames/bind";
 import styles from "./SideBarCateChild.module.scss";
-import { NavLink } from "react-router-dom";
-import config from "~/config/config";
 
 const cx = classNames.bind(styles);
 

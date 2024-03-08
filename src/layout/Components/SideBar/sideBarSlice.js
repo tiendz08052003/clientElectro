@@ -6,13 +6,13 @@ const sideBarSlice = createSlice({
         brand: [],
         color: [],
         type: "",
-        selection: "",
+        selection: ""
     },
     reducers: {
     },
     extraReducers: builder => {
         builder
-            .addCase(brandList.fulfilled, (state, action) => {
+            .addCase(listBrand.fulfilled, (state, action) => {
                 if(action.payload.type === "single") {
                     state.brand = [action.payload.name];
                 }
@@ -31,7 +31,7 @@ const sideBarSlice = createSlice({
                 }
             })
 
-            .addCase(colorList.fulfilled, (state, action) => {
+            .addCase(listColor.fulfilled, (state, action) => {
                 if(action.payload.type === "custom") {
                     let indexEle;
                     state.color.map((x, index) => {
@@ -47,30 +47,31 @@ const sideBarSlice = createSlice({
                 }
             })
 
-            .addCase(typeList.fulfilled, (state, action) => {
+            .addCase(type.fulfilled, (state, action) => {
                 state.type = action.payload;
             })
 
-            .addCase(selectionList.fulfilled, (state, action) => {
+            .addCase(selection.fulfilled, (state, action) => {
                 state.selection = action.payload;
             })
+
     }
 })
 
 
-export const brandList = createAsyncThunk("sideBar/brandList", (data) => {
+export const listBrand = createAsyncThunk("sideBar/listBrand", (data) => {
     return data;
 }) 
 
-export const colorList = createAsyncThunk("sideBar/colorList", (data) => {
+export const listColor = createAsyncThunk("sideBar/listColor", (data) => {
     return data;
 })  
 
-export const typeList = createAsyncThunk("sideBar/typeList", (data) => {
+export const type = createAsyncThunk("sideBar/type", (data) => {
     return data;
 }) 
 
-export const selectionList = createAsyncThunk("sideBar/selectionList", (data) => {
+export const selection = createAsyncThunk("sideBar/selection", (data) => {
     return data;
 }) 
 

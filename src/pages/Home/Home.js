@@ -8,7 +8,6 @@ import { Fragment, useEffect, useRef, useState, memo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { combineAllCaseSearch, combineAllCaseShop, getQualities } from "~/redux/selector";
 import { getNumberPage, getQuality, getTypeSort } from "./homeSlice";
-import { useNavigate } from "react-router-dom";
 
 import * as ProductServices from '~/services/ProductServices';
 
@@ -20,9 +19,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
     const x = new URLSearchParams(window.location.search);
     const typeHome = x.get("type");
 
-
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const products = useSelector(combineAllCaseShop);
     const searchProducts = useSelector(combineAllCaseSearch);
     const quality = useSelector(getQualities);
@@ -607,29 +604,25 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
 
     useEffect(() => {
         let array = [];
-        if(products.list?.length !== 0)
+        let length = 0;
+        if(typeHome) {
+            if(searchProducts.list?.length !== 0)
+                length = Math.ceil(searchProducts.list.length / quality);
+        }
+        else {
+            if(products.list?.length !== 0)
+                length = Math.ceil(products.list.length / quality);
+                
+        }
+        if(length !== 0)
         {
-            const length = Math.ceil(products.list.length / quality);
             for(let i = 1; i <= length; i++)
             {
                 array.push(i);
             }
             setListNumberPage(array);
         }
-    }, [products])
-
-    useEffect(() => {
-        let array = [];
-        if(searchProducts.list?.length !== 0)
-        {
-            const length = Math.ceil(searchProducts.list.length / quality);
-            for(let i = 1; i <= length; i++)
-            {
-                array.push(i);
-            }
-            setListNumberPage(array);
-        }
-    }, [searchProducts])
+    }, [products, searchProducts])
 
     const handleOnClickNumberPage = (e) => {
         setNumberPage(Number(e.target.getAttribute("value")) + 1);
@@ -637,8 +630,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
     }
 
     const handleOnClickIncreaseNumberPage = () => {
-        listNumberPage.length >= numberPage + 1 && setNumberPage(numberPage + 1);
-        listNumberPage.length >= numberPage + 1 && dispatch(getNumberPage(numberPage));
+        listNumberPage.length >= numberPage + 1 && setNumberPage(numberPage + 1) && dispatch(getNumberPage(numberPage));
     }
 
     const styleNumberPage = {

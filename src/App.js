@@ -3,8 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoute } from "./Routes";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getProduct, getBrand, getColor, getType } from "./pages/Home/homeSlice";
+import { getProduct, getBrand, getColor, getType, getSelection, getCatalog, getMenu } from "./pages/Home/homeSlice";
 import { getProductCatalog } from "./layout/Components/Header/HeaderFooter/headerFooterSlice";
+import * as TypeServices from '~/services/TypeServices';
+import * as SelectionServices from '~/services/SelectionServices';
+import * as MenuServices from '~/services/MenuServices';
+import * as CatalogServices from '~/services/CatalogServices';
+import { listSelect, listType } from "./layout/Components/SideBar/sideBarSlice";
+import { listMenu, listCatalog } from "./layout/Components/Header/HeaderFooter/headerFooterSlice"; 
 
 function App() {
   const [pcWidth, setPcWidth] = useState(true);
@@ -15,23 +21,35 @@ function App() {
 
   useEffect(() => {
     dispatch(getProduct())
-  })
+  }, [])
 
   useEffect(() => {
     dispatch(getBrand())
-  })
+  }, [])
 
   useEffect(() => {
     dispatch(getColor())
-  })
+  }, [])
 
   useEffect(() => {
     dispatch(getProductCatalog())
-  })
+  }, [])
 
   useEffect(() => {
     dispatch(getType())
-  })
+  }, [])
+
+  useEffect(() => {
+    dispatch(getSelection())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getCatalog())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getMenu())
+  }, [])
 
   useEffect(() => {
     if(window.innerWidth <= 1230)

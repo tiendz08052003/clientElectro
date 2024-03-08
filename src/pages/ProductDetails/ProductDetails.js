@@ -16,11 +16,13 @@ import { getUser } from "~/redux/selector";
 import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
 import { loginAccount } from "../Account/accountSlice";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
+import { useParams } from "react-router-dom";
 
 const cx = classNames.bind(style);
 
 function ProductDetails() {
     const x = new URLSearchParams(window.location.search);
+    
 
     const user = useSelector(getUser);
     const dispatch = useDispatch();
@@ -61,10 +63,7 @@ function ProductDetails() {
                 })
                 if(flag)
                 {
-                    const fetchAPI2 = async () => {
-                        await WishlistServices.addWishlist({idProduct: e.target.closest(".productdetails__child__right__avancInfo__interact__wishlist--icon--handle").getAttribute("data-id")}, user?.accessToken, axiosJWT);
-                    }
-                    fetchAPI2();
+                    await WishlistServices.addWishlist({idProduct: e.target.closest(".productdetails__child__right__avancInfo__interact__wishlist--icon--handle").getAttribute("data-id")}, user?.accessToken, axiosJWT);
                 }
             }   
             fetchAPI();
@@ -85,10 +84,7 @@ function ProductDetails() {
             })
             if(flag)
             {
-                const fetchAPI2 = async () => {
-                    await CompareServices.addCompare({idProduct: e.target.closest(".productdetails__child__right__avancInfo__interact__compare--icon--handle").getAttribute("data-id")});
-                }
-                fetchAPI2();
+                await CompareServices.addCompare({idProduct: e.target.closest(".productdetails__child__right__avancInfo__interact__compare--icon--handle").getAttribute("data-id")});
             }
         }
         fetchAPI();
@@ -153,33 +149,33 @@ function ProductDetails() {
         })
     }
 
+    const { slug } = useParams();
+
     useEffect(() => {
-        const idProductDetails = x.get("id");
+
+        const slugProductDetails = slug;
         let product = {};
         let type;
-        const fetchAPI1 = async () => {
+        const fetchAPI = async () => {
             const res1 = await ProductServices.shop();
             // eslint-disable-next-line react-hooks/exhaustive-deps
             res1.map(x => {
-                if(x._id === idProductDetails)
+                if(x.slug === slugProductDetails)
                      product = x
             })
-            const fetchAPI2 = async () => {
-                const res2 = await TypeServices.getType();
-                res2.map(x => {
-                    if(x._id === product.idType)
-                    {
-                        type = x.name;
-                    }
-                })
-                setNameType(type);
-                setProductDetails(product)
-            }
+            const res2 = await TypeServices.getType();
+            res2.map(x => {
+                if(x._id === product.idType)
+                {
+                    type = x.name;
+                }
+            })
+            setNameType(type);
+            setProductDetails(product)
 
-            fetchAPI2();
         }
 
-        fetchAPI1();
+        fetchAPI();
     }, [])
 
 
@@ -205,7 +201,7 @@ function ProductDetails() {
         setBool(false);
         let flag = false;
         const idProductDetails = x.get("id");
-        const fetchAPI1 = async () => {
+        const fetchAPI = async () => {
             const res = await CartServices.getCart()
             if(user?.accessToken)
             {
@@ -213,24 +209,21 @@ function ProductDetails() {
                     if(cart.idProduct === idProductDetails)
                     {
                         flag = true;
-                        const fetchAPI2 = async () => { 
+                        const fetchAPI1 = async () => { 
                             await CartServices.updateCart(user?.accessToken, cart._id, Number(quality) + cart.count, axiosJWT); 
                             setContent("Success");
                             setTitle("Thêm vào giỏ hàng thành công!");
                             setBool(true);
                         }
-                        fetchAPI2();
+                        fetchAPI1();
                     }
                 })
                 if(flag === false)
                 {
-                    const fetchAPI2 = async () => {
-                        await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: 1}, axiosJWT);
-                        setContent("Success");
-                        setTitle("Thêm vào giỏ hàng thành công!");
-                        setBool(true);
-                    } 
-                    fetchAPI2();
+                    await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: 1}, axiosJWT);
+                    setContent("Success");
+                    setTitle("Thêm vào giỏ hàng thành công!");
+                    setBool(true);
                 }
             }
             else
@@ -242,7 +235,7 @@ function ProductDetails() {
                 }, 300)
             }
         }
-        fetchAPI1();
+        fetchAPI();
     }
 
     return ( 

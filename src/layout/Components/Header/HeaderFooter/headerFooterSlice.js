@@ -5,6 +5,7 @@ import * as ProductCatalogServices from "~/services/ProductCatalogServices";
 const headerBodySlice = createSlice({
     name: "headerFooter",
     initialState: {
+
         productCatalog: [],
         catalog: "",
         price: {

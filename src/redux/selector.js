@@ -16,6 +16,18 @@ export const getType = state => {
     return state.products.typeList;
 }
 
+export const getSelection = state => {
+    return state.products.selectionList;
+}
+
+export const getCatalog = state => {
+    return state.products.catalogList;
+}
+
+export const getMenu = state => {
+    return state.products.menuList;
+}
+
 export const getTypeSort = state => {
     return state.products.typeSort;
 }

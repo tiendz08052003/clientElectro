@@ -2,11 +2,10 @@ import classNames from "classnames/bind";
 import styles from "./SideBar.module.scss";
 import SideBarCate from "./SideBarCate";
 import SideBarSelect from "./SideBarSelect/SideBarSelect";
-import { useEffect, useState } from "react";
-import * as SelectionServices from "~/services/SelectionServices"
 import { useDispatch, useSelector } from "react-redux";
-import { selectionList, typeList } from "./sideBarSlice";
+import { selection, type} from "./sideBarSlice";
 import { sideBarSelection, sideBarType } from "~/redux/selector";
+import { getSelection } from "~/redux/selector";
 import { NavLink } from "react-router-dom";
 import config from "~/config/config";
 import { useNavigate } from "react-router-dom";
@@ -17,46 +16,33 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
 
     const x = new URLSearchParams(window.location.search);
     const typeHome = x.get("type");
-
-    const [listSelection, setListSelection] = useState([]);
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
     const sideBarSelect = useSelector(sideBarSelection);
     const sideBarT = useSelector(sideBarType);
+    const listSelection = useSelector(getSelection);
 
     const handleOnClickSideBarOnTabletOrMobile = (e) => {
         e.stopPropagation();
     }
-
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const res = await SelectionServices.getSelection();
-            setListSelection(res);
-        }
-
-        fetchAPI();
-    }, [])
-
     const handleOnclickCaseType = (e) => {
         const id  = e.target.getAttribute("data-id");
-        dispatch(typeList(id));
-        dispatch(selectionList(""));
+        dispatch(type(id));
+        dispatch(selection(""));
         navigate("/");
     }
 
     const handleOnclickCaseSelection = (e) => {
         const id  = e.target.getAttribute("data-id");
-        if(id === null)
-        {
-            dispatch(typeList(""));
-            dispatch(selectionList(""));
+        if(id === null) {
+            dispatch(type(""));
+            dispatch(selection(""));
         }
-        else
-        {
-            dispatch(typeList(""));
-            dispatch(selectionList(id));
+        else {
+            dispatch(type(""));
+            dispatch(selection(id));
         }
     }
 

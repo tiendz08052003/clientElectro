@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import style from './HeaderFooterSelectMenuCatalog.module.scss'
 import { getIdCatalog, getPriceCatalog } from "~/layout/Components/Header/HeaderFooter/headerFooterSlice"; 
-import { typeList, selectionList, brandList, colorList } from "~/layout/Components/SideBar/sideBarSlice";
+import { type, selection, listBrand, listColor } from "~/layout/Components/SideBar/sideBarSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ function HeaderFooterSelectMenuCatalog({childCatalog, name, setStatus}) {
     const handleOnClickCatalog = (e) => {
         if(name === "Shop By Brand")
         {
-            dispatch(brandList({
+            dispatch(listBrand({
                 type: "single",
                 name: childCatalog.name
             }))
@@ -27,7 +27,7 @@ function HeaderFooterSelectMenuCatalog({childCatalog, name, setStatus}) {
         }
         else if(name === "Shop By Price")
         {
-            dispatch(brandList({
+            dispatch(listBrand({
                 type: "",
                 name: ""
             }));
@@ -39,7 +39,7 @@ function HeaderFooterSelectMenuCatalog({childCatalog, name, setStatus}) {
         }
         else
         {
-            dispatch(brandList({
+            dispatch(listBrand({
                 type: "",
                 name: ""
             }));
@@ -49,12 +49,12 @@ function HeaderFooterSelectMenuCatalog({childCatalog, name, setStatus}) {
             }));
             dispatch(getIdCatalog(e.target.getAttribute("data-id")));
         }
-        dispatch(colorList({
+        dispatch(listColor({
             type: "",
             name: ""
         }));
-        dispatch(typeList(""));
-        dispatch(selectionList(""));
+        dispatch(type(""));
+        dispatch(selection(""));
         setStatus(false);
     }
 
