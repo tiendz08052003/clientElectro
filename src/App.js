@@ -94,7 +94,7 @@ function App() {
               {
                 Layout = EleRoute.layout;
               }
-              if(EleRoute.name === "Home")
+              if(Layout !== Fragment)
               {
                 return (
                   <Route 
@@ -105,7 +105,7 @@ function App() {
                         <Page handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                       </Layout>
                     }
-                  />  
+                  />   
                 )
               }
               else

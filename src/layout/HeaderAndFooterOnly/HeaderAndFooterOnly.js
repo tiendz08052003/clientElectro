@@ -7,7 +7,8 @@ import Path from "../Components/Path";
 
 const cx = classNames.bind(styles);
 
-function HeaderOnly( {children} ) {
+function HeaderAndFooterOnly( {namePage, children} ) {
+    console.log(namePage);
     return ( 
         <div className={cx("container")}>
             <Header/>
@@ -22,4 +23,4 @@ function HeaderOnly( {children} ) {
      );
 }
 
-export default HeaderOnly;
+export default HeaderAndFooterOnly;

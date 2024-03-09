@@ -42,7 +42,6 @@ function DefaultLayout({ onSideBar, handleOnClickFilterOnTabletOrMobile, childre
             window.removeEventListener('resize', handleOnReSize)
         }
     })
-
     return ( 
         <div className={cx("container")}>
             <Header reloadCart={reloadCart}/>

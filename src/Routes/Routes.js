@@ -1,4 +1,4 @@
-import { HeaderAndFooterOnly } from "~/layout";
+import { DefaultLayout, HeaderAndFooterOnly } from "~/layout";
 import Account from "~/pages/Account";
 import Cart from "~/pages/Cart";
 import Home from "~/pages/Home";
@@ -9,8 +9,8 @@ import AccountForget from "~/pages/AccountForget/AccountForget";
 import config from "~/config/config";
 
 const publicRoute = [
-    { path: config.routes.home, component: Home, name: "Home" },
-    { path: config.routes.productDetails, component: ProductDetails, name: "ProductDetails"},
+    { path: config.routes.home, component: Home, layout: DefaultLayout,name: "Home" },
+    { path: config.routes.productDetails, component: ProductDetails, layout: DefaultLayout,name: "ProductDetails"},
     { path: config.routes.cart, component: Cart, layout: HeaderAndFooterOnly, name: "Cart"},
     { path: config.routes.wishlist, component: Wishlist, layout: HeaderAndFooterOnly, name: "Wishlist"},
     { path: config.routes.compare, component: Compare, layout: HeaderAndFooterOnly, name: "Compare"},
