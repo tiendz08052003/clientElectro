@@ -14,7 +14,7 @@ function HeaderAndFooterOnly( {namePage, children} ) {
             <Header/>
             <div className={cx("body")}>
                 <div className={cx("wrapper")}>
-                    <Path name={children.type.name}/>
+                    <Path name={namePage}/>
                     {children}
                 </div>
             </div>
