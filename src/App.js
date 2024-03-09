@@ -96,6 +96,8 @@ function App() {
               }
               if((<Page />).type.name === "Home" || (<Page />).type.name === "o_")
               {
+                
+                console.log((<Page />));
                 console.log((<Page />).type.name);
                 return (
                   <Route 
