@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
+function SideBar({handleOnClickFilterOnTabletOrMobile, namePage}) {
 
     const x = new URLSearchParams(window.location.search);
     const typeHome = x.get("type");
@@ -46,6 +46,7 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
         }
     }
 
+
     return ( 
         <div className={cx("sidebar", "grid__column-2")} onClick={handleOnClickFilterOnTabletOrMobile}>
             <div className={cx("sidebar__wrapper")} onClick={handleOnClickSideBarOnTabletOrMobile}>
@@ -70,7 +71,7 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, typePage}) {
                         </div>
                     </div>
                 )}
-                {(typePage === "Home" || typePage === "o_") && (
+                {(namePage === "Home") && (
                     <div className={cx("sidebar__wrapper__filter")}>
                         <span className={cx("sidebar__wrapper__filter__topic")}>
                             <span>Filters</span>

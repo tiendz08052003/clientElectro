@@ -2,8 +2,6 @@ import classNames from "classnames/bind";
 import styles from "./SideBarSelect.module.scss";
 import SideBarSelectChild from "./SideBarSelectChild";
 import { useEffect, useState } from "react";
-import * as BrandServices from "~/services/BrandServices"
-import * as ColorServices from "~/services/ColorServices"
 import { useSelector } from "react-redux";
 import { getBrand, getColor } from "~/redux/selector";
 
@@ -15,7 +13,6 @@ function SideBarSelect({name}) {
 
     const listColor = useSelector(getColor);
     const listBrand = useSelector(getBrand);
-
 
     useEffect(() => {
         switch(name)
@@ -32,7 +29,7 @@ function SideBarSelect({name}) {
             }
             default: 
         }
-    }, [])  
+    }, [listColor, listBrand])  
 
     const handleClickShowMore = () => {
         setShowMore(!showMore)

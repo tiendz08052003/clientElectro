@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 
-function DefaultLayout({ onSideBar, handleOnClickFilterOnTabletOrMobile, children, reloadCart}) {
+function DefaultLayout({ onSideBar, handleOnClickFilterOnTabletOrMobile, children, reloadCart, namePage}) {
 
     const [pcWidth, setPcWidth] = useState(false);
 
@@ -48,12 +48,12 @@ function DefaultLayout({ onSideBar, handleOnClickFilterOnTabletOrMobile, childre
             <Header reloadCart={reloadCart}/>
             <div className={cx("body")}>
                 <div className={cx("body__path")}>
-                    <Path name={children.type.name}/>
+                    <Path name={namePage}/>
                 </div>  
                 <div className={cx("body__content")}>
                     <div className={cx("wrapper")}>
                         <div className={cx("grid__row")}>
-                            {pcWidth ? <SideBar typePage={children.type.name} /> : onSideBar ? <SideBar typePage={children.type.name} handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile}/> : "" }
+                            {pcWidth ? <SideBar namePage={namePage} /> : onSideBar ? <SideBar namePage={namePage} handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile}/> : "" }
                             {children}
                         </div>
                     </div>

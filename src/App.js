@@ -94,17 +94,14 @@ function App() {
               {
                 Layout = EleRoute.layout;
               }
-              if((<Page />).type.name === "Home" || (<Page />).type.name === "o_")
+              if(EleRoute.name === "Home")
               {
-                
-                console.log((<Page />));
-                console.log((<Page />).type.name);
                 return (
                   <Route 
                     key={index}   
                     path={EleRoute.path} 
                     element={
-                      <Layout onSideBar={onSideBar} reloadCart={reloadCart} handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile} >
+                      <Layout onSideBar={onSideBar} reloadCart={reloadCart} handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile} namePage={EleRoute.name}>
                         <Page handleOnClickFilterOnTabletOrMobile={handleOnClickFilterOnTabletOrMobile} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                       </Layout>
                     }

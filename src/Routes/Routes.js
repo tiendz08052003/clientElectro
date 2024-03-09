@@ -9,13 +9,13 @@ import AccountForget from "~/pages/AccountForget/AccountForget";
 import config from "~/config/config";
 
 const publicRoute = [
-    { path: config.routes.home, component: Home },
-    { path: config.routes.productDetails, component: ProductDetails},
-    { path: config.routes.cart, component: Cart, layout: HeaderAndFooterOnly},
-    { path: config.routes.wishlist, component: Wishlist, layout: HeaderAndFooterOnly},
-    { path: config.routes.compare, component: Compare, layout: HeaderAndFooterOnly},
-    { path: config.routes.account, component: Account, layout: null},
-    { path: config.routes.accountForget, component: AccountForget, layout: null},
+    { path: config.routes.home, component: Home, name: "Home" },
+    { path: config.routes.productDetails, component: ProductDetails, name: "ProductDetails"},
+    { path: config.routes.cart, component: Cart, layout: HeaderAndFooterOnly, name: "Cart"},
+    { path: config.routes.wishlist, component: Wishlist, layout: HeaderAndFooterOnly, name: "Wishlist"},
+    { path: config.routes.compare, component: Compare, layout: HeaderAndFooterOnly, name: "Compare"},
+    { path: config.routes.account, component: Account, layout: null, name: "Account"},
+    { path: config.routes.accountForget, component: AccountForget, layout: null, name: "AccountForget"},
 ]
 
 const privateRoute = [
