@@ -4,6 +4,8 @@ import SideBarSelectChild from "./SideBarSelectChild";
 import { useEffect, useState } from "react";
 import * as BrandServices from "~/services/BrandServices"
 import * as ColorServices from "~/services/ColorServices"
+import { useSelector } from "react-redux";
+import { getBrand, getColor } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
@@ -11,26 +13,21 @@ function SideBarSelect({name}) {
     const [list, setList] = useState([]);
     const [showMore, setShowMore] = useState(false);
 
+    const listColor = useSelector(getColor);
+    const listBrand = useSelector(getBrand);
+
 
     useEffect(() => {
         switch(name)
         {
             case "Brand":
             {
-                const fetchAPI = async () => {
-                    const res = await BrandServices.getBrand();
-                    setList(res);
-                }
-                fetchAPI();
+                setList(listBrand);
                 break;
             }
             case "Color":
             {
-                const fetchAPI = async () => {
-                    const res = await ColorServices.getColor();
-                    setList(res);
-                }
-                fetchAPI();
+                setList(listColor);
                 break;
             }
             default: 
