@@ -256,7 +256,6 @@ export const combineAllCaseSearch = createSelector(getResultSearch, getCondition
             products = resultSearch.filter(result => result.idType === listType[i]._id)
         }
     }
-    
     const list = products.filter(product => {
         let bool = false;
         if(catalog !== "")
