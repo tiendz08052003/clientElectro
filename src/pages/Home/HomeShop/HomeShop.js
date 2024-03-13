@@ -165,16 +165,19 @@ function HomeShop({result, reloadCart, setReloadCart}) {
         let typeProduct;
         if(result.idType === "")
         {
-            const fetchAPI = async () => {
-                listSelection.map(data => {
-                    if(data._id === result.idSelection)
-                    {
-                        typeProduct = data.name;
-                    }
-                })
-                setType(typeProduct);
+            if(listSelection) 
+            {
+                const fetchAPI = async () => {
+                    listSelection.map(data => {
+                        if(data._id === result.idSelection)
+                        {
+                            typeProduct = data.name;
+                        }
+                    })
+                    setType(typeProduct);
+                }
+                fetchAPI();
             }
-            fetchAPI();
         }
         else
         {
@@ -192,7 +195,7 @@ function HomeShop({result, reloadCart, setReloadCart}) {
                 fetchAPI();
             }
         }
-    }, [listType])
+    }, [listType, listSelection])
     
     return ( 
         <a href={"/productDetails/" + result.slug} className={cx("homeShop__link")}>
