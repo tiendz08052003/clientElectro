@@ -93,7 +93,7 @@ function CompareChild({compareChild, setReload, reload, handleOnClickCheckBox, i
                         </div>
                     </td>
                     <td className={cx("compareChild__column5", "compareChild__column")} >
-                        <input type="checkbox" onClick={handleOnClickCheckBox} className={cx("compareChild__column__checkbox")} index={index}/>
+                        <input value={undefined} type="checkbox" onClick={handleOnClickCheckBox} className={cx("compareChild__column__checkbox")} index={index}/>
                     </td>
                 </Fragment>
             )}

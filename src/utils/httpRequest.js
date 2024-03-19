@@ -5,13 +5,13 @@ const httpRequest = axios.create({
     withCredentials: true,
 })
 
-export const get = async (path, options, axiosJWT) => {
+export const get = async (path, data, axiosJWT) => {
     if(axiosJWT === undefined)
     {
-        const res = await httpRequest.get(path, options);
+        const res = await httpRequest.get(path, data);
         return res.data;
     }
-    const res = await axiosJWT.get(path, options);
+    const res = await axiosJWT.get(path, data);
     return res.data;
 }
 
@@ -47,13 +47,13 @@ export const put = async (path, data, options, axiosJWT) => {
     
 }
 
-export const deleteSingle = async (path, options, axiosJWT) => {
+export const deleteSingle = async (path, data, axiosJWT) => {
     if(axiosJWT === undefined)
     {
-        const res = await httpRequest.delete(path, options);
+        const res = await httpRequest.delete(path, data);
         return res.data;
     }
-    const res = await axiosJWT.delete(path, options);
+    const res = await axiosJWT.delete(path, data);
     return res.data;
 }
 

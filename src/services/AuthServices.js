@@ -1,5 +1,4 @@
 import * as httpRequest from '~/utils/httpRequest';
-import axios from 'axios';
 
 
 export const getAuth = async () => {
@@ -34,9 +33,9 @@ export const loginAuth = async (data) => {
 
 export const logoutAuth = async (accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.post("auth/logout", axios.defaults.withCredentials = true
+        const res = await httpRequest.post("auth/logout", {}
         , {
-            headers: {token: `Bearer ${accessToken}`}, 
+            headers: {token: `Bearer ${accessToken}`}
         }, axiosJWT);
         return res;
     }
@@ -47,10 +46,9 @@ export const logoutAuth = async (accessToken, axiosJWT) => {
 
 export const refreshToken = async () => {
     try {
-        const res = await httpRequest.post("auth/refresh", axios.defaults.withCredentials = true)
+        const res = await httpRequest.post("auth/refresh")
         return res;
     }
-    
     catch(err) {
         console.log(err); 
     }
@@ -68,7 +66,53 @@ export const getEmail = async (email) => {
 
 export const recoverPassword = async (data) => {
     try {
-        const res = await httpRequest.patch(`auth/accountForget/recover?email=${data.email}&hashEmail=${data.hashEmail}`, {password: data.password})
+        const res = await httpRequest.patch(`auth/accountForget/recover?email=${data.email}&hashEmail=${data.hashEmail}`, {
+            password: data.password
+        })
+        return res;
+    }
+    catch(err) {
+        console.log(err); 
+    }
+}
+
+export const changePassword = async (data, accessToken, axiosJWT) => {
+    try {
+        const res = await httpRequest.patch(`/auth/account/submitChangePassword?id=${data.id}`, {
+            password: data.password
+        }, {
+            headers: {token: `Bearer ${accessToken}`}
+        }, axiosJWT)
+        return res;
+    }
+    catch(err) {
+        console.log(err); 
+    }
+}
+
+export const verifyPasswordAccount = async (data, accessToken, axiosJWT) => {
+    try {
+        const res = await httpRequest.get(`/auth/account/checkPassword/${data.id}`, {
+            headers: {
+                token: `Bearer ${accessToken}`,
+                password: data.password
+            }
+        }, axiosJWT)
+        return res;
+    }
+    catch(err) {
+        console.log(err); 
+    }
+}
+
+export const deleteAccount = async (data, accessToken, axiosJWT) => {
+    try {
+        const res = await httpRequest.deleteSingle(`/auth/delete/${data.id}`, {
+            headers: {
+                token: `Bearer ${accessToken}`,
+                admin: data.admin
+            }
+        }, axiosJWT)
         return res;
     }
     catch(err) {

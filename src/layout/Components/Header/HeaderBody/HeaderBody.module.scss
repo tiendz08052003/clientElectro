@@ -323,52 +323,55 @@
                 
             }
             
-            &__acc__hover {
-                @include selec-hover();
-                padding: 0;
-                top: 100%;
-                width: calc(100% + 150px);
-                flex-direction: column;
+            &__acc {
+                &__hover {
+                    @include selec-hover();
+                    padding: 0;
+                    top: 100%;
+                    width: calc(100% + 150px);
+                    flex-direction: column;
+                    cursor: pointer;
 
-                &__login {
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                    
-                }
-
-                &__register {
-                    border-top: 1px solid #ddd;
-                    border-bottom-left-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                }
-
-                &__userName {
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                }
-
-                &__info {
-                    border-top: 1px solid #ddd;
-                }
-
-                &__logout {
-                    border-top: 1px solid #ddd;
-                    border-bottom-left-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    color: var(--red-color);
-                }
-
-                &__login,
-                &__register,
-                &__info,
-                &__userName,
-                &__logout {
-                    width: 100%;
-                    text-align: center;
-                    padding: 5px;
-                    z-index: 9999;
-                    &:hover {
-                        background-color: var(--primary-color);
+                    &__login {
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        
+                    }
+    
+                    &__register {
+                        border-top: 1px solid #ddd;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                    }
+    
+                    &__userName {
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                    }
+    
+                    &__info {
+                        border-top: 1px solid #ddd;
+                    }
+    
+                    &__logout {
+                        border-top: 1px solid #ddd;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        color: var(--red-color);
+                    }
+    
+                    &__login,
+                    &__register,
+                    &__info,
+                    &__userName,
+                    &__logout {
+                        width: 100%;
+                        text-align: center;
+                        padding: 5px;
+                        z-index: 9999;
+                        &:hover {
+                            background-color: var(--primary-color);
+                        }
                     }
                 }
             }

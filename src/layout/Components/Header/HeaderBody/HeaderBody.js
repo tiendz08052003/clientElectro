@@ -329,7 +329,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                             {user.userName}
                                         </div>
                                         <div className={cx("header__middle__child__selec__acc__hover__info")}>
-                                            Thông tin cá nhân
+                                            <a href={`/account?type=detailAccount`} style={{"textDecoration": "none", "color": "currentcolor"}}>
+                                                Thông tin cá nhân
+                                            </a>
                                         </div>
                                         <div className={cx("header__middle__child__selec__acc__hover__logout")} onClick={handleOnClickLogout}>
                                             logout
