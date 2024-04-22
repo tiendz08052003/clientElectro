@@ -1,12 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import * as ProductCatalogServices from "~/services/ProductCatalogServices";
 
 const headerBodySlice = createSlice({
     name: "headerFooter",
     initialState: {
-        productCatalog: [],
-        catalog: "",
+        idDetailsCatalog: "",
         price: {
             min: 0,
             max: 0
@@ -14,11 +12,8 @@ const headerBodySlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(getProductCatalog.fulfilled, (state, action) => {
-                state.productCatalog = action.payload;
-            })
-            .addCase(getIdCatalog.fulfilled, (state, action) => {
-                state.catalog = action.payload;
+            .addCase(getIdDetailsCatalog.fulfilled, (state, action) => {
+                state.idDetailsCatalog = action.payload;
             })
             .addCase(getPriceCatalog.fulfilled, (state, action) => {
                 state.price = action.payload;
@@ -26,12 +21,7 @@ const headerBodySlice = createSlice({
     }
 })
 
-export const getProductCatalog = createAsyncThunk("header/getProductCatalog", async () => {
-    const data = await ProductCatalogServices.getProductCatalog();
-    return data;
-})
-
-export const getIdCatalog = createAsyncThunk("header/getIdCatalog", (id) => {
+export const getIdDetailsCatalog = createAsyncThunk("header/getIdDetailsCatalog", (id) => {
     return id;
 })
 

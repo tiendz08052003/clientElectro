@@ -6,10 +6,8 @@ import { faAngleLeft, faAngleRight, faArrowRight, faBars, faFilter, faList } fro
 import HomeShop from "./HomeShop";
 import { Fragment, useEffect, useRef, useState, memo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { combineAllCaseSearch, combineAllCaseShop, getQualities } from "~/redux/selector";
+import { combineAllCaseSearch, combineAllCaseShop, getProduct, getQualities } from "~/redux/selector";
 import { getNumberPage, getQuality, getTypeSort } from "./homeSlice";
-
-import * as ProductServices from '~/services/ProductServices';
 
 const cx = classNames.bind(styles);
 
@@ -31,8 +29,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
     const [circleSecond, setCircleSecond] = useState({});
     const [circleThird, setCircleThird] = useState({});
     const [listNumberPage, setListNumberPage] = useState([]);
-
-    const [results, setResults] = useState([]);
+    const listProducts = useSelector(getProduct);
 
     let styleScreen;
     let cartUl;
@@ -314,7 +311,6 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
             }
             if(Math.round(sum.current / -20) !== 0 && Math.round(sum.current / -20) <= activeNextBack.current / 2)
             {
-                console.log(1);
                 setCircleFirst( {
                     flex: "1",
                     backgroundColor: "#ddd",
@@ -585,15 +581,6 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
             transform: `translateX(${sum.current}%) translateX(0px)`
         })
     }  
-    
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const results = await ProductServices.shop();
-            setResults(results)
-        }
-        fetchAPI();
-    }, [])
-
     const handleOnChangeSort = (e) => {
         dispatch(getTypeSort(e.target.value))
     }
@@ -644,7 +631,6 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
             dispatch(getNumberPage(Number(e.target.value) - 1))
         }
     }
-
     return ( 
         <div className={cx("home", "grid__column-10", "grid__column-12")}>
             {typeHome === null && (
@@ -658,8 +644,8 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                     </div>
                     <div className={cx("home__child__product--wrapper")}>
                         <ul style={productDetails} className={cx("home__child__product", "home__child__product--handle", "grid__row--noWrap")}>
-                        {results && results.map((result, index) => (
-                            result.recommend === "true" && <HomeShop key={index} result={result} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
+                        {listProducts && listProducts.map((product, index) => (
+                            product.recommend === "true" && <HomeShop key={index} product={product} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                         ))}
                         </ul>
                     </div>
@@ -721,12 +707,12 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                 </div>
                 <ul className={cx("home__shop__product", "grid__row")}>
                     {typeHome === null ? (
-                        products.listProduct?.map((result, index) => (
-                            <HomeShop key={index} result={result} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
+                        products.listProduct?.map((product, index) => (
+                            <HomeShop key={index} product={product} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                         ))
                     ) : (
-                        searchProducts.listProduct?.map((result, index) => (
-                            <HomeShop key={index} result={result} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
+                        searchProducts.listProduct?.map((product, index) => (
+                            <HomeShop key={index} product={product} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                         ))
                     )}
                 </ul>

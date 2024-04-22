@@ -1,4 +1,8 @@
 .sidebarCateChild {
     line-height: 2.2rem;
     padding: 5px 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
 }

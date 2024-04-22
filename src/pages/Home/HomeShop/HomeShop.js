@@ -8,7 +8,7 @@ import * as CartServices  from "~/services/CartServices";
 import * as WishlistServices  from "~/services/WishlistServices";
 import * as CompareServices  from "~/services/CompareServices";
 import { useSelector } from "react-redux";
-import { getSelection, getType, getUser } from "~/redux/selector";
+import { getDetailsType, getType, getUser } from "~/redux/selector";
 import { useDispatch } from "react-redux";
 import { loginAccount } from "~/pages/Account/accountSlice";
 import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
@@ -16,20 +16,20 @@ import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
 
 const cx = classNames.bind(styles);
 
-function HomeShop({result, reloadCart, setReloadCart}) {
+function HomeShop({product, reloadCart, setReloadCart}) {
     const dispatch = useDispatch();
     
     const user = useSelector(getUser);
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
-    const [type, setType] = useState("");
+    const [nameType, setNameType] = useState("");
     const [boolColorHeart, setBoolColorHeart] = useState(false);
     const [boolColorCompare, setBoolColorCompare] = useState(false);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
     const [bool, setBool] = useState(false);
-    const listSelection = useSelector(getSelection);
     const listType = useSelector(getType);
+    const listDetailsType = useSelector(getDetailsType);
 
     const styleHeart = {
         color: boolColorHeart ? "var(--red-color)" : "black",
@@ -126,7 +126,7 @@ function HomeShop({result, reloadCart, setReloadCart}) {
                 if(res1.length > 0)
                 {
                     res1.map((data, index) => {
-                        if(data.idProduct.includes(id))
+                        if(data.idProduct?.includes(id))
                         {
                             flag = true;
                             const fetchAPI1 = async () => {
@@ -162,74 +162,43 @@ function HomeShop({result, reloadCart, setReloadCart}) {
     }
 
     useEffect(() => {
-        let typeProduct;
-        if(result.idType === "")
-        {
-            if(listSelection) 
-            {
-                const fetchAPI = async () => {
-                    listSelection.map(data => {
-                        if(data._id === result.idSelection)
-                        {
-                            typeProduct = data.name;
-                        }
-                    })
-                    setType(typeProduct);
-                }
-                fetchAPI();
-            }
-        }
-        else
-        {
-            if(listType)
-            {
-                const fetchAPI = async () => {
-                    listType.map(data => {
-                        if(data._id === result.idType)
-                        {
-                            typeProduct = data.name;
-                        }
-                    })
-                    setType(typeProduct);
-                }
-                fetchAPI();
-            }
-        }
-    }, [listType, listSelection])
-    
+        const detailsType = listDetailsType?.find(x => x._id === product?.idDetailsType)
+        const typeName = listType?.find(x => x._id === detailsType?.idType);
+        setNameType(typeName?.name);
+    }, [listType, listDetailsType])
     return ( 
-        <a href={"/productDetails/" + result.slug} className={cx("homeShop__link")}>
+        <a href={"/productDetails/" + product?.slug} className={cx("homeShop__link")}>
             <li className={cx("homeShop", "homeShop--handle", "grid__column-10-2", "grid__column-12-3", "grid__column-12-4", "grid__column-12-6", "grid__column-12-12")}>
                 <div className={cx("homeShop__child")}>
                     <div className={cx("homeShop__child__type")}>
-                        {type}
+                        {nameType}
                     </div>
                         <div className={cx("homeShop__child__name")}>
-                        {result.name}
+                        {product?.name}
                     </div>
-                    <Image alt="Ảnh" src={result.image} className={cx("homeShop__child__img")}/>
+                    <Image alt="Ảnh" src={product?.image} className={cx("homeShop__child__img")}/>
                     <div className={cx("homeShop__child__price")}>
                         <div className={cx("homeShop__child__price__cost")}>
-                            {result.discount ? (
+                            {product?.discount ? (
                                 <Fragment>
-                                    <div className={cx("homeShop__child__price__cost--sale")}>{result.discount}</div>
-                                    <div className={cx("homeShop__child__price__cost--old")}>{result.price}</div>
+                                    <div className={cx("homeShop__child__price__cost--sale")}>{product?.discount}</div>
+                                    <div className={cx("homeShop__child__price__cost--old")}>{product?.price}</div>
                                 </Fragment>
                                 ) : (
-                                    <div className={cx("homeShop__child__price__cost--default")}>{result.price}</div>
+                                    <div className={cx("homeShop__child__price__cost--default")}>{product?.price}</div>
                             )}
                         </div>
-                        <div className={cx("homeShop__child__price__icon", "homeShop__child__price__icon--handle")} data-id={result._id} onClick={handleOnClickAddCart}>
+                        <div className={cx("homeShop__child__price__icon", "homeShop__child__price__icon--handle")} data-id={product?._id} onClick={handleOnClickAddCart}>
                             <FontAwesomeIcon icon={faCartArrowDown} className={cx("homeShop__child__price__icon--child")} />
                         </div>
                     </div>
                     <div className={cx("homeShop__child__interact")}>
                         <div className={cx("homeShop__child__interact__wishlist")}>
-                            <FontAwesomeIcon style={styleHeart} icon={faHeart} className={cx("homeShop__child__interact__wishlist--icon", "homeShop__child__interact__wishlist--icon--handle")}  onClick={handleOnClickHeart} data-id={result._id}/>
+                            <FontAwesomeIcon style={styleHeart} icon={faHeart} className={cx("homeShop__child__interact__wishlist--icon", "homeShop__child__interact__wishlist--icon--handle")}  onClick={handleOnClickHeart} data-id={product?._id}/>
                             <span className={cx("homeShop__child__interact__wishlist--content")}>wishlist</span>
                         </div>
                         <div className={cx("homeShop__child__interact__compare")}>
-                            <FontAwesomeIcon style={styleCompare} icon={faRepeat} className={cx("homeShop__child__interact__compare--icon", "homeShop__child__interact__compare--icon--handle")} onClick={handleOnClickCompare} data-id={result._id}/>
+                            <FontAwesomeIcon style={styleCompare} icon={faRepeat} className={cx("homeShop__child__interact__compare--icon", "homeShop__child__interact__compare--icon--handle")} onClick={handleOnClickCompare} data-id={product?._id}/>
                             <span className={cx("homeShop__child__interact__compare--content")}>compare</span>
                         </div>
                     </div>  

@@ -3,12 +3,11 @@ import styles from "./SideBar.module.scss";
 import SideBarCate from "./SideBarCate";
 import SideBarSelect from "./SideBarSelect/SideBarSelect";
 import { useDispatch, useSelector } from "react-redux";
-import { selection, type} from "./sideBarSlice";
-import { sideBarSelection, sideBarType } from "~/redux/selector";
-import { getSelection } from "~/redux/selector";
+import { detailsType, type} from "./sideBarSlice";
 import { NavLink } from "react-router-dom";
 import config from "~/config/config";
 import { useNavigate } from "react-router-dom";
+import {  getSideBarDetailsType, getSideBarType, getType,  } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
@@ -20,29 +19,30 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, namePage}) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
-    const sideBarSelect = useSelector(sideBarSelection);
-    const sideBarT = useSelector(sideBarType);
-    const listSelection = useSelector(getSelection);
+    const getSideBarTypeNow = useSelector(getSideBarType);
+    const getSideBarDetailsTypeNow = useSelector(getSideBarDetailsType);
+
+    const listType = useSelector(getType);
 
     const handleOnClickSideBarOnTabletOrMobile = (e) => {
         e.stopPropagation();
     }
-    const handleOnclickCaseType = (e) => {
-        const id  = e.target.getAttribute("data-id");
-        dispatch(type(id));
-        dispatch(selection(""));
+    const handleOnclickCaseDetailsType = (e) => {
+        const id = e.target.getAttribute("data-id");
+        dispatch(type(""));
+        dispatch(detailsType(id));
         navigate("/");
     }
 
-    const handleOnclickCaseSelection = (e) => {
-        const id  = e.target.getAttribute("data-id");
+    const handleOnclickCaseType = (e) => {
+        const id = e.target.getAttribute("data-id");
         if(id === null) {
+            dispatch(detailsType(""));
             dispatch(type(""));
-            dispatch(selection(""));
         }
         else {
-            dispatch(type(""));
-            dispatch(selection(id));
+            dispatch(detailsType(""));
+            dispatch(type(id));
         }
     }
 
@@ -59,13 +59,13 @@ function SideBar({handleOnClickFilterOnTabletOrMobile, namePage}) {
                             <ul className={cx("sidebar__wrapper__child__body__list")}>
                                 <li className={cx("sidebar__wrapper__child__body__list__select")}>
                                     <NavLink to={config.routes.home} className={cx("link-href")}>
-                                        <div className={cx("sidebar__wrapper__child__body__list__select__parent")} data-id="" onClick={handleOnclickCaseSelection} style={{fontWeight: sideBarSelect==="" && sideBarT === "" && "1000"}}>
+                                        <div className={cx("sidebar__wrapper__child__body__list__select__parent")} data-id="" onClick={handleOnclickCaseType} style={{fontWeight: getSideBarTypeNow === "" &&  getSideBarDetailsTypeNow === "" && "1000"}}>
                                             All Categories
                                         </div>
                                     </NavLink>
                                 </li>
-                                {listSelection.map((selection, index) => (
-                                    <SideBarCate key={index} selection={selection} handleOnclickCaseSelection={handleOnclickCaseSelection} handleOnclickCaseType={handleOnclickCaseType} sideBarSelect={sideBarSelect} sideBarT={sideBarT}/>
+                                {listType.map((type, index) => (
+                                    <SideBarCate key={index} handleOnclickCaseType={handleOnclickCaseType} handleOnclickCaseDetailsType={handleOnclickCaseDetailsType} sideBarType={type} getSideBarTypeNow = {getSideBarTypeNow} getSideBarDetailsTypeNow = {getSideBarDetailsTypeNow}/>
                                 ))}
                             </ul>
                         </div>

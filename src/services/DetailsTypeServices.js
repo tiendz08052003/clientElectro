@@ -1,8 +1,8 @@
 import * as httpRequest from '../utils/httpRequest'
 
-export const getSelection = async () => {
+export const getDetailsType = async () => {
     try {
-        const res = await httpRequest.get("selection")
+        const res = await httpRequest.get("detailsType")
         return res;
     }
     catch(err) {

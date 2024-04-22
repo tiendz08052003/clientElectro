@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoute } from "./Routes";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getProduct, getBrand, getColor, getType, getSelection, getCatalog, getMenu } from "./pages/Home/homeSlice";
-import { getProductCatalog } from "./layout/Components/Header/HeaderFooter/headerFooterSlice";
+import { getProduct, getBrand, getColor, getType, getCatalog, getCombineDetailsCatalog_CombineType_Catalog, getCombineProduct_CombineDetailsCatalog_CombineType_Catalog,getCombineType_Catalog, getDetailsType, getDetailsCatalog } from "./pages/Home/homeSlice";
 
 function App() {
   const [pcWidth, setPcWidth] = useState(true);
@@ -26,15 +25,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    dispatch(getProductCatalog())
-  }, [])
-
-  useEffect(() => {
     dispatch(getType())
-  }, [])
-
-  useEffect(() => {
-    dispatch(getSelection())
   }, [])
 
   useEffect(() => {
@@ -42,7 +33,23 @@ function App() {
   }, [])
 
   useEffect(() => {
-    dispatch(getMenu())
+    dispatch(getCombineType_Catalog())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getCombineDetailsCatalog_CombineType_Catalog())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getCombineProduct_CombineDetailsCatalog_CombineType_Catalog())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getDetailsType())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getDetailsCatalog())
   }, [])
 
   useEffect(() => {

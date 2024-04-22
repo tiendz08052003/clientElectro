@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronCircleDown, faMagnifyingGlass, faMessage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { fa0, faChevronCircleDown, faMagnifyingGlass, faMessage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import { IconCart, IconCollapseRightChat, IconCollapseLeftChat, IconFace, IconHideChat, IconImage, IconPrint, IconVideo } from "~/Components/Icons";
 import Image from "~/Components/Image";
@@ -9,10 +9,11 @@ import { getUser } from "~/redux/selector";
 import { useSelector } from "react-redux";
 import { socket } from "~/socket";
 
-import * as AuthServices from '~/services/AuthServices'; 
+import * as AccountServices from '~/services/AccountServices'; 
 import * as ChatServices from "~/services/ChatServices";
 import ChatGuest from "./ChatGuest";
 import Loading from "~/Components/Loading";
+import Message from "./Message/Message";
 
 const cx = classNames.bind(styles);
 
@@ -20,11 +21,11 @@ function Chat() {
     const [view, setView] = useState(false);
     const [styleFil, setStyleFil] = useState(false);
     const [idRoom, setIdRoom] = useState("");
-    const [idUserChat, setIdUserChat] = useState("");
+    const [idGuest, setIdGuest] = useState("");
     const [boolChatting, setBoolChatting] = useState(false);
     const [listUser, setListUser] = useState([]);
     const [users, setUsers] = useState([]);
-    const [nameUser, setNameUser] = useState("");
+    const [nameGuest, setNameGuest] = useState("");
     const [styleSend, setStyleSend] = useState(false);
     const [messageInput, setMessageInput] = useState("");
     const [messageSummary, setMessageSummary] = useState("");
@@ -59,15 +60,16 @@ function Chat() {
     const handleClickButtonCloseChat = () => {
         setView(!view);
         setFresh(false)
-        if(nameUser === "")
+        if(nameGuest === "")
         {
-            socket.emit("client-send-sever-disconnect")
+            console.log(1);
+            socket.emit("client-send-server-disconnect")
         }
     }
 
     useEffect(() => {
         const fetchAPI = async () => {
-            const results = await AuthServices.getAuth();
+            const results = await AccountServices.getAccount();
             setUsers(results);
         }
         fetchAPI();
@@ -91,68 +93,93 @@ function Chat() {
     }
 
     const handleClickChatClient = () => {
-        socket.emit("client-to-sever-joinRoom", idRoom);
-        setIdUserChat(idRoom[0]);
+        socket.emit("client-to-server-joinRoom", idRoom);
+        setIdGuest(idRoom[0]);
         setBoolChatting(true);
         setMessageSummary("");
     }
 
     useEffect(() => {
-        socket.on("sever-send-client-reply", (obj) => {
+        socket.on("server-send-client-reply", (obj) => {
             console.log("Có người kết nối vào phòng: ", obj.id)
             const fetchAPI = async () => {
                 const res = await ChatServices.getChat()
-                const user = res.filter(x => x.idAuth === User._id)[0]
+                const user = res.find(x => x.idAuth === User._id)
                 await ChatServices.updateChat(user._id, {
-                    idPhong: obj.idPhong,
-                    idKhachChat: user.admin ? obj.idPhong : obj.idAdmin,
-                    queue: obj.admin ? true : false,
+                    idRoom: obj.idRoom,
+                    queue: false,
                 })
-                const results = await AuthServices.getAuth();
+                const results = await AccountServices.getAccount();
                 results.map(ur => {
-                    if((User.admin &&  obj.idPhong === ur._id) || (!User.admin && obj.idAdmin === ur._id))
+                    if((User.admin &&  obj.idRoom === ur._id) || (!User.admin && obj.idAdmin === ur._id))
                     {
-                        setNameUser(ur.userName)
+                        setNameGuest(ur.name)
                     }
                 })
             }
             fetchAPI();
         })
 
-        socket.on("sever-send-client-dsUserName", (array) => {
+        socket.on("server-send-client-dsUserName", (array) => {
             setListUser(array)
         })
 
-        socket.on("sever-send-client-reload", (array) => {
+        socket.on("server-send-client-reload", (array) => {
             console.log("Có người đăng xuất khỏi phòng")
             setListUser(array)
         })
 
-        socket.on("sever-send-client-message", (data) => {
+        socket.on("server-send-client-message", (data) => {
             setMessageSummary(data.messageInput)
-            const x = refMainMessage.current
+            const x = refMainMessage.current;
             if(data.User._id === User._id)
-                x.innerHTML += `<div class="Chat_chat__main__bottom__content__main__div__Qw0+P" style="justify-content: right;"><span class="Chat_chat__main__bottom__content__main__div__content__OadEh" style="background-color: rgb(0, 132, 255);">${data.messageInput}</span></div>`
+                x.insertAdjacentHTML("beforeend", `
+                    <div style="display: flex;
+                        justify-content: end;
+                        padding: 2px 10px;
+                        word-wrap: break-word;">
+                        <span style="
+                            background-color: #0084ff;
+                            max-width: 60%;
+                            word-wrap: break-word;
+                            padding: 10px 15px;
+                            border-radius: 15px;
+                            overflow: hidden;"
+                        >${data.messageInput}</span>
+                    </div>
+                `);
             else
-                x.innerHTML += `<div class="Chat_chat__main__bottom__content__main__div__Qw0+P"><span class="Chat_chat__main__bottom__content__main__div__content__OadEh">${data.messageInput}</span></div>`
+                x.insertAdjacentHTML("beforeend", `
+                    <div style="display: flex;
+                        padding: 2px 10px;
+                        word-wrap: break-word;">
+                        <span style="
+                            max-width: 60%;
+                            word-wrap: break-word;
+                            background-color: #ddd;
+                            padding: 10px 15px;
+                            border-radius: 15px;
+                            overflow: hidden;"
+                        >${data.messageInput}</span>
+                    </div>
+                `);
+                    
         })
 
-        socket.on("sever-send-client-finishChat", () => {
+        socket.on("server-send-client-finishChat", () => {
             const fetchAPI = async () => {
                 const res = await ChatServices.getChat()
-                const user = res.filter(x => x.idAuth === User._id)[0]
-                if(User.admin)
-                    socket.emit("sever-send-client-setIdPhong")
+                const user = res.find(x => x.idAuth === User._id)
                 await ChatServices.updateChat(user._id, {
-                    idPhong: User._id,
-                    idKhachChat: "",
+                    idRoom: user.idAuth,
                     message: [],
-                    queue: User.admin? false : true,
                 })
+                if(User.admin)
+                    socket.emit("client-send-server-setIdRoom")
             }
             fetchAPI();
-            setNameUser("")
-            setIdUserChat("")
+            setNameGuest("")
+            setIdGuest("")
             const x = refMainMessage.current;
             if(x)
             {
@@ -161,58 +188,56 @@ function Chat() {
             console.log("Đã kết thúc cuộc trò chuyện!")
         })
 
-        socket.on("sever-send-client-ConnectSuccess", (id) => {
-            console.log("Chưa kết nối: ", id)
+        socket.on("server-send-client-connectSuccess", (id) => {
+            console.log("Kết nối thành công: ", id)
         })
 
-        socket.on("sever-send-client-Connected", (id) => {
+        socket.on("server-send-client-connected", (id) => {
             console.log("Đã kết nối: ", id)
         })
 
-        socket.on("sever-send-client-loadAgain", () => {
-            if(nameUser === "")
-            {
-                const fetchAPI = async () => {
-                    const res = await ChatServices.getChat()                 
-                    const user = res.filter(x => x.idAuth === User._id)[0]
-                    const results = await AuthServices.getAuth();
-                    const guest = results.filter(x => x._id === user.idKhachChat)[0]
-                    setNameUser(guest.userName)
-                    setIdUserChat(user.idKhachChat)
-                    setListMessageChat(user.message)
-                }
-                fetchAPI();
+        socket.on("server-send-client-loadAgain", () => {
+            const fetchAPI = async () => {
+                const res = await ChatServices.getChat()                 
+                const results = await AccountServices.getAccount();
+                const user = res.find(x => x.idAuth === User._id)
+                const guestChat = res.find(x => (x.idRoom === user.idRoom && user.idAuth !== x.idAuth));
+                const guest = results.find(x => x._id === guestChat.idAuth)
+                setNameGuest(guest.name)
+                setIdGuest(guest._id)
+                setListMessageChat(guestChat.message)
             }
+            fetchAPI();
         })
 
-        socket.on("sever-send-client-disConnect", () => {
-            setNameUser("")
-            setIdUserChat("")
+        socket.on("server-send-client-disConnect", () => {
+            setNameGuest("")
+            setIdGuest("")
             setListMessageChat([])
         })
 
         return () => {
-          socket.off("sever-send-client-reply");
-          socket.off("sever-send-client-dsUserName");
-          socket.off("sever-send-client-ConnectSuccess");
-          socket.off("sever-send-client-Connected");
-          socket.off("sever-send-client-reload");
-          socket.off("sever-send-client-finishChat");
-          socket.off("sever-send-client-message");
-          socket.off("sever-send-client-disConnect");
+          socket.off("server-send-client-reply");
+          socket.off("server-send-client-dsUserName");
+          socket.off("server-send-client-connectSuccess");
+          socket.off("server-send-client-connected");
+          socket.off("server-send-client-reload");
+          socket.off("server-send-client-finishChat");
+          socket.off("server-send-client-message");
+          socket.off("server-send-client-disConnect");
         };
     }, []);
     
     const handleOnInputText = (e) => {
         setMessageInput(e.target.value)
-        if(e.target.value.length !== 0 && nameUser !== "")
+        if(e.target.value.length !== 0 && nameGuest !== "")
             setStyleSend(true);
         else
             setStyleSend(false);
     }
 
     const handleOnClickSend = () => {
-        socket.emit("client-to-sever-message", {messageInput, User})
+        socket.emit("client-to-server-message", {messageInput, User})
         setMessageInput("");
         setStyleSend(false);
         ref.current.focus();
@@ -221,14 +246,16 @@ function Chat() {
     const handleOnClickChatting = () => {
         setBoolChatting(true)
         users.map((ur) => {
-            if(idUserChat === ur._id){
-                setNameUser(ur.userName)
+            if(idGuest === ur._id){
+                setNameGuest(ur.name)
             }
         })
     }
 
     const handleOnClickFinishChat = () => {
-        socket.emit("client-to-sever-finnishChat", User.admin? idUserChat : User._id)
+        const id = User._id;
+        // send to sever id guest
+        socket.emit("client-to-server-finnishChat", User.admin? idGuest : id)
     }
 
     const handleClickOption = (e) => {
@@ -239,7 +266,7 @@ function Chat() {
         setValueInput(e.target.value)
         setListUser(listUser.filter(x => {
             let k = users.filter(user => user._id === x)
-            let h = k.map(x => x.userName)[0]
+            let h = k.map(x => x.name)[0]
             let y = h.toLowerCase();
             let z = e.target.value.toLowerCase();
             if(y.includes(z))
@@ -263,7 +290,7 @@ function Chat() {
                         {
                             collapse && (
                                 <span className={cx("chat__main__top__title__name")}>
-                                    {User && User.userName}
+                                    {User && User.name}
                                 </span>
                             )
                         }
@@ -311,16 +338,16 @@ function Chat() {
                                             </select>
                                         </div>
                                     </div>
-                                    {idUserChat && (showSidebar == 1 || showSidebar == 2) && (
+                                    {idGuest && (showSidebar == 1 || showSidebar == 2) && (
                                         users.map((ur) => (
-                                            idUserChat === ur._id && ur.admin === false && (
+                                            idGuest === ur._id && ur.admin === false && (
                                                 <div className={cx("chat__main__bottom__account__details")} key={ur._id} onClick={handleOnClickChatting}>
                                                     <div className={cx("chat__main__bottom__account__details__avatar")}>
                                                         <Image src="https://cf.shopee.vn/file/792b99e3c472e88995b2e55d341f670e_tn" className={cx("chat__main__bottom__account__details__avatar__details")}/>
                                                     </div>
                                                     <div className={cx("chat__main__bottom__account__details__content")}>
                                                         <div className={cx("chat__main__bottom__account__details__content__name")}>
-                                                            {ur.userName}
+                                                            {ur.name}
                                                         </div>
                                                         <div className={cx("chat__main__bottom__account__details__content__summary")}>
                                                             {messageSummary}
@@ -339,7 +366,7 @@ function Chat() {
                                                         listUser.map((id) => (
                                                             users.map((ur) => (
                                                                 id === ur._id && ur.admin === false && (
-                                                                    <ChatGuest key={id} User={User} ur={ur} setNameUser={setNameUser} setBoolChatting={setBoolChatting} setIdRoom={setIdRoom}/>
+                                                                    <ChatGuest key={id} User={User} ur={ur} setNameGuest={setNameGuest} setBoolChatting={setBoolChatting} setIdRoom={setIdRoom}/>
                                                                 )
                                                             ))
                                                         ))
@@ -351,10 +378,10 @@ function Chat() {
                                 </div>
                             )}
                             {collapse && (
-                                nameUser !== "" || (User && User.admin === false) ? (
+                                nameGuest !== "" || (User && User.admin === false) ? (
                                     <div className={cx("chat__main__bottom__content")}>
                                         <div className={cx("chat__main__bottom__content__option")}>
-                                            {nameUser === "" ? (
+                                            {nameGuest === "" ? (
                                                 <>
                                                     <Loading />
                                                     <span className={cx("chat__main__bottom__content__option__topic")}>
@@ -364,43 +391,33 @@ function Chat() {
                                             ) : (
                                                 <>
                                                     <div className={cx("chat__main__bottom__content__option__name")}>
-                                                        {nameUser}
+                                                        {nameGuest}
                                                     </div>
                                                     <FontAwesomeIcon icon={faChevronCircleDown}/>
                                                     {boolChatting && (<div className={cx("chat__main__bottom__content__option__finish")} onClick={handleOnClickFinishChat}>Kết thúc</div>)}
                                                 </>
                                             ) }
                                         </div>
-                                        <div className={cx("chat__main__bottom__content__main")} >
-                                            <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}}>
-                                            {
-                                                listMessageChat.length !== 0 && (
-                                                    listMessageChat.map((x, index) => (
-                                                        x.admin ? (
-                                                            User.admin ? (
-                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
-                                                                    <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.admin}</span>
-                                                                </div>
-                                                            ) : (
-                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")}>
-                                                                    <span className={cx("chat__main__bottom__content__main__div__content")}>{x.admin}</span>
-                                                                </div>
-                                                            )
+                                        <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}} className={cx("chat__main__bottom__content__main")} >
+                                        {
+                                            listMessageChat.length !== 0 && (
+                                                listMessageChat.map((x, index) => (
+                                                    x.admin ? (
+                                                        User.admin ? (
+                                                            <Message key={index} message={x.admin} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
-                                                            !User.admin ? (
-                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")} style={{"justifyContent": "right"}}>
-                                                                    <span className={cx("chat__main__bottom__content__main__div__content")} style={{"backgroundColor": "rgb(0, 132, 255)"}}>{x.user}</span>
-                                                                </div>
-                                                            ) : (
-                                                                <div key={index} className={cx("chat__main__bottom__content__main__div")}>
-                                                                    <span className={cx("chat__main__bottom__content__main__div__content")}>{x.user}</span>
-                                                                </div>
-                                                            )
+                                                            <Message key={index} message={x.admin} style={{"justifyContent": "left"}} right={false}/>
                                                         )
-                                                    ))
-                                                ) 
-                                            }
-                                            </div>
+                                                    ) : (
+                                                        !User.admin ? (
+                                                            <Message key={index} message={x.user} style={{"justifyContent": "right"}} right={true}/>
+                                                        ) : (
+                                                            <Message key={index} message={x.user} style={{"justifyContent": "left"}} right={false}/>
+                                                        )
+                                                    )
+                                                ))
+                                            ) 
+                                        }
                                         </div>
                                         {
                                             boolChatting === true  || User.admin === false ? (

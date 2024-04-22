@@ -1,10 +1,10 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import * as AuthServices  from "~/services/AuthServices";
+import * as AuthServices  from "~/services/AccountServices";
 
 export const CreateAxios = (user, dispatch, stateSuccess) => {
     const newInstance = axios.create({
-        baseURL: "https://be-electro-api.onrender.com/api/",
+        baseURL: "http://localhost:3001/api/",
         withCredentials: true,
     })
 

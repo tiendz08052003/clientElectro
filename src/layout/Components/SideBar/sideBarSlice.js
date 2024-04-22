@@ -6,7 +6,7 @@ const sideBarSlice = createSlice({
         brand: [],
         color: [],
         type: "",
-        selection: ""
+        detailsType: ""
     },
     reducers: {
     },
@@ -51,8 +51,8 @@ const sideBarSlice = createSlice({
                 state.type = action.payload;
             })
 
-            .addCase(selection.fulfilled, (state, action) => {
-                state.selection = action.payload;
+            .addCase(detailsType.fulfilled, (state, action) => {
+                state.detailsType = action.payload;
             })
 
     }
@@ -71,7 +71,7 @@ export const type = createAsyncThunk("sideBar/type", (data) => {
     return data;
 }) 
 
-export const selection = createAsyncThunk("sideBar/selection", (data) => {
+export const detailsType = createAsyncThunk("sideBar/detailsType", (data) => {
     return data;
 }) 
 

@@ -5,17 +5,17 @@ import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import HeaderFooterSelectMenu from "./HeaderFooterSelectMenu";
 import { useSelector } from "react-redux";
-import { getMenu } from "~/redux/selector";
+import { getCatalog, getCombineType_Catalog } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
-function HeaderFooterSelect({child, setStatus}) {
-    
-    const [listMenu, setListMenu] = useState([]);
+function HeaderFooterSelect({childType, setStatus}) {
+    const [catalog, setCatalog] = useState([]);
     const [openMenu, setOpenMenu] = useState(false); // dùng để bật tắt menu
     const [pcWidth, setPcWidth] = useState(true); // kiểm tra xem có đang trên màn pc không
     let styleOpenMenuOnTablet;
-    let listMu = useSelector(getMenu);
+    let listCombineType_Catalog = useSelector(getCombineType_Catalog);
+    let listCatalog = useSelector(getCatalog);
 
     //lắng nghe kích thước khi mới khởi động web
     useEffect(() => {
@@ -66,29 +66,36 @@ function HeaderFooterSelect({child, setStatus}) {
     }
 
     useEffect(() => {
-        if(listMu)
+        if(listCombineType_Catalog && listCatalog)
         {
             const fetchAPI = async () => {
-                let array = [];
-                listMu.map(menu => {
-                    menu.idSelection === child._id &&  array.push(menu);
+                let arrayA = [], arrayB = [];
+                arrayA = listCombineType_Catalog.filter(x => {
+                    return x.idType === childType._id;
                 })
-                setListMenu(array);
+                arrayB = listCatalog.filter(x => {
+                    const arr = arrayA.filter(y => {
+                        return y.idCatalog === x._id;
+                    })
+                    if(arr.length)
+                        return true;
+                    return false;
+                })
+                setCatalog(arrayB);
             }
             fetchAPI();
         }
-    }, [listMu])
-
+    }, [listCombineType_Catalog, listCatalog])
     return (
         <li className={cx("headerFooterSelect")} onClick={handleOnClickOpenMenuOnTablet}> 
             <div className={cx("headerFooterSelect__header")}>
-                <span className={cx("headerFooterSelect__header--content")}>{child.name}</span>
+                <span className={cx("headerFooterSelect__header--content")}>{childType.name}</span>
                 <FontAwesomeIcon icon={faSortDown} className={cx("headerFooterSelect__header--icon")} />
             </div>
             <ul style={styleOpenMenuOnTablet} className={cx("headerFooterSelect__list")}>
                 {
-                    listMenu.map((menu, index) => (
-                        <HeaderFooterSelectMenu key={index} menu={menu} setStatus={setStatus}/>
+                    catalog.map((childCatalog, index) => (
+                        <HeaderFooterSelectMenu key={index} listCombineType_Catalog={listCombineType_Catalog} childType={childType} childCatalog={childCatalog} setStatus={setStatus}/>
                     ))
                 }
             </ul>

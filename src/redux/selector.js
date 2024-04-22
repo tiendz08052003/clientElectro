@@ -16,16 +16,28 @@ export const getType = state => {
     return state.products.typeList;
 }
 
-export const getSelection = state => {
-    return state.products.selectionList;
-}
-
 export const getCatalog = state => {
     return state.products.catalogList;
 }
 
-export const getMenu = state => {
-    return state.products.menuList;
+export const getCombineType_Catalog = state => {
+    return state.products.combineType_CatalogList;
+}
+
+export const getDetailsType = state => {
+    return state.products.detailsTypeList;
+}
+
+export const getDetailsCatalog = state => {
+    return state.products.detailsCatalogList;
+}
+
+export const getCombineDetailsCatalog_CombineType_Catalog = state => {
+    return state.products.combineDetailsCatalog_CombineType_CatalogList;
+}
+
+export const getCombineProduct_CombineDetailsCatalog_CombineType_Catalog = state => {
+    return state.products.combineProduct_CombineDetailsCatalog_CombineType_Catalog;
 }
 
 export const getTypeSort = state => {
@@ -48,32 +60,38 @@ export const sideBarColorList = state => {
     return state.sidebar.color;
 }
 
-export const sideBarType = state => {
+export const getSideBarType = state => {
     return state.sidebar.type;
 }
 
-export const sideBarSelection = state => {
-    return state.sidebar.selection;
+export const getSideBarDetailsType = state => {
+    return state.sidebar.detailsType;
 }
 
-export const getIdCatalog = state => {
-    return state.headerFooter.catalog;
-}
-
-export const getProductCatalog = state => {
-    return state.headerFooter.productCatalog;
+export const getIdDetailsCatalog = state => {
+    return state.headerFooter.idDetailsCatalog;
 }
 
 export const getPriceCatalog = state => {
     return state.headerFooter.price;
 }
 
-export const getProductByProductCatalog = state => {
-    const array = state.headerFooter?.productCatalog.filter(x => (
-        state.headerFooter.catalog ? (x.idCatalog === state.headerFooter.catalog ? true : false) : false
-    )
-    )
-    return array;
+export const getListCombineProduct_CombineDetailsCatalog_CombineType_Catalog = state => {
+    let listCombineProduct_CombineDetailsCatalog_combineType_CatalogList = state.products.combineProduct_CombineDetailsCatalog_CombineType_CatalogList;
+    let listCombineDetailsCatalog_combineType_CatalogList = state.products.combineDetailsCatalog_CombineType_CatalogList;
+    let idDetailsCatalog = state.headerFooter.idDetailsCatalog;
+
+    const getListCombineDetailsCatalog_combineType_CatalogList = listCombineDetailsCatalog_combineType_CatalogList.filter(x => x.idDetailsCatalog === idDetailsCatalog);
+    const getListCombineProduct_CombineDetailsCatalog_combineType_CatalogList = listCombineProduct_CombineDetailsCatalog_combineType_CatalogList.filter(x => {
+            const arr = getListCombineDetailsCatalog_combineType_CatalogList.filter(y => {
+                return x.idCombineDetailsCatalog_CombineType_Catalog === y._id
+            });
+            if(arr.length)
+                return true;
+            return false;
+        }
+    );
+    return getListCombineProduct_CombineDetailsCatalog_combineType_CatalogList;
 }
 
 export const getUser = state => {
@@ -84,7 +102,7 @@ export const getResultSearch = state => {
     return state.header.resultSearch;
 }
 
-export const getConditionSearch = state => {
+export const getConditionSearch_ = state => {
     return state.header.conditionSearch;
 }
 
@@ -92,12 +110,12 @@ export const getContentSearch = state => {
     return state.header.valueSearch;
 }
 
-export const combineAllCaseShop = createSelector(getProduct, getBrand, getColor, getType, getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, sideBarType, sideBarSelection, getIdCatalog, getProductByProductCatalog, getPriceCatalog, (products, brands, colors, types, typeSort, quality, numberPage, brand, color, type, selection, catalog, ProductByProductCatalog, price) => {
+export const combineAllCaseShop = createSelector(getProduct, getDetailsType, getBrand, getColor, getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, getSideBarType, getSideBarDetailsType, getIdDetailsCatalog, getListCombineProduct_CombineDetailsCatalog_CombineType_Catalog, getPriceCatalog, (products, detailsTypes, brands, colors, typeSort, quality, numberPage, brand, color, type, detailsType, idDetailsCatalog, listCombineProduct_CombineDetailsCatalog_CombineType_Catalog, price) => {
     const list = products.filter(product => {
         let bool = false;
-        if(catalog !== "")
+        if(idDetailsCatalog !== "")
         {
-            ProductByProductCatalog.map(x => {
+            listCombineProduct_CombineDetailsCatalog_CombineType_Catalog.map(x => {
                 if(x.idProduct === product._id)
                     bool = true;
             })
@@ -118,14 +136,16 @@ export const combineAllCaseShop = createSelector(getProduct, getBrand, getColor,
         }
         if(type !== "")
         {
-            bool = type === product.idType;
+            let arrIdDetailsType = detailsTypes.filter(detailsType => detailsType.idType === type)
+            let idArray = arrIdDetailsType.map(item => item._id);
+            bool = idArray.includes(product.idDetailsType)
             if(bool === false)
                 return bool;
 
         }
-        if(selection !== "")
+        if(detailsType !== "")
         {
-            bool = selection === product.idSelection;
+            bool = detailsType === product.idDetailsType;
             if(bool === false)
                 return bool;
         }
@@ -239,8 +259,7 @@ export const combineAllCaseShop = createSelector(getProduct, getBrand, getColor,
 })  
 
 
-export const combineAllCaseSearch = createSelector(getResultSearch, getConditionSearch, getType, getBrand, getColor,  getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, getIdCatalog, getProductByProductCatalog, getPriceCatalog, (resultSearch, conditionSearch, types, brands, colors, typeSort, quality, numberPage, brand, color, catalog, ProductByProductCatalog, price) => {
-    let listType;
+export const combineAllCaseSearch = createSelector(getResultSearch, getConditionSearch_, getDetailsType, getBrand, getColor,  getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, getIdDetailsCatalog, getListCombineProduct_CombineDetailsCatalog_CombineType_Catalog, getPriceCatalog, (resultSearch, conditionSearch, detailsTypes,brands, colors, typeSort, quality, numberPage, brand, color, catalog, listCombineProduct_CombineDetailsCatalog_CombineType_Catalog, price) => {
     let products = [];
     if(conditionSearch === "")
     {
@@ -248,19 +267,21 @@ export const combineAllCaseSearch = createSelector(getResultSearch, getCondition
     }
     else
     {
-        listType = types.filter(type => {
-            return type.idSelection === conditionSearch ? true : false
-        })    
-        for(let i = 0; i < listType.length; i++)
-        {
-            products = resultSearch.filter(result => result.idType === listType[i]._id)
-        }
+        const listDetailsType = detailsTypes.filter(x => x.idType === conditionSearch)
+        products = resultSearch.filter(result => {
+            const list = listDetailsType.filter(element => {
+                return result.idDetailsType === element._id
+            })
+            if(list.length)
+                return true;
+            return false;
+        })
     }
     const list = products.filter(product => {
         let bool = false;
         if(catalog !== "")
         {
-            ProductByProductCatalog.map(x => {
+            listCombineProduct_CombineDetailsCatalog_CombineType_Catalog.map(x => {
                 if(x.idProduct === product._id)
                     bool = true;
             })

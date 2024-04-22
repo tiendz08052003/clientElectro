@@ -3,7 +3,7 @@ import style from "./AccountForget.module.scss";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import * as AuthServices from '~/services/AuthServices'
+import * as AuthServices from '~/services/AccountServices'
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "~/redux/selector";
 import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
@@ -88,7 +88,7 @@ function AccountForget() {
                     <button className={cx("form--submit")} >Gửi</button>
                 </form>
             )}
-            <a  href="/home?type=mainProduct" className={cx("link-href")}>
+            <a  href="/account?type=login" className={cx("link-href")}>
                 <div className={cx("exit")}>
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </div>

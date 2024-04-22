@@ -4,9 +4,12 @@ import * as ProductServices from '~/services/ProductServices';
 import * as BrandServices from '~/services/BrandServices';
 import * as ColorServices from '~/services/ColorServices';
 import * as TypeServices from '~/services/TypeServices';
-import * as SelectionServices from '~/services/SelectionServices';
 import * as CatalogServices from '~/services/CatalogServices';
-import * as MenuServices from '~/services/MenuServices';
+import * as CombineType_CatalogServices from '~/services/CombineType_CatalogServices';
+import * as CombineDetailsCatalog_CombineType_Catalog from '~/services/CombineDetailsCatalog_CombineType_Catalog';
+import * as CombineProduct_CombineDetailsCatalog_CombineType_Catalog from '~/services/combineProduct_CombineDetailsCatalog_CombineType_Catalog';
+import * as DetailsTypeServices from '~/services/DetailsTypeServices';
+import * as DetailsCatalogServices from '~/services/DetailsCatalogServices';
 
 const homeSlice = createSlice({
     name: 'products',
@@ -16,9 +19,12 @@ const homeSlice = createSlice({
         brandList: [],
         colorList: [],
         typeList: [],
-        selectionList: [],
         catalogList: [],
-        menuList: [],
+        detailsTypeList: [],
+        detailsCatalogList: [],
+        combineType_CatalogList: [],
+        combineDetailsCatalog_CombineType_CatalogList: [],
+        combineProduct_CombineDetailsCatalog_CombineType_CatalogList: [],
         typeSort: "",
         quality: 20,
         numberPage: 0,
@@ -44,6 +50,31 @@ const homeSlice = createSlice({
                 state.status = 'fulfilled';
                 state.typeList = action.payload;
             })
+            .addCase(getCatalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.catalogList = action.payload;
+            })
+            .addCase(getDetailsType.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.detailsTypeList = action.payload;
+            })
+            
+            .addCase(getDetailsCatalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.detailsCatalogList = action.payload;
+            })
+            .addCase(getCombineType_Catalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.combineType_CatalogList = action.payload;
+            })
+            .addCase(getCombineDetailsCatalog_CombineType_Catalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.combineDetailsCatalog_CombineType_CatalogList = action.payload;
+            })
+            .addCase(getCombineProduct_CombineDetailsCatalog_CombineType_Catalog.fulfilled, (state, action) => {
+                state.status = 'fulfilled';
+                state.combineProduct_CombineDetailsCatalog_CombineType_CatalogList = action.payload;
+            })
             .addCase(getTypeSort.fulfilled, (state, action) => {
                 state.status = 'fulfilled';
                 state.typeSort = action.payload;
@@ -55,20 +86,6 @@ const homeSlice = createSlice({
             .addCase(getNumberPage.fulfilled, (state, action) => {
                 state.status = 'fulfilled';
                 state.numberPage = action.payload;
-            })
-            .addCase(getSelection.fulfilled, (state, action) => {
-                state.status = 'fulfilled';
-                state.selectionList = action.payload;
-            })
-
-            .addCase(getCatalog.fulfilled, (state, action) => {
-                state.status = 'fulfilled';
-                state.catalogList = action.payload;
-            })
-
-            .addCase(getMenu.fulfilled, (state, action) => {
-                state.status = 'fulfilled';
-                state.menuList = action.payload;
             })
     }
 })
@@ -105,20 +122,37 @@ export const getNumberPage = createAsyncThunk("ColorList/getNumberPage", (data) 
     return data
 })
 
-export const getSelection = createAsyncThunk("ColorList/getSelection", async () => {
-    const res = await SelectionServices.getSelection(); 
-    return res;
-})
-
 export const getCatalog = createAsyncThunk("ColorList/getCatalog", async () => {
     const res = await CatalogServices.getCatalog(); 
     return res;
 })
 
-export const getMenu = createAsyncThunk("ColorList/getMenu", async () => {
-    const res = await MenuServices.getMenu(); 
+export const getDetailsType = createAsyncThunk("ColorList/getDetailsType", async () => {
+    const res = await DetailsTypeServices.getDetailsType(); 
     return res;
 })
+
+export const getDetailsCatalog = createAsyncThunk("ColorList/getDetailsCatalog", async () => {
+    const res = await DetailsCatalogServices.getDetailsCatalog(); 
+    return res;
+})
+
+export const getCombineType_Catalog = createAsyncThunk("ColorList/getCombineType_Catalog", async () => {
+    const res = await CombineType_CatalogServices.getCombineType_Catalog(); 
+    return res;
+})
+
+export const getCombineDetailsCatalog_CombineType_Catalog = createAsyncThunk("ColorList/getCombineDetailsCatalog_CombineType_Catalog", async () => {
+    const res = await CombineDetailsCatalog_CombineType_Catalog.getCombineDetailsCatalog_CombineType_Catalog(); 
+    return res;
+})
+
+export const getCombineProduct_CombineDetailsCatalog_CombineType_Catalog = createAsyncThunk("ColorList/getCombineProduct_CombineDetailsCatalog_CombineType_Catalog", async () => {
+    const res = await CombineProduct_CombineDetailsCatalog_CombineType_Catalog.getCombineProduct_CombineDetailsCatalog_CombineType_Catalog(); 
+    return res;
+})
+
+
 
 
 

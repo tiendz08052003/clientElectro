@@ -1,9 +1,9 @@
 import classNames from "classnames/bind";
 import styles from "./Account.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faL } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
-import * as AuthServices from "~/services/AuthServices";
+import * as AccountServices from "~/services/AccountServices";
 import { loginAccount, logoutAccount, registerAccount } from "./accountSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -58,8 +58,8 @@ function Account() {
         setBool(false);
         e.preventDefault();
         const fetchAPI = async () => {
-            const res = await AuthServices.createAuth({
-                userName: userName,
+            const res = await AccountServices.createAccount({
+                name: userName,
                 email: email,
                 password: password,
                 passwordAgain: passwordAgain
@@ -96,7 +96,7 @@ function Account() {
     const handleOnSubmitLogin = (e) => {
         e.preventDefault();
         const fetchAPI = async () => {
-            const res = await AuthServices.loginAuth({
+            const res = await AccountServices.loginAccount({
                 email: email,
                 password: password,
             })
@@ -146,7 +146,7 @@ function Account() {
 
     const handleSubmitChangePassword = () => {
         const fetchAPI = async () => {
-            const res = await AuthServices.changePassword({
+            const res = await AccountServices.changePassword({
                 id: user._id,
                 password
             }, user?.accessToken, axiosJWT)
@@ -169,7 +169,7 @@ function Account() {
 
     const handleSubmitCheckPassword = () => {
         const fetchAPI = async () => {
-            const res = await AuthServices.verifyPasswordAccount({
+            const res = await AccountServices.verifyPasswordAccount({
                 id: user._id,
                 password
             }, user?.accessToken, axiosJWT)
@@ -192,9 +192,9 @@ function Account() {
 
     const handleSubmitDeletePassword = () => {
         const fetchAPI = async () => {
-            const res1 = await AuthServices.logoutAuth(user?.accessToken, axiosJWT);
+            const res1 = await AccountServices.logoutAccount(user?.accessToken, axiosJWT);
             dispatch(logoutAccount(null));
-            const res2 = await AuthServices.deleteAccount({
+            const res2 = await AccountServices.deleteAccount({
                 id: user._id,
                 admin: user.admin
             }, user?.accessToken, axiosJWT)

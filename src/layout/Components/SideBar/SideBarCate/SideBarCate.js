@@ -4,19 +4,19 @@
     import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
     import { faAngleRight, faChevronDown } from "@fortawesome/free-solid-svg-icons";
     import SideBarCateChild from "./SideBarCateChild";
-    import { getType } from "~/redux/selector"; 
+    import { getDetailsType } from "~/redux/selector"; 
     import { NavLink } from "react-router-dom";
     import config from "~/config/config";
     import { useSelector } from "react-redux";
     
     const cx = classNames.bind(styles);
 
-        function SideBarCate({selection, handleOnclickCaseSelection, handleOnclickCaseType, sideBarSelect, sideBarT}) {
+    function SideBarCate({handleOnclickCaseType, handleOnclickCaseDetailsType, sideBarType, getSideBarTypeNow, getSideBarDetailsTypeNow}) {
 
         const [styleType, setStyleType] = useState(false);
         const [listChild, setListChild] = useState([]);
 
-        const listTypes = useSelector(getType);
+        const listDetailsType = useSelector(getDetailsType);
         
         const handleOnclickSelection = () => {
             setStyleType(!styleType);
@@ -24,15 +24,14 @@
 
         useEffect(() => {
             let list = [];
-            listTypes.map((data, index) => {
-                if(data.idSelection === selection._id)
+            listDetailsType.map((detailsType, index) => {
+                if(detailsType.idType === sideBarType._id)
                 {
-                    list.push(data)
+                    list.push(detailsType)
                 }
             })
             setListChild(list);
-        }, [listTypes])
-
+        }, [listDetailsType])
         return ( 
             <li className={cx("sidebarCate")}>
                     <div className={cx("sidebarCate__parent")}>
@@ -53,9 +52,9 @@
                         } 
                         <NavLink to={config.routes.home} className={cx("link-href")}>    
                             {listChild && listChild.length === 1 ? (
-                                <div style={{marginLeft: "19px", fontWeight: sideBarSelect === selection._id && "1000" }} className={cx("sidebarCate__parent__content")} onClick={handleOnclickCaseSelection} data-id={selection._id}>{selection.name}</div> 
+                                <div style={{marginLeft: "19px", fontWeight: getSideBarTypeNow !== "" &&  getSideBarTypeNow == sideBarType._id && "1000" }} className={cx("sidebarCate__parent__content")} onClick={handleOnclickCaseType} data-id={sideBarType._id}>{sideBarType.name}</div> 
                             ) : (
-                                <div style={{marginLeft: "0", fontWeight: sideBarSelect === selection._id && "1000"}} className={cx("sidebarCate__parent__content")} onClick={handleOnclickCaseSelection} data-id={selection._id}>{selection.name}</div> 
+                                <div style={{marginLeft: "0", fontWeight: getSideBarTypeNow !== "" &&  getSideBarTypeNow == sideBarType._id && "1000"}} className={cx("sidebarCate__parent__content")} onClick={handleOnclickCaseType} data-id={sideBarType._id}>{sideBarType.name}</div> 
                             )}
                             
                             <span className={cx("sidebarCate__parent__quality")}></span>
@@ -65,7 +64,7 @@
                         <ul className={cx("sidebarCate__parent__list")}>
                         { 
                             listChild.map((child, index) => (
-                                <SideBarCateChild key={index} child={child} handleOnclickCaseType={handleOnclickCaseType} sideBarT={sideBarT}/>
+                                <SideBarCateChild key={index} child={child} handleOnclickCaseDetailsType={handleOnclickCaseDetailsType} getSideBarDetailsTypeNow = {getSideBarDetailsTypeNow}/>
                             ))
                         }
                         </ul> 

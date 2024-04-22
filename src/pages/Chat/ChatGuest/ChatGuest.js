@@ -3,11 +3,11 @@ import styles from "./ChatGuest.module.scss";
 import Image from "~/Components/Image";
 const cx = classNames.bind(styles);
 
-function ChatGuest({ur, User, setNameUser, setBoolChatting, setIdRoom}) {
+function ChatGuest({ur, User, setNameGuest, setBoolChatting, setIdRoom}) {
 
     const handleClickUser = () => {
         setIdRoom([ur._id /*Id khách*/, User._id/*Id admin*/]);
-        setNameUser(ur.userName /*tên khách*/);
+        setNameGuest(ur.name /*tên khách*/);
         setBoolChatting(false);
     }
 
@@ -19,7 +19,7 @@ function ChatGuest({ur, User, setNameUser, setBoolChatting, setIdRoom}) {
                 </div>
                 <div className={cx("chatGuest__details__content")}>
                     <div className={cx("chatGuest__details__content__name")}>
-                        {ur.userName}
+                        {ur.name}
                     </div>
                 </div>
             </div>

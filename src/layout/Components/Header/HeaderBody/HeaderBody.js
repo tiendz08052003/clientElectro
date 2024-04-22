@@ -5,13 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faCartShopping, faHeart, faL, faMagnifyingGlass, faRepeat, faSort, faSpinner, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import HeaderBodyHistory from "./HeaderBodyHistory/HeaderBodyHistory";
-import * as SearchServices from "~/services/SearchServices";
-import * as AuthServices from "~/services/AuthServices";
-import * as SelectionServices from "~/services/SelectionServices";
+import * as AccountServices from "~/services/AccountServices";
 import * as CartServices from "~/services/CartServices";
 import * as ProductServices from "~/services/ProductServices";
 import { useDebounce } from "@uidotdev/usehooks";
-import { getUser, getContentSearch } from "~/redux/selector";
+import { getUser, getContentSearch, getType, getConditionSearch_ } from "~/redux/selector";
 import { useSelector, useDispatch } from "react-redux";
 import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
 import { loginAccount, logoutAccount } from "~/pages/Account/accountSlice";
@@ -27,7 +25,6 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     const [pcWidth, setPcWidth] = useState(true);
     const [onAccount, setOnAccount] = useState(false);
     const [onSearch, setOnSearch] = useState(true);
-    const [selections, setSelections] = useState([]);
     const [styleHistory, setStyleHistory] = useState(false);
     const [subtotal, setSubtotal] = useState(0);
     const [quality, setQuality] = useState(0);
@@ -42,6 +39,8 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     
     const searchResult = useSelector(combineAllCaseSearch);
     const user = useSelector(getUser);
+    const type = useSelector(getType);
+    const conditionSearch = useSelector(getConditionSearch_);
     const dispatch = useDispatch();
 
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
@@ -112,7 +111,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
         }
         setLoading(true);
         const fetchAPI = async () => {
-            const result = await SearchServices.search(setTimeValueInPut);
+            const result = await ProductServices.search(setTimeValueInPut);
             dispatch(getResultSearch(result));
             setLoading(false);
         }
@@ -126,7 +125,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     const handleOnClickLogout = () => {
         setBool(false);
         const fetchAPI = async () => {
-            const res = await AuthServices.logoutAuth(user?.accessToken, axiosJWT);
+            const res = await AccountServices.logoutAccount(user?.accessToken, axiosJWT);
             dispatch(logoutAccount(null));
             if(res === "Success")
             {
@@ -144,14 +143,6 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
         fetchAPI();
     }
 
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const res = await SelectionServices.getSelection();
-            setSelections(res)
-        }
-        fetchAPI();
-    }, [])
-
     const handleOnChangeValue = (e) => {
         dispatch(getConditionSearch(e.target.value))
     }
@@ -164,7 +155,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                 const res1 = await ProductServices.shop();
                 const res2 = await CartServices.getCart();
                 res2.map(childCart => {
-                    if(childCart.idAuth === user._id)
+                    if(childCart.idAccount === user._id)
                     {
                         res1.map(childProduct => {
                             if(childCart.idProduct === childProduct._id)
@@ -175,7 +166,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                     }
                 })
                 setSubtotal(sum);
-                setQuality(res2.filter(x => x.idAuth === user._id).length);
+                setQuality(res2.filter(x => x.idAccount === user._id).length);
             }
             fetchAPI1();
         }
@@ -277,9 +268,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                             )
                         }
                         <div className={cx("header__middle__child__search__sort")}>
-                            <select name="orderby" className={cx("header__middle__child__search__sort__selec")} aria-label="Shop order" fdprocessedid="rwrbl" onChange={handleOnChangeValue}>
-                                <option className={cx("header__middle__child__search__sort__selec--child")} value="" defaultValue>All Categories</option>
-                                {selections?.map((selection) => <option key={selection._id} className={cx("header__middle__child__search__sort__selec--child")} value={selection._id}>{selection.name}</option>)}
+                            <select name="orderby" className={cx("header__middle__child__search__sort__selec")} aria-label="Shop order" fdprocessedid="rwrbl" onChange={handleOnChangeValue} value={conditionSearch}>
+                                <option className={cx("header__middle__child__search__sort__selec--child")} value="">All Categories</option>
+                                {type?.map(x => <option key={x._id} className={cx("header__middle__child__search__sort__selec--child")} value={x._id}>{x.name}</option>)}
                             </select>
                         </div>
                         <div className={cx("header__middle__child__search__search")}>
@@ -326,7 +317,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                 ) : (
                                     <div className={cx("header__middle__child__selec__acc__hover")} style={onAccount ? styleHover : {}}>
                                         <div className={cx("header__middle__child__selec__acc__hover__userName")}>
-                                            {user.userName}
+                                            {user.name}
                                         </div>
                                         <div className={cx("header__middle__child__selec__acc__hover__info")}>
                                             <a href={`/account?type=detailAccount`} style={{"textDecoration": "none", "color": "currentcolor"}}>

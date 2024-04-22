@@ -1,9 +1,9 @@
 import * as httpRequest from '~/utils/httpRequest';
 
 
-export const getAuth = async () => {
+export const getAccount = async () => {
     try {
-        const res = await httpRequest.get("auth");
+        const res = await httpRequest.get("account");
         return res;
     }
     catch(err) {
@@ -11,9 +11,9 @@ export const getAuth = async () => {
     }
 }
 
-export const createAuth = async (data) => {
+export const createAccount = async (data) => {
     try {
-        const res = await httpRequest.post("auth/create/store", data);
+        const res = await httpRequest.post("account/create/store", data);
         return res;
     }
     catch(err) {
@@ -21,9 +21,9 @@ export const createAuth = async (data) => {
     }
 }
 
-export const loginAuth = async (data) => {
+export const loginAccount = async (data) => {
     try {
-        const res = await httpRequest.post("auth/login", data);
+        const res = await httpRequest.post("account/login", data);
         return res;
     }
     catch(err) {
@@ -31,9 +31,9 @@ export const loginAuth = async (data) => {
     }
 }
 
-export const logoutAuth = async (accessToken, axiosJWT) => {
+export const logoutAccount = async (accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.post("auth/logout", {}
+        const res = await httpRequest.post("account/logout", {}
         , {
             headers: {token: `Bearer ${accessToken}`}
         }, axiosJWT);
@@ -46,7 +46,7 @@ export const logoutAuth = async (accessToken, axiosJWT) => {
 
 export const refreshToken = async () => {
     try {
-        const res = await httpRequest.post("auth/refresh")
+        const res = await httpRequest.post("account/refresh")
         return res;
     }
     catch(err) {
@@ -56,7 +56,7 @@ export const refreshToken = async () => {
 
 export const getEmail = async (email) => {
     try {
-        const res = await httpRequest.get(`auth/accountForget?email=${email}`)
+        const res = await httpRequest.get(`account/accountForget?email=${email}`)
         return res;
     }
     catch (err) {
@@ -66,7 +66,7 @@ export const getEmail = async (email) => {
 
 export const recoverPassword = async (data) => {
     try {
-        const res = await httpRequest.patch(`auth/accountForget/recover?email=${data.email}&hashEmail=${data.hashEmail}`, {
+        const res = await httpRequest.patch(`account/accountForget/recover?email=${data.email}&hashEmail=${data.hashEmail}`, {
             password: data.password
         })
         return res;
@@ -78,7 +78,7 @@ export const recoverPassword = async (data) => {
 
 export const changePassword = async (data, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.patch(`/auth/account/submitChangePassword?id=${data.id}`, {
+        const res = await httpRequest.patch(`/account/account/submitChangePassword?id=${data.id}`, {
             password: data.password
         }, {
             headers: {token: `Bearer ${accessToken}`}
@@ -92,7 +92,7 @@ export const changePassword = async (data, accessToken, axiosJWT) => {
 
 export const verifyPasswordAccount = async (data, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.get(`/auth/account/checkPassword/${data.id}`, {
+        const res = await httpRequest.get(`/account/account/checkPassword/${data.id}`, {
             headers: {
                 token: `Bearer ${accessToken}`,
                 password: data.password
@@ -107,7 +107,7 @@ export const verifyPasswordAccount = async (data, accessToken, axiosJWT) => {
 
 export const deleteAccount = async (data, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.deleteSingle(`/auth/delete/${data.id}`, {
+        const res = await httpRequest.deleteSingle(`/account/delete/${data.id}`, {
             headers: {
                 token: `Bearer ${accessToken}`,
                 admin: data.admin

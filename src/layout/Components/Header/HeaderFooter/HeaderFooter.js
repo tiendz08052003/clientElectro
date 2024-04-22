@@ -2,12 +2,12 @@ import classNames from "classnames/bind";
 import styles from "./HeaderFooter.module.scss";
 import HeaderFooterSelect from "./HeaderFooterSelect";
 import { useSelector } from "react-redux";
-import { getSelection } from "~/redux/selector";
+import { getType } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
 function HeaderFooter({pcWidth, status, setStatus, handleOnClickIconMenu}) {
-    const listChild = useSelector(getSelection);
+    const type = useSelector(getType);
 
     const handleOnClickMenu = (e) => {
         e.stopPropagation();
@@ -22,8 +22,8 @@ function HeaderFooter({pcWidth, status, setStatus, handleOnClickIconMenu}) {
             <div className={cx("wrapper")}>
                 <div className={cx("header__footer__child")} onClick={handleOnClickMenu}>
                     <ul className={cx("header__footer__child__selec")}>
-                        {listChild && listChild.map((child, index) => (
-                            <HeaderFooterSelect key={index} child={child} setStatus={setStatus}/>
+                        {type && type.map((childType, index) => (
+                            <HeaderFooterSelect key={index} childType={childType} setStatus={setStatus}/>
                         ))}
                     </ul>
                 </div>

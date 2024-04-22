@@ -1,0 +1,13 @@
+.message {
+    display: flex;
+    padding: 2px 10px;
+    word-wrap: break-word;
+
+    &__content {
+        max-width: 60%;
+        word-wrap: break-word;
+        padding: 10px 15px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+}
