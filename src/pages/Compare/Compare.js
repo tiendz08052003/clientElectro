@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import CompareChild from "./CompareChild";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
-import { getProduct } from "~/redux/selector";
+import { getProduct, getUser } from "~/redux/selector";
 import { useSelector } from "react-redux";
 import Image from "~/Components/Image";
+import * as MainServices from "~/services/MainServices";
 
 const cx = classNames.bind(styles);
 
@@ -20,11 +21,19 @@ function Compare() {
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
     const products = useSelector(getProduct);
+    const user = useSelector(getUser);
 
     useEffect(() => {
+        let listCompare = [];
         const fetchAPI = async () => {
             const res = await CompareServices.getCompare();
-            setCompare(res);
+            const { id } = await MainServices.getIDHardware();
+            if(user?.accessToken)
+                listCompare = res.filter(x => x.idAccount === user._id)
+            else
+                listCompare = res.filter(x => x.idHardware === id)    
+            setCompare(listCompare);
+
         }
         fetchAPI();
     }, [reload])
@@ -99,7 +108,7 @@ function Compare() {
                         ))
                     ) : (
                         <tr>
-                            <td className={cx("compare__table--noData")} colSpan={5}>
+                            <td className={cx("compare__table--noData")} colSpan={6}>
                                 Không có dữ liệu
                             </td>
                         </tr>
@@ -125,10 +134,10 @@ function Compare() {
                                 {(productOne || productTwo) && "Image"}
                             </td>
                             <td>
-                                <Image src={productOne?.image} />
+                                <Image src={productOne?.image} className={cx("compare__table__body__image")}/>
                             </td>
                             <td>
-                                <Image src={productTwo?.image} />
+                                <Image src={productTwo?.image} className={cx("compare__table__body__image")}/>
                             </td>
                         </tr> 
                         <tr>

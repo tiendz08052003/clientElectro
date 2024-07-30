@@ -10,7 +10,7 @@ import config from "~/config/config";
 
 const publicRoute = [
     { path: config.routes.home, component: Home, layout: DefaultLayout,name: "Home" },
-    { path: config.routes.productDetails, component: ProductDetails, layout: DefaultLayout,name: "ProductDetails"},
+    { path: config.routes.productDetails, component: ProductDetails, layout: DefaultLayout, name: "ProductDetails"},
     { path: config.routes.cart, component: Cart, layout: HeaderAndFooterOnly, name: "Cart"},
     { path: config.routes.wishlist, component: Wishlist, layout: HeaderAndFooterOnly, name: "Wishlist"},
     { path: config.routes.compare, component: Compare, layout: HeaderAndFooterOnly, name: "Compare"},

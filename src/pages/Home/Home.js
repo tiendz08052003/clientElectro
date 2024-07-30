@@ -6,7 +6,7 @@ import { faAngleLeft, faAngleRight, faArrowRight, faBars, faFilter, faList } fro
 import HomeShop from "./HomeShop";
 import { Fragment, useEffect, useRef, useState, memo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { combineAllCaseSearch, combineAllCaseShop, getProduct, getQualities } from "~/redux/selector";
+import { combineAllCaseSearch, combineAllCaseShop, getProduct, getQualities, getSideBarDetailsType, getSideBarType, sideBarBrandList, sideBarColorList, getIdDetailsCatalog, getPriceCatalog } from "~/redux/selector";
 import { getNumberPage, getQuality, getTypeSort } from "./homeSlice";
 
 const cx = classNames.bind(styles);
@@ -29,7 +29,16 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
     const [circleSecond, setCircleSecond] = useState({});
     const [circleThird, setCircleThird] = useState({});
     const [listNumberPage, setListNumberPage] = useState([]);
+    const [recommended , setRecommended] = useState(true);
+    const [numberStart, setNumberStart] = useState(0);
+    const [numberEnd, setNumberEnd] = useState(0);
     const listProducts = useSelector(getProduct);
+    const detailsType = useSelector(getSideBarDetailsType);
+    const type = useSelector(getSideBarType);
+    const brand = useSelector(sideBarBrandList);
+    const color = useSelector(sideBarColorList);
+    const idDetailsCatalog = useSelector(getIdDetailsCatalog);
+    const priceCatalog = useSelector(getPriceCatalog);
 
     let styleScreen;
     let cartUl;
@@ -40,10 +49,6 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
         // dùng childElementCount để đếm số phần tử cong trong thẻ ul
         cartUl = $(".home__child__product--handle");
     })
-
-    const handleOnChangeNumberPage = (e) => {
-        (e.target.value === "" || (e.target.value <= listNumberPage.length && e.target.value >= 1)) && setNumberPage(e.target.value);
-    }
 
     useEffect(() => {
         if(window.innerWidth <= 1230)
@@ -589,6 +594,17 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
         dispatch(getQuality(e.target.value))
     }  
 
+    const handleOnChangeNumberPage = (e) => {
+        if(e.target.value === "" || (e.target.value <= listNumberPage.length && e.target.value >= 1))
+        {
+            setNumberPage(Number(e.target.value));
+            if(e.target.value !== "")
+                dispatch(getNumberPage(e.target.value - 1));
+            else
+                setNumberPage(0);
+        }
+    }
+
     useEffect(() => {
         let array = [];
         let length = 0;
@@ -617,7 +633,11 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
     }
 
     const handleOnClickIncreaseNumberPage = () => {
-        listNumberPage.length >= numberPage + 1 && setNumberPage(numberPage + 1) && dispatch(getNumberPage(numberPage));
+        if(listNumberPage.length >= numberPage + 1)
+        {
+            setNumberPage(numberPage + 1)
+            dispatch(getNumberPage(numberPage));
+        }
     }
 
     const styleNumberPage = {
@@ -631,9 +651,24 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
             dispatch(getNumberPage(Number(e.target.value) - 1))
         }
     }
+
+
+    useEffect(() => {
+        setNumberStart(numberPage === 0 ? 0 : (numberPage - 1) * quality + 1 );
+        setNumberEnd(typeHome === null ? (numberPage === 0 ? 0 : (numberPage - 1) * quality + products.listProduct?.length) : (numberPage === 0 ? 0 : (numberPage - 1) * quality + searchProducts?.listProduct?.length));
+    }, [numberPage, products])
+
+    useEffect(() => {
+        if(type !== "" || detailsType !== "" || brand.length !== 0 || color.length !== 0 || typeHome !== null || idDetailsCatalog !== "" || JSON.stringify(priceCatalog) !== JSON.stringify({"min":0,"max":0}))
+            setRecommended(false);
+        else 
+            setRecommended(true);
+    }, [type, detailsType, brand, color, typeHome])
+
+
     return ( 
         <div className={cx("home", "grid__column-10", "grid__column-12")}>
-            {typeHome === null && (
+            {recommended && (
                 <div className={cx("home__child")}>
                     <div className={cx("home__child__rcm")}>
                         <div className={cx("home__child__rcm__content")}>Recommended Products</div>
@@ -662,7 +697,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                         Shop
                     </div>
                     <div className={cx("home__shop__name--right")}>
-                        Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts?.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
+                        Showing {numberStart}–{numberEnd} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
                     </div>
                 </div>
                 <div className={cx("home__shop__selec")}>
@@ -718,7 +753,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                 </ul>
                 <div className={cx("home__shop__page")}>
                     <div className={cx("home__shop__page--left")}>
-                    Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts?.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
+                    Showing {numberStart}–{typeHome === null ? (numberPage === 0 ? 0 : (numberPage - 1) * quality + products.listProduct?.length) : (numberPage === 0 ? 0 : (numberPage - 1) * quality + searchProducts?.listProduct?.length)} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
                     </div>
                     <div className={cx("home__shop__page--right")}>
                         {listNumberPage.map((x, index) => (

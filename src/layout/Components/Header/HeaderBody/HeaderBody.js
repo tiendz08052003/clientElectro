@@ -16,7 +16,8 @@ import { loginAccount, logoutAccount } from "~/pages/Account/accountSlice";
 import { getResultSearch, getConditionSearch, getValueSearch } from "../headerSlice";
 import { combineAllCaseSearch } from "~/redux/selector";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
-
+import { useNavigate } from "react-router-dom";
+import * as MainServices from "~/services/MainServices";
 
 
 const cx = classNames.bind(styles);
@@ -42,8 +43,8 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     const type = useSelector(getType);
     const conditionSearch = useSelector(getConditionSearch_);
     const dispatch = useDispatch();
-
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
+    const navigate = useNavigate();
 
     const styleHover = {
         display: "flex",
@@ -111,9 +112,8 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
         }
         setLoading(true);
         const fetchAPI = async () => {
-            const result = await ProductServices.searchByElasticsearch(setTimeValueInPut);
-            // const result = await ProductServices.search(setTimeValueInPut);
-            console.log(result);
+            //const result = await ProductServices.searchByElasticsearch(setTimeValueInPut);
+            const result = await ProductServices.search(setTimeValueInPut);
             dispatch(getResultSearch(result));
             setLoading(false);
         }
@@ -134,6 +134,11 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                 setContent("Success");
                 setTitle("Logout thành công!");
                 setBool(true);
+                setTimeout(() => {
+                   window.location.href = "/";
+                    // navigate("/");
+                }, 1000)
+                
             }
             else
             {
@@ -150,11 +155,11 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
     }
 
     useEffect(() => {
-        if (user?.accessToken)
-        {
-            let sum = 0;
-            const fetchAPI1 = async () => {
-                const res1 = await ProductServices.shop();
+        let sum = 0;
+        const fetchAPI1 = async () => {
+            const res1 = await ProductServices.shop();
+            if (user?.accessToken)
+            {
                 const res2 = await CartServices.getCart();
                 res2.map(childCart => {
                     if(childCart.idAccount === user._id)
@@ -170,8 +175,24 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                 setSubtotal(sum);
                 setQuality(res2.filter(x => x.idAccount === user._id).length);
             }
-            fetchAPI1();
+            else
+            {
+                const { id } = await MainServices.getIDHardware();
+                const data = await CartServices.getCartNoLogin(id);
+                const listCartRedis = data.data;
+                listCartRedis.map(childCart => {
+                    res1.map(childProduct => {
+                        if(childCart.idProduct === childProduct._id)
+                        {
+                            sum += childProduct.price * childCart.count - childProduct.discount;
+                        }
+                    })
+                })
+                setSubtotal(sum);
+                setQuality(listCartRedis.length);
+            }
         }
+        fetchAPI1();
     }, [reloadCart])
 
 
@@ -252,7 +273,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                                     if(index < 5)
                                                     {
                                                         return (
-                                                            <a key={index} href={"/productDetails?id=" + result._id} className={cx("link-href")}>
+                                                            <a key={index} href={"/productDetails/" + result?.slug} className={cx("link-href")}>
                                                                 <HeaderBodyHistory key={index} result={result}/>
                                                             </a>
                                                         )
@@ -343,7 +364,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                             </div>
                         </a>
                     </div>
-                    {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+                    {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
                 </div>
             </div>
         </div>

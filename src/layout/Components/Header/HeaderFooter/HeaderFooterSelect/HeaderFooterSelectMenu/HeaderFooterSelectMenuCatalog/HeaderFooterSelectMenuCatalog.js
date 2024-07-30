@@ -13,7 +13,6 @@ function HeaderFooterSelectMenuCatalog({childDetailsCatalog, name, setStatus}) {
     const dispatch = useDispatch();
 
     const handleOnClickCatalog = (e) => {
-        console.log(name);
         if(name === "Shop By Brand")
         {
             dispatch(listBrand({

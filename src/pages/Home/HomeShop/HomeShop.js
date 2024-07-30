@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { loginAccount } from "~/pages/Account/accountSlice";
 import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
+import * as MainServices from "~/services/MainServices"
 
 const cx = classNames.bind(styles);
 
@@ -75,8 +76,9 @@ function HomeShop({product, reloadCart, setReloadCart}) {
         }
     }
     
-    const handleOnClickCompare = (e) => {
+    const handleOnClickCompare = async (e) => {
         e.preventDefault();
+        const { id } = await MainServices.getIDHardware();
         setBool(false);
         setBoolColorCompare(!boolColorCompare)
         const fetchAPI = async () => {
@@ -93,7 +95,11 @@ function HomeShop({product, reloadCart, setReloadCart}) {
             })
             if(flag)
             {
-                const res = await CompareServices.addCompare({idProduct: e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id")});
+                let res;
+                if(user?.accessToken)
+                    res = await CompareServices.addCompare({idAccount: user._id, idProduct: e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id")});
+                else
+                    res = await CompareServices.addCompare({idHardware: id, idProduct: e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id")});
                 if(res === "Success")
                 {
                     setContent("Success");
@@ -111,52 +117,70 @@ function HomeShop({product, reloadCart, setReloadCart}) {
         fetchAPI();
     }
 
-    const handleOnClickAddCart = (e) => {
+    const handleOnClickAddCart = async (e) => {
         e.preventDefault();
+        const idProductDetails = product._id
         setBool(false);
         let flag = false;
         let count;
         const id = e.target.closest('.homeShop__child__price__icon--handle').getAttribute("data-id");
         if(user?.accessToken)
         {
-            const fetchAPI = async () => {
-                
-                const res1 = await CartServices.getCart();
-                if(res1.length > 0)
-                {
-                    res1.map((data, index) => {
-                        if(data.idProduct?.includes(id))
-                        {
-                            flag = true;
-                            const fetchAPI1 = async () => {
-                                count = data.count + 1;
-                                await CartServices.updateCart(user?.accessToken, data._id, count, axiosJWT);
-                                setContent("Success");
-                                setTitle("Thêm vào giỏ hàng thành công!");
-                                setBool(true);
-                                setReloadCart(!reloadCart);
-                            }
-                            fetchAPI1();
+            const res1 = await CartServices.getCart();
+            if(res1.length > 0)
+            {
+                console.log(id);
+                res1.map((data, index) => {
+                    if(data.idProduct?.includes(id))
+                    {
+                        flag = true;
+                        const fetchAPI1 = async () => {
+                            count = data.count + 1;
+                            await CartServices.updateCart(user?.accessToken, data._id, count, axiosJWT);
+                            setContent("Success");
+                            setTitle("Thêm vào giỏ hàng thành công!");
+                            setBool(true);
+                            setReloadCart(!reloadCart);
                         }
-                    })
-                }
-                if(flag === false)
+                        fetchAPI1();
+                    }
+                })
+            }
+            if(flag === false)
+            {
+                await CartServices.addCart(user?.accessToken, {idAccount: user._id, idProduct: id, count: 1}, axiosJWT);
+                setContent("Success");
+                setTitle("Thêm vào giỏ hàng thành công!");
+                setBool(true);
+                setReloadCart(!reloadCart);
+            }
+        }
+        else{
+            const { id } = await MainServices.getIDHardware();
+            const data = await CartServices.getCartNoLogin(id);
+            const listCartRedis = data.data;
+            listCartRedis.map(async (cart, index) => {
+                if(cart.idProduct === idProductDetails)
                 {
-                    await CartServices.addCart(user?.accessToken, {idAccount: user._id, idProduct: id, count: 1}, axiosJWT);
+                    flag = true;
+                    await CartServices.updateCartNoLogin(id, {idProduct: idProductDetails, count: cart.count + 1}, index);
                     setContent("Success");
                     setTitle("Thêm vào giỏ hàng thành công!");
                     setBool(true);
                     setReloadCart(!reloadCart);
                 }
-            }
-            fetchAPI();
-        }
-        else{
-            setTimeout(() => {
-                setContent("Warn");
-                setTitle("Bạn phải đăng nhập để thêm giỏ hàng!");
+            })
+            if(!flag)
+            {
+                await CartServices.addCartNoLogin(id, {
+                    idProduct: idProductDetails, 
+                    count: 1
+                });
+                setContent("Success");
+                setTitle("Thêm vào giỏ hàng thành công!");
                 setBool(true);
-            }, 300)
+                setReloadCart(!reloadCart);
+            }
         }
     }
 

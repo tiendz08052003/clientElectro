@@ -39,6 +39,13 @@
                 list-style-type: none;
                 text-align: start;
             }
+
+        }
+
+        &__body {
+            &__image {
+                width: 50%;
+            }
         }
     }
     

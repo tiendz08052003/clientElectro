@@ -23,6 +23,7 @@ const cx = classNames.bind(style);
 
 function ProductDetails() {
 
+    const { slug } = useParams();
     const user = useSelector(getUser);
     const dispatch = useDispatch();
 
@@ -149,8 +150,6 @@ function ProductDetails() {
         })
     }
 
-    const { slug } = useParams();
-
     useEffect(() => {
 
         const slugProductDetails = slug;
@@ -163,6 +162,7 @@ function ProductDetails() {
                 if(x.slug === slugProductDetails)
                      product = x
             })
+            console.log(product)
             const res2 = await TypeServices.getType();
             res2.map(x => {
                 if(x._id === product.idType)

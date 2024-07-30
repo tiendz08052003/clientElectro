@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Account.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faL } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
 import * as AccountServices from "~/services/AccountServices";
 import { loginAccount, logoutAccount, registerAccount } from "./accountSlice";
@@ -30,9 +30,18 @@ function Account() {
     const [passwordAgain, setPassWordAgain] = useState("");
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+    const [validateName, setValidateName] = useState("");
+    const [validateEmail, setValidateEmail] = useState("");
+    const [validatePassword, setValidatePassword] = useState("");
+    const [validatePasswordAgain, setValidatePasswordAgain] = useState("");
+    const [styleValidateName, setStyleValidateName] = useState(false);
+    const [styleValidateEmail, setStyleValidateEmail] = useState(false);
+    const [styleValidatePassword, setStyleValidatePassword] = useState(false);
+    const [styleValidatePasswordAgain, setStyleValidatePasswordAgain] = useState(false);
     const [bool, setBool] = useState(false);
     const user = useSelector(getUser);
     const [checkPasswordOld, setCheckPasswordOld] = useState(false);
+    
     const refInput = useRef();
     const refButton = useRef();
 
@@ -59,39 +68,100 @@ function Account() {
     }
 
     const handleOnSubmitRegister = async (e) => {
-        setBool(false);
         e.preventDefault();
-        
-        const res = await AccountServices.createAccount({
-            name: userName,
-            email: email,
-            password: password,
-            passwordAgain: passwordAgain
-        })
-        if(res === "Success")
-        {
-            dispatch(registerAccount())
-            setUserName("");
-            setEmail("");
-            setPassword("");
-            setPassWordAgain("");
-            setContent("Success");
-            setTitle("Đăng ký tài khoản thành công!");
-            setBool(true);
-            setTimeout(() => {
-                setRegisOrLogin(true);
-                navigate("/account?type=login");
-            }, 3000)
+        setValidateName("");
+        setStyleValidateName(false);
+
+        setValidateEmail("");
+        setStyleValidateEmail(false);
+
+        setValidatePassword("");
+        setStyleValidatePassword(false);
+
+        setValidatePasswordAgain("");
+        setStyleValidatePasswordAgain(false);
+
+        let flag = false;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let test = emailRegex.test(email);
+
+        if(!userName) {
+            setValidateName("Vui lòng nhập trường này!");
+            setStyleValidateName(true);
+            flag = true;
         }
-        else
-        {
-            setUserName("");
-            setEmail("");
-            setPassword("");
-            setPassWordAgain("");
-            setContent("Error");
-            setTitle("Đăng ký thất bại!");
-            setBool(true);
+
+        if(!email) {
+            setValidateEmail("Vui lòng nhập trường này!");
+            setStyleValidateEmail(true);
+            flag = true;
+        }
+
+        if(!password) {
+            setValidatePassword("Vui lòng nhập trường này!");
+            setStyleValidatePassword(true);
+            flag = true;
+        }
+
+        if(!passwordAgain) {
+            setValidatePasswordAgain("Vui lòng nhập trường này!");
+            setStyleValidatePasswordAgain(true);
+            flag = true;
+        }
+
+        if(flag)
+            return;
+
+
+        if(test && (password !== passwordAgain)) {
+            setBool(false);
+
+            const res = await AccountServices.createAccount({
+                name: userName,
+                email: email,
+                password: password,
+                passwordAgain: passwordAgain
+            })
+            if(res === "Success")
+            {
+                dispatch(registerAccount())
+                setUserName("");
+                setEmail("");
+                setPassword("");
+                setPassWordAgain("");
+                setContent("Success");
+                setTitle("Đăng ký tài khoản thành công!");
+                setBool(true);
+                setTimeout(() => {
+                    setRegisOrLogin(true);
+                    navigate("/account?type=login");
+                }, 3000)
+            }
+            else
+            {
+                setUserName("");
+                setEmail("");
+                setPassword("");
+                setPassWordAgain("");
+                setContent("Error");
+                setTitle("Đăng ký thất bại!");
+                setBool(true);
+            }
+        }
+        else{
+            if(!test)
+            {
+                    setValidateEmail("Đây không phải email!");
+                    setStyleValidateEmail(true);
+            }
+            if(password !== passwordAgain)
+            {
+                setValidatePassword("Vui lòng nhập mật khẩu trùng!");
+                setStyleValidatePassword(true);
+                setValidatePasswordAgain("Vui lòng nhập mật khẩu trùng!");
+                setStyleValidatePasswordAgain(true);
+            }
+
         }
     }
 
@@ -124,33 +194,67 @@ function Account() {
 
     const handleOnSubmitLogin = async (e) => {
         e.preventDefault();
-        const res = await AccountServices.loginAccount({
-            email: email,
-            password: password,
-        })
-        if(res !== undefined)
-        {
-            const { id } = await MainServices.getIDHardware();
-            dispatch(loginAccount(res))
-            setEmail("");
-            setPassword("");
-            setContent("Success");
-            setTitle("Đăng nhập thành công!");
-            setBool(true);
-            setTimeout(() => {
-                navigate("/");
-            }, 3000)
-            handleUpdateCartWhenLogin(res, id);
-            handleDeleteKeyCartRedis(id);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let test = emailRegex.test(email);
+
+        setValidateEmail("");
+        setStyleValidateEmail(false);
+
+        setValidatePassword("");
+        setStyleValidatePassword(false);
+
+        let flag = false;
+
+        if(!email) {
+            setValidateEmail("Vui lòng nhập trường này!");
+            setStyleValidateEmail(true);
+            flag = true;
         }
-        else
-        {
-            setEmail("");
-            setPassword("");
-            setContent("Error");
-            setTitle("Đăng nhập thất bại!");
-            setBool(true);
+
+        if(!password) {
+            setValidatePassword("Vui lòng nhập trường này!");
+            setStyleValidatePassword(true);
+            flag = true;
         }
+
+        if(flag)
+            return;
+
+        if(test)
+        {
+            const res = await AccountServices.loginAccount({
+                email: email,
+                password: password,
+            })
+            if(res !== undefined)
+            {
+                const { id } = await MainServices.getIDHardware();
+                dispatch(loginAccount(res))
+                setEmail("");
+                setPassword("");
+                setContent("Success");
+                setTitle("Đăng nhập thành công!");
+                setBool(true);
+                setTimeout(() => {
+                    navigate("/");
+                }, 3000)
+                handleUpdateCartWhenLogin(res, id);
+                handleDeleteKeyCartRedis(id);
+            }
+            else
+            {
+                setEmail("");
+                setPassword("");
+                setContent("Error");
+                setTitle("Đăng nhập thất bại!");
+                setBool(true);
+            }
+        }
+        else {
+            setValidateEmail("Đây không phải email!");
+            setStyleValidateEmail(true);
+        }
+        
     }
 
     const handleOnClickExit = () => {
@@ -173,26 +277,74 @@ function Account() {
 
 
     const handleSubmitChangePassword = async () => {
-        const res = await AccountServices.changePassword({
-            id: user._id,
-            password
-        }, user?.accessToken, axiosJWT)
-        if(res === "Success")
-        {
-            setCheckPasswordOld(false);
-            setContent("Success");
-            setTitle("Đổi mật khẩu thành công!");
-            setBool(false);
-        }    
-        else
-        {
-            setContent("Error");
-            setTitle("Đổi mật khẩu không thành công!");
-            setBool(true);
+
+        setValidatePassword("");
+        setStyleValidatePassword(false);
+
+        setValidatePasswordAgain("");
+        setStyleValidatePasswordAgain(false);
+        let flag = false;
+
+        if(!password) {
+            setValidatePassword("Vui lòng nhập trường này!");
+            setStyleValidatePassword(true);
+            flag = true;
         }
+
+        if(!passwordAgain) {
+            setValidatePasswordAgain("Vui lòng nhập trường này!");
+            setStyleValidatePasswordAgain(true);
+            flag = true;
+        }
+
+        if(flag)
+            return;
+        
+        if(password === passwordAgain)
+        {
+            setBool(false);
+            const res = await AccountServices.changePassword({
+                id: user._id,
+                password
+            }, user?.accessToken, axiosJWT)
+            if(res === "Success")
+            {
+                setCheckPasswordOld(false);
+                setContent("Success");
+                setTitle("Đổi mật khẩu thành công!");
+                setBool(true);
+            }    
+            else
+            {
+                setContent("Error");
+                setTitle("Đổi mật khẩu không thành công!");
+                setBool(true);
+            }
+        }
+        else {
+            setValidatePassword("Vui lòng nhập mật khẩu trùng!");
+            setStyleValidatePassword(true);
+            setValidatePasswordAgain("Vui lòng nhập mật khẩu trùng!");
+            setStyleValidatePasswordAgain(true);
+        }
+        
     }
 
     const handleSubmitCheckPassword = async () => {
+        setValidatePassword("");
+        setStyleValidatePassword(false);
+        let flag = false;
+
+        if(!password) {
+            setValidatePassword("Vui lòng nhập trường này!");
+            setStyleValidatePassword(true);
+            flag = true;
+        }
+        
+        if(flag)
+            return;
+        
+        setBool(false);
         const res = await AccountServices.verifyPasswordAccount({
             id: user._id,
             password
@@ -202,7 +354,7 @@ function Account() {
             setCheckPasswordOld(true);
             setContent("Success");
             setTitle("Mật khẩu đúng!");
-            setBool(false);
+            setBool(true);
         }    
         else
         {
@@ -220,7 +372,7 @@ function Account() {
             dispatch(logoutAccount(null));
             setContent("Success");
             setTitle("Xóa tài khoản thành công!");
-            setBool(false);
+            setBool(true);
             setTimeout(() => {
                 navigate("/");
             }, 3000)
@@ -243,13 +395,14 @@ function Account() {
                     
                         <div className={cx("form--group")}>
                             <label htmlFor="userName"className={cx("form--label")}>Tên đầy đủ</label>
-                            <input value={user && user.name} type="text" placeholder="VD: Sơn Đặng"className={cx("form--control")} onChange={handleOnChangeUserName}/>
+                            <input value={user && user.name} type="text" placeholder="VD: Tiến Nguyễn"className={cx("form--control")} onChange={handleOnChangeUserName}/>
                         </div>
 
                         <div className={cx("form--group")}>
                             <label htmlFor="email" className={cx("form--label")}>Email</label>
                             <input value={user && user.email} type="text" placeholder="VD: email@domain.com" className={cx("form--control")} onChange={handleOnChangeEmail}/>
                         </div>
+                        
                         <div className={cx("form--group")}>
                             <label htmlFor="password" className={cx("form--label")} style={{"display": "flex", "alignItems": "center"}}>
                                 <span style={{"marginRight": "10px"}}>
@@ -263,16 +416,21 @@ function Account() {
                                     <>
                                         <div className={cx("form--group")}>
                                             <label htmlFor="password" className={cx("form--label")}>Mật khẩu</label>
-                                            <input value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                            <input style={{"borderColor": styleValidatePassword ? "#f33a58" : null}} value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                            <span style={{"color": styleValidatePassword ? "#f33a58" : null}} className={cx("form--message")}>{validatePassword}</span>
                                         </div>
 
                                         <div className={cx("form--group")}>
                                             <label htmlFor="passwordAgain" className={cx("form--label")}>Nhập lại mật khẩu</label>
-                                            <input value={passwordAgain} type="password" placeholder="Nhập lại mật khẩu" className={cx("form--control")} onChange={handleOnChangePasswordAgain}/>
+                                            <input style={{"borderColor": styleValidatePasswordAgain ? "#f33a58" : null}} value={passwordAgain} type="password" placeholder="Nhập lại mật khẩu" className={cx("form--control")} onChange={handleOnChangePasswordAgain}/>
+                                            <span style={{"color": styleValidatePasswordAgain ? "#f33a58" : null}} className={cx("form--message")}>{validatePasswordAgain}</span>
                                         </div>
                                     </>
                                 ) : (
-                                    <input value={password} ref={refInput} style={{"display": "none"}} type="password" placeholder="Nhập mật khẩu cũ để thay đổi mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                    <>
+                                        <input style={{"borderColor": styleValidatePassword ? "#f33a58" : null, "display": "none"}} value={password} ref={refInput} type="password" placeholder="Nhập mật khẩu cũ để thay đổi mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                        <span style={{"color": styleValidatePassword ? "#f33a58" : null}} className={cx("form--message")}>{validatePassword}</span>
+                                    </>    
                                 ) 
                             }
                         </div>
@@ -311,12 +469,14 @@ function Account() {
                     
                         <div className={cx("form--group")}>
                             <label htmlFor="email" className={cx("form--label")}>Email</label>
-                            <input value={email} type="text" placeholder="VD: email@domain.com" className={cx("form--control")} onChange={handleOnChangeEmail}/>
+                            <input style={{"borderColor": styleValidateEmail ? "#f33a58" : null}} value={email} type="text" placeholder="VD: email@domain.com" className={cx("form--control")} onChange={handleOnChangeEmail}/>
+                            <span style={{"color": styleValidateEmail ? "#f33a58" : null}} className={cx("form--message")}>{validateEmail}</span>
                         </div>
                     
                         <div className={cx("form--group")}>
                             <label htmlFor="password" className={cx("form--label")}>Mật khẩu</label>
-                            <input value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                            <input style={{"borderColor": styleValidatePassword ? "#f33a58" : null}} value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                            <span style={{"color": styleValidatePassword ? "#f33a58" : null}} className={cx("form--message")}>{validatePassword}</span>
                         </div>
                         <button className={cx("form--submit")}>Đăng nhập</button>
                         <a href="/account/accountForget?type=forgetPassword" style={{textDecoration: "none"}}>
@@ -332,22 +492,26 @@ function Account() {
                         
                             <div className={cx("form--group")}>
                                 <label htmlFor="userName"className={cx("form--label")}>Tên đầy đủ</label>
-                                <input value={userName} type="text" placeholder="VD: Sơn Đặng"className={cx("form--control")} onChange={handleOnChangeUserName}/>
+                                <input style={{"borderColor": styleValidateName ? "#f33a58" : null}} value={userName} type="text" placeholder="VD: Sơn Đặng"className={cx("form--control")} onChange={handleOnChangeUserName}/>
+                                <span style={{"color": styleValidateName ? "#f33a58" : null}} className={cx("form--message")}>{validateName}</span>
                             </div>
 
                             <div className={cx("form--group")}>
                                 <label htmlFor="email" className={cx("form--label")}>Email</label>
-                                <input value={email} type="text" placeholder="VD: email@domain.com" className={cx("form--control")} onChange={handleOnChangeEmail}/>
+                                <input style={{"borderColor": styleValidateEmail ? "#f33a58" : null}} value={email} type="text" placeholder="VD: email@domain.com" className={cx("form--control")} onChange={handleOnChangeEmail}/>
+                                <span style={{"color": styleValidateEmail ? "#f33a58" : null}} className={cx("form--message")}>{validateEmail}</span>
                             </div>
                         
                             <div className={cx("form--group")}>
                                 <label htmlFor="password" className={cx("form--label")}>Mật khẩu</label>
-                                <input value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                <input style={{"borderColor": styleValidatePassword ? "#f33a58" : null}} value={password} type="password" placeholder="Nhập mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                <span style={{"color": styleValidatePassword ? "#f33a58" : null}} className={cx("form--message")}>{validatePassword}</span>
                             </div>
 
                             <div className={cx("form--group")}>
                                 <label htmlFor="passwordAgain" className={cx("form--label")}>Nhập lại mật khẩu</label>
-                                <input value={passwordAgain} type="password" placeholder="Nhập lại mật khẩu" className={cx("form--control")} onChange={handleOnChangePasswordAgain}/>
+                                <input style={{"borderColor": styleValidatePasswordAgain ? "#f33a58" : null}} value={passwordAgain} type="password" placeholder="Nhập lại mật khẩu" className={cx("form--control")} onChange={handleOnChangePasswordAgain}/>
+                                <span style={{"color": styleValidatePasswordAgain ? "#f33a58" : null}} className={cx("form--message")}>{validatePasswordAgain}</span>
                             </div>
                             <button className={cx("form--submit")}>Đăng ký</button>
                         </form>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(style);
 
-function ToastInformation({content, title, bool, setBool}) {
+function ToastInformation({content, title, bool, setBool, timeOut = 3000}) {
 
     const [typeIcon, setTypeIcon] = useState(faCircleCheck)
 
@@ -44,7 +44,7 @@ function ToastInformation({content, title, bool, setBool}) {
     useEffect(() => {
         const timeoutID = setTimeout(() => {
             setBool(false);
-        }, 3000);
+        }, timeOut);
     
         return () => {
           // 👇️ clear timeout when the component unmounts
