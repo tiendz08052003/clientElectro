@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./WishlistChild.module.scss";
 
-import { faCaretDown, faCaretUp, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "~/Components/Image/Image";
 import { imgs } from "~/assest/imgs";
@@ -27,6 +27,7 @@ function WishlistChild({resultWishlist, setReload, reload}) {
     const dispatch = useDispatch();
 
     const axiosJWT = CreateAxios(user, dispatch, loginAccount)
+
 
     useEffect(() => {
         const fetchAPI = async () => {

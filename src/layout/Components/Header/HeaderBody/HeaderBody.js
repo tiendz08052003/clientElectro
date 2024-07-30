@@ -111,7 +111,9 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
         }
         setLoading(true);
         const fetchAPI = async () => {
-            const result = await ProductServices.search(setTimeValueInPut);
+            const result = await ProductServices.searchByElasticsearch(setTimeValueInPut);
+            // const result = await ProductServices.search(setTimeValueInPut);
+            console.log(result);
             dispatch(getResultSearch(result));
             setLoading(false);
         }

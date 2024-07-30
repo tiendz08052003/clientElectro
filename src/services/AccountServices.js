@@ -78,7 +78,7 @@ export const recoverPassword = async (data) => {
 
 export const changePassword = async (data, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.patch(`/account/account/submitChangePassword?id=${data.id}`, {
+        const res = await httpRequest.patch(`/account/submitChangePassword?id=${data.id}`, {
             password: data.password
         }, {
             headers: {token: `Bearer ${accessToken}`}
@@ -92,7 +92,7 @@ export const changePassword = async (data, accessToken, axiosJWT) => {
 
 export const verifyPasswordAccount = async (data, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.get(`/account/account/checkPassword/${data.id}`, {
+        const res = await httpRequest.get(`/account/checkPassword/${data.id}`, {
             headers: {
                 token: `Bearer ${accessToken}`,
                 password: data.password
@@ -105,12 +105,11 @@ export const verifyPasswordAccount = async (data, accessToken, axiosJWT) => {
     }
 }
 
-export const deleteAccount = async (data, accessToken, axiosJWT) => {
+export const deleteAccount = async (accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.deleteSingle(`/account/delete/${data.id}`, {
+        const res = await httpRequest.deleteSingle(`/account/delete`, {
             headers: {
-                token: `Bearer ${accessToken}`,
-                admin: data.admin
+                token: `Bearer ${accessToken}`
             }
         }, axiosJWT)
         return res;

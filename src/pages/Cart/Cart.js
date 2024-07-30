@@ -3,14 +3,12 @@ import styles from "./Cart.module.scss";
 
 import { IconLink, IconNext } from "~/Components/Icons";
 import CartChild from "./CartChild";
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import * as CartServices from '~/services/CartServices';
 import * as ProductServices from '~/services/ProductServices';
-import { useDispatch } from "react-redux";
+import * as MainServices from '~/services/MainServices';
 import { useSelector } from "react-redux";
 import { getUser } from "~/redux/selector";
-import { loginAccount } from "~/pages/Account/accountSlice";
-import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
 
 const cx = classNames.bind(styles);
 
@@ -21,9 +19,6 @@ function Cart() {
     const [subtotal, setSubtotal] = useState(0);
 
     const user = useSelector(getUser);
-    const dispatch = useDispatch();
-
-    let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
     useEffect(() => {
         if (user?.accessToken)
@@ -33,7 +28,7 @@ function Cart() {
                 const res2 = await CartServices.getCart();
                 let sum = 0;
                 res2.map(childCart => {
-                    if(childCart.idAuth === user._id)
+                    if(childCart.idAccount === user._id)
                     {
                         res1.map(childProduct => {
                             if(childCart.idProduct === childProduct._id)
@@ -44,12 +39,30 @@ function Cart() {
                     }
                 })
                 setSubtotal(sum);
-                setListResultCart(res2.filter(x => x.idAuth === user._id));
+                setListResultCart(res2.filter(x => x.idAccount === user._id));
             }
             fetchAPI();
         }
+        else {
+            (async () => {
+                const { id } = await MainServices.getIDHardware();
+                const res1 = await ProductServices.shop();
+                const data = await CartServices.getCartNoLogin(id);
+                const res2 = data.data;
+                let sum = 0;
+                res2.map(childCart => {
+                    res1.map(childProduct => {
+                        if(childCart.idProduct === childProduct._id)
+                        {
+                            sum += childProduct.price * childCart.count - childProduct.discount;
+                        }
+                    })
+                })
+                setSubtotal(sum);
+                setListResultCart(res2);
+            })();
+        }
     }, [reload])
-
 
     return ( 
         <div className={cx("cart")}>
@@ -69,12 +82,12 @@ function Cart() {
                     </tr>
                 </thead>
                 <tbody>
-                    {user?.accessToken ? (
+                    {
                         listResultCart.length > 0 ? (
                             <>
                                 {
                                     listResultCart.map((resultCart, index) => (
-                                    <CartChild key={resultCart._id} resultCart={resultCart} setReload={setReload} reload={reload}/>
+                                        <CartChild key={index} resultCart={resultCart} setReload={setReload} reload={reload}/>
                                     ))
                                 }
                                 <tr className={cx("cart__tableRow3")}>
@@ -163,17 +176,10 @@ function Cart() {
                                 </td>
                             </tr>
                         )
-                    ) : (
-                        <tr>
-                            <td className={cx("cart__table--noData")} colSpan="7">
-                                Hãy <a href="./account?type=register">đăng ký</a> hoặc <a href="./account?type=login">đăng nhập</a> tài khoản để có thể xem giỏ hàng và thanh toán
-                            </td>
-                        </tr>
-                    )}
+                    }
                 </tbody>
             </table>
         </div>
      );
 }
-
 export default Cart;

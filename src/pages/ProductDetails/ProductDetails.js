@@ -17,17 +17,17 @@ import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
 import { loginAccount } from "../Account/accountSlice";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
 import { useParams } from "react-router-dom";
+import * as MainServices from "~/services/MainServices";
 
 const cx = classNames.bind(style);
 
 function ProductDetails() {
-    const x = new URLSearchParams(window.location.search);
-    
 
     const user = useSelector(getUser);
     const dispatch = useDispatch();
 
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
+
 
     const [quality, setQuality] = useState(1);
     const [boolColorHeart, setBoolColorHeart] = useState(false);
@@ -172,7 +172,6 @@ function ProductDetails() {
             })
             setNameType(type);
             setProductDetails(product)
-
         }
 
         fetchAPI();
@@ -200,7 +199,7 @@ function ProductDetails() {
     const handleOnClickAddCart = () => {
         setBool(false);
         let flag = false;
-        const idProductDetails = x.get("id");
+        const idProductDetails = productDetails._id
         const fetchAPI = async () => {
             const res = await CartServices.getCart()
             if(user?.accessToken)
@@ -210,7 +209,7 @@ function ProductDetails() {
                     {
                         flag = true;
                         const fetchAPI1 = async () => { 
-                            await CartServices.updateCart(user?.accessToken, cart._id, Number(quality) + cart.count, axiosJWT); 
+                            await CartServices.updateCart(user?.accessToken, idProductDetails, Number(quality) + cart.count, axiosJWT); 
                             setContent("Success");
                             setTitle("Thêm vào giỏ hàng thành công!");
                             setBool(true);
@@ -220,7 +219,7 @@ function ProductDetails() {
                 })
                 if(flag === false)
                 {
-                    await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: 1}, axiosJWT);
+                    await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: Number(quality)}, axiosJWT);
                     setContent("Success");
                     setTitle("Thêm vào giỏ hàng thành công!");
                     setBool(true);
@@ -228,11 +227,29 @@ function ProductDetails() {
             }
             else
             {
-                setTimeout(() => {
-                    setContent("Warn");
-                    setTitle("Bạn phải đăng nhập để thêm giỏ hàng!");
+                const { id } = await MainServices.getIDHardware();
+                const data = await CartServices.getCartNoLogin(id);
+                const listCartRedis = data.data;
+                listCartRedis.map(async (cart, index) => {
+                    if(cart.idProduct === idProductDetails)
+                    {
+                        flag = true;
+                        await CartServices.updateCartNoLogin(id, {idProduct: idProductDetails, count: Number(quality) + cart.count}, index);
+                        setContent("Success");
+                        setTitle("Thêm vào giỏ hàng thành công!");
+                        setBool(true);
+                    }
+                })
+                if(!flag)
+                {
+                    await CartServices.addCartNoLogin(id, {
+                        idProduct: idProductDetails, 
+                        count: Number(quality)
+                    });
+                    setContent("Success");
+                    setTitle("Thêm vào giỏ hàng thành công!");
                     setBool(true);
-                }, 300)
+                }
             }
         }
         fetchAPI();

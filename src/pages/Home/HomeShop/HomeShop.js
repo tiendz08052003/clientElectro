@@ -18,10 +18,9 @@ const cx = classNames.bind(styles);
 
 function HomeShop({product, reloadCart, setReloadCart}) {
     const dispatch = useDispatch();
-    
     const user = useSelector(getUser);
-    let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
+    let axiosJWT = CreateAxios(user, dispatch, loginAccount)
     const [nameType, setNameType] = useState("");
     const [boolColorHeart, setBoolColorHeart] = useState(false);
     const [boolColorCompare, setBoolColorCompare] = useState(false);
@@ -143,7 +142,7 @@ function HomeShop({product, reloadCart, setReloadCart}) {
                 }
                 if(flag === false)
                 {
-                    await CartServices.addCart(user?.accessToken, {idAuth: user._id, idProduct: id, count: 1}, axiosJWT);
+                    await CartServices.addCart(user?.accessToken, {idAccount: user._id, idProduct: id, count: 1}, axiosJWT);
                     setContent("Success");
                     setTitle("Thêm vào giỏ hàng thành công!");
                     setBool(true);

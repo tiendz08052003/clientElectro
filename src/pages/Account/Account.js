@@ -6,10 +6,12 @@ import { useRef, useState } from "react";
 import * as AccountServices from "~/services/AccountServices";
 import { loginAccount, logoutAccount, registerAccount } from "./accountSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { parsePath, useNavigate } from "react-router-dom";
 import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
 import { getUser } from "~/redux/selector";
 import { CreateAxios } from "~/Components/CreateInstance/CreateInstance";
+import * as MainServices from "~/services/MainServices";
+import * as CartServices from "~/services/CartServices";
 
 const cx = classNames.bind(styles);
 
@@ -31,8 +33,10 @@ function Account() {
     const [bool, setBool] = useState(false);
     const user = useSelector(getUser);
     const [checkPasswordOld, setCheckPasswordOld] = useState(false);
-    const refinput = useRef();
-    const refbutton = useRef();
+    const refInput = useRef();
+    const refButton = useRef();
+
+    let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
     const style = {
         backgroundColor: "var(--primary-color)" 
@@ -54,74 +58,99 @@ function Account() {
         setPassWordAgain(e.target.value);
     }
 
-    const handleOnSubmitRegister = (e) => {
+    const handleOnSubmitRegister = async (e) => {
         setBool(false);
         e.preventDefault();
-        const fetchAPI = async () => {
-            const res = await AccountServices.createAccount({
-                name: userName,
-                email: email,
-                password: password,
-                passwordAgain: passwordAgain
-            })
-            if(res === "Success")
-            {
-                dispatch(registerAccount())
-                setUserName("");
-                setEmail("");
-                setPassword("");
-                setPassWordAgain("");
-                setContent("Success");
-                setTitle("Đăng ký tài khoản thành công!");
-                setBool(true);
-                setTimeout(() => {
-                    setRegisOrLogin(true);
-                    navigate("/account?type=login");
-                }, 3000)
-            }
-            else
-            {
-                setUserName("");
-                setEmail("");
-                setPassword("");
-                setPassWordAgain("");
-                setContent("Error");
-                setTitle("Đăng ký thất bại!");
-                setBool(true);
-            }
+        
+        const res = await AccountServices.createAccount({
+            name: userName,
+            email: email,
+            password: password,
+            passwordAgain: passwordAgain
+        })
+        if(res === "Success")
+        {
+            dispatch(registerAccount())
+            setUserName("");
+            setEmail("");
+            setPassword("");
+            setPassWordAgain("");
+            setContent("Success");
+            setTitle("Đăng ký tài khoản thành công!");
+            setBool(true);
+            setTimeout(() => {
+                setRegisOrLogin(true);
+                navigate("/account?type=login");
+            }, 3000)
         }
-        fetchAPI();
+        else
+        {
+            setUserName("");
+            setEmail("");
+            setPassword("");
+            setPassWordAgain("");
+            setContent("Error");
+            setTitle("Đăng ký thất bại!");
+            setBool(true);
+        }
     }
 
-    const handleOnSubmitLogin = (e) => {
-        e.preventDefault();
-        const fetchAPI = async () => {
-            const res = await AccountServices.loginAccount({
-                email: email,
-                password: password,
+    const handleUpdateCartWhenLogin = async (props, id) => {
+        let ind = -1;
+        const data = await CartServices.getCartNoLogin(id);
+        data.data.forEach(element => {
+            element.idAccount = props._id;
+        });
+        const listCartRedis = data.data
+        const res = await CartServices.getCart();
+        res.map(cart => {
+            ind = -1;
+            listCartRedis.map(async (element, index) => {
+                if(element.idProduct === cart.idProduct && element.idAccount === cart.idAccount) {
+                    await CartServices.updateCart(props.accessToken, element.idProduct, element.quality + cart.count); 
+                    ind = index;
+                    return;
+                }
             })
-            if(res !== undefined)
-            {
-                dispatch(loginAccount(res))
-                setEmail("");
-                setPassword("");
-                setContent("Success");
-                setTitle("Đăng nhập thành công!");
-                setBool(true);
-                setTimeout(() => {
-                    navigate("/");
-                }, 3000)
-            }
-            else
-            {
-                setEmail("");
-                setPassword("");
-                setContent("Error");
-                setTitle("Đăng nhập thất bại!");
-                setBool(true);
-            }
+            if(ind !== -1)    
+                listCartRedis.splice(ind, 1);
+        })
+        await CartServices.addManyMultipleCart(props.accessToken, listCartRedis);
+    }
+
+    const handleDeleteKeyCartRedis = async (id) => {
+        await CartServices.deleteKeyCartNoLogin(id);
+    }
+
+    const handleOnSubmitLogin = async (e) => {
+        e.preventDefault();
+        const res = await AccountServices.loginAccount({
+            email: email,
+            password: password,
+        })
+        if(res !== undefined)
+        {
+            const { id } = await MainServices.getIDHardware();
+            dispatch(loginAccount(res))
+            setEmail("");
+            setPassword("");
+            setContent("Success");
+            setTitle("Đăng nhập thành công!");
+            setBool(true);
+            setTimeout(() => {
+                navigate("/");
+            }, 3000)
+            handleUpdateCartWhenLogin(res, id);
+            handleDeleteKeyCartRedis(id);
         }
-        fetchAPI();
+        else
+        {
+            setEmail("");
+            setPassword("");
+            setContent("Error");
+            setTitle("Đăng nhập thất bại!");
+            setBool(true);
+        }
     }
 
     const handleOnClickExit = () => {
@@ -131,91 +160,77 @@ function Account() {
     const handleOnCheckbox = (e) => {
         if(e.target.checked === true)
         {
-            refinput.current.style.display = "block";
-            refbutton.current.style.display = "block";
+            refInput.current.style.display = "block";
+            refButton.current.style.display = "block";
         }
         else
         {
             setCheckPasswordOld(false);
-            refinput.current.style.display = "none";
-            refbutton.current.style.display = "none";
+            refInput.current.style.display = "none";
+            refButton.current.style.display = "none";
         }
     }
 
-    let axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
-    const handleSubmitChangePassword = () => {
-        const fetchAPI = async () => {
-            const res = await AccountServices.changePassword({
-                id: user._id,
-                password
-            }, user?.accessToken, axiosJWT)
-            if(res === "Success")
-            {
-                setCheckPasswordOld(false);
-                setContent("Success");
-                setTitle("Đổi mật khẩu thành công!");
-                setBool(false);
-            }    
-            else
-            {
-                setContent("Error");
-                setTitle("Đổi mật khẩu không thành công!");
-                setBool(true);
-            }
+    const handleSubmitChangePassword = async () => {
+        const res = await AccountServices.changePassword({
+            id: user._id,
+            password
+        }, user?.accessToken, axiosJWT)
+        if(res === "Success")
+        {
+            setCheckPasswordOld(false);
+            setContent("Success");
+            setTitle("Đổi mật khẩu thành công!");
+            setBool(false);
+        }    
+        else
+        {
+            setContent("Error");
+            setTitle("Đổi mật khẩu không thành công!");
+            setBool(true);
         }
-        fetchAPI();
     }
 
-    const handleSubmitCheckPassword = () => {
-        const fetchAPI = async () => {
-            const res = await AccountServices.verifyPasswordAccount({
-                id: user._id,
-                password
-            }, user?.accessToken, axiosJWT)
-            if(res === "Success")
-            {
-                setCheckPasswordOld(true);
-                setContent("Success");
-                setTitle("Mật khẩu đúng!");
-                setBool(false);
-            }    
-            else
-            {
-                setContent("Error");
-                setTitle("Sai mật khẩu!");
-                setBool(true);
-            }
+    const handleSubmitCheckPassword = async () => {
+        const res = await AccountServices.verifyPasswordAccount({
+            id: user._id,
+            password
+        }, user?.accessToken, axiosJWT)
+        if(res === "Success")
+        {
+            setCheckPasswordOld(true);
+            setContent("Success");
+            setTitle("Mật khẩu đúng!");
+            setBool(false);
+        }    
+        else
+        {
+            setContent("Error");
+            setTitle("Sai mật khẩu!");
+            setBool(true);
         }
-        fetchAPI();
     }  
 
-    const handleSubmitDeletePassword = () => {
-        const fetchAPI = async () => {
-            const res1 = await AccountServices.logoutAccount(user?.accessToken, axiosJWT);
+    const handleSubmitDeletePassword = async () => {
+        const res2 = await AccountServices.deleteAccount(user?.accessToken, axiosJWT);
+        if(res2 === "Success")
+        {
+            await AccountServices.logoutAccount(user?.accessToken, axiosJWT);
             dispatch(logoutAccount(null));
-            const res2 = await AccountServices.deleteAccount({
-                id: user._id,
-                admin: user.admin
-            }, user?.accessToken, axiosJWT)
-            if(res1 === "Success" && res2 === "Success")
-            {
-                setContent("Success");
-                setTitle("Xóa tài khoản thành công!");
-                setBool(false);
-                setTimeout(() => {
-                    navigate("/");
-                }, 3000)
-            }    
-            else
-            {
-                setContent("Error");
-                setTitle("Xóa tài khoản thất bại!");
-                setBool(true);
-            }
+            setContent("Success");
+            setTitle("Xóa tài khoản thành công!");
+            setBool(false);
+            setTimeout(() => {
+                navigate("/");
+            }, 3000)
+        }    
+        else
+        {
+            setContent("Error");
+            setTitle("Xóa tài khoản thất bại!");
+            setBool(true);
         }
-
-        fetchAPI();
     }
     
     return ( 
@@ -228,7 +243,7 @@ function Account() {
                     
                         <div className={cx("form--group")}>
                             <label htmlFor="userName"className={cx("form--label")}>Tên đầy đủ</label>
-                            <input value={user && user.userName} type="text" placeholder="VD: Sơn Đặng"className={cx("form--control")} onChange={handleOnChangeUserName}/>
+                            <input value={user && user.name} type="text" placeholder="VD: Sơn Đặng"className={cx("form--control")} onChange={handleOnChangeUserName}/>
                         </div>
 
                         <div className={cx("form--group")}>
@@ -257,7 +272,7 @@ function Account() {
                                         </div>
                                     </>
                                 ) : (
-                                    <input value={password} ref={refinput} style={{"display": "none"}} type="password" placeholder="Nhập mật khẩu cũ để thay đổi mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
+                                    <input value={password} ref={refInput} style={{"display": "none"}} type="password" placeholder="Nhập mật khẩu cũ để thay đổi mật khẩu" className={cx("form--control")} onChange={handleOnChangePassword}/>
                                 ) 
                             }
                         </div>
@@ -266,7 +281,7 @@ function Account() {
                                 Thay đổi mật khẩu
                             </button>
                         ) : (
-                            <button ref={refbutton} style={{"display": "none"}} className={cx("form--submit")} onClick={handleSubmitCheckPassword}>
+                            <button ref={refButton} style={{"display": "none"}} className={cx("form--submit")} onClick={handleSubmitCheckPassword}>
                                 Xác thực mật khẩu
                             </button>
                         )}

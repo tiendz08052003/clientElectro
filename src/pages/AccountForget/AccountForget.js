@@ -4,10 +4,6 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import * as AuthServices from '~/services/AccountServices'
-import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "~/redux/selector";
-import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
-import { loginAccount } from "../Account/accountSlice";
 import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(style);
@@ -20,11 +16,8 @@ function AccountForget() {
     const [passwordAgain, setPasswordAgain] = useState("");
     const [accountForget, setAccountForget] = useState(typeAccountForget === "forgetPassword" ? true : false);
 
-    const user = useSelector(getUser);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
     const handleOnChangeValueEmail = (e) => {
         setEmail(e.target.value);

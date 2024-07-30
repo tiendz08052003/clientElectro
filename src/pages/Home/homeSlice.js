@@ -58,7 +58,6 @@ const homeSlice = createSlice({
                 state.status = 'fulfilled';
                 state.detailsTypeList = action.payload;
             })
-            
             .addCase(getDetailsCatalog.fulfilled, (state, action) => {
                 state.status = 'fulfilled';
                 state.detailsCatalogList = action.payload;

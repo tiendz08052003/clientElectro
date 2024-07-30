@@ -593,8 +593,8 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
         let array = [];
         let length = 0;
         if(typeHome) {
-            if(searchProducts.list?.length !== 0)
-                length = Math.ceil(searchProducts.list.length / quality);
+            if(searchProducts?.list?.length !== 0)
+                length = Math.ceil(searchProducts?.list.length / quality);
         }
         else {
             if(products.list?.length !== 0)
@@ -662,7 +662,7 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                         Shop
                     </div>
                     <div className={cx("home__shop__name--right")}>
-                        Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
+                        Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts?.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
                     </div>
                 </div>
                 <div className={cx("home__shop__selec")}>
@@ -711,14 +711,14 @@ function Home({ handleOnClickFilterOnTabletOrMobile, reloadCart, setReloadCart})
                             <HomeShop key={index} product={product} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                         ))
                     ) : (
-                        searchProducts.listProduct?.map((product, index) => (
+                        searchProducts?.listProduct?.map((product, index) => (
                             <HomeShop key={index} product={product} reloadCart={reloadCart} setReloadCart={setReloadCart}/>
                         ))
                     )}
                 </ul>
                 <div className={cx("home__shop__page")}>
                     <div className={cx("home__shop__page--left")}>
-                    Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts.list?.length} results
+                    Showing {(numberPage - 1) * quality + 1 }–{typeHome === null ? (numberPage - 1) * quality + products.listProduct?.length : (numberPage - 1) * quality + searchProducts?.listProduct?.length} of {typeHome === null ? products.list?.length : searchProducts?.list?.length} results
                     </div>
                     <div className={cx("home__shop__page--right")}>
                         {listNumberPage.map((x, index) => (

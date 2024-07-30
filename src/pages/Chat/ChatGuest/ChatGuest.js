@@ -6,8 +6,8 @@ const cx = classNames.bind(styles);
 function ChatGuest({ur, User, setNameGuest, setBoolChatting, setIdRoom}) {
 
     const handleClickUser = () => {
-        setIdRoom([ur._id /*Id khách*/, User._id/*Id admin*/]);
-        setNameGuest(ur.name /*tên khách*/);
+        setIdRoom([ur._id /*Id guest*/, User._id/*Id admin*/]);
+        setNameGuest(ur.name /*Name guest*/);
         setBoolChatting(false);
     }
 

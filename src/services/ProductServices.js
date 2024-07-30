@@ -11,14 +11,37 @@ export const shop = async () => {
     }
 }
 
-export const search = async (q, type = "less") => {
+export const search = async (q) => {
     try {
         const res = await httpRequest.get("product/search", { 
             params: {
-                q,
-                type
+                q
             },
         })
+        return res;
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const searchByElasticsearch = async (q) => {
+    try {
+        const res = await httpRequest.get("product/elasticsearch/searchElasticsearch", { 
+            params: {
+                q
+            },
+        })
+        return res;
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const synchronizedElasticsearch = async () => {
+    try {
+        const res = await httpRequest.post("product/elasticsearch/synchronized")
         return res;
     }
     catch(err) {

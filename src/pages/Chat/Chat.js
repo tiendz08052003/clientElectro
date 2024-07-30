@@ -62,7 +62,6 @@ function Chat() {
         setFresh(false)
         if(nameGuest === "")
         {
-            console.log(1);
             socket.emit("client-send-server-disconnect")
         }
     }
@@ -93,6 +92,7 @@ function Chat() {
     }
 
     const handleClickChatClient = () => {
+        console.log(idRoom)
         socket.emit("client-to-server-joinRoom", idRoom);
         setIdGuest(idRoom[0]);
         setBoolChatting(true);
@@ -100,24 +100,23 @@ function Chat() {
     }
 
     useEffect(() => {
-        socket.on("server-send-client-reply", (obj) => {
+        socket.on("server-send-client-reply", async (obj) => {
             console.log("Có người kết nối vào phòng: ", obj.id)
-            const fetchAPI = async () => {
-                const res = await ChatServices.getChat()
-                const user = res.find(x => x.idAuth === User._id)
-                await ChatServices.updateChat(user._id, {
-                    idRoom: obj.idRoom,
-                    queue: false,
-                })
-                const results = await AccountServices.getAccount();
-                results.map(ur => {
-                    if((User.admin &&  obj.idRoom === ur._id) || (!User.admin && obj.idAdmin === ur._id))
-                    {
-                        setNameGuest(ur.name)
-                    }
-                })
-            }
-            fetchAPI();
+            const res = await ChatServices.getChat()
+            const user = res.find(x => x.idAccount === User._id)
+            await ChatServices.updateChat(user._id, {
+                idRoom: obj.idRoom,
+                queue: false,
+            })
+            const results = await AccountServices.getAccount();
+            console.log(results);
+            results.map(ur => {
+                console.log(obj.idAdmin, ur._id)
+                if((User.role === "admin"  &&  obj.idRoom === ur._id) || (User.role !== "admin"  && obj.idAdmin === ur._id))
+                {
+                    setNameGuest(ur.name)
+                }
+            })
         })
 
         socket.on("server-send-client-dsUserName", (array) => {
@@ -169,12 +168,12 @@ function Chat() {
         socket.on("server-send-client-finishChat", () => {
             const fetchAPI = async () => {
                 const res = await ChatServices.getChat()
-                const user = res.find(x => x.idAuth === User._id)
+                const user = res.find(x => x.idAccount === User._id)
                 await ChatServices.updateChat(user._id, {
-                    idRoom: user.idAuth,
+                    idRoom: user.idAccount,
                     message: [],
                 })
-                if(User.admin)
+                if(User.role === "admin" )
                     socket.emit("client-send-server-setIdRoom")
             }
             fetchAPI();
@@ -200,9 +199,9 @@ function Chat() {
             const fetchAPI = async () => {
                 const res = await ChatServices.getChat()                 
                 const results = await AccountServices.getAccount();
-                const user = res.find(x => x.idAuth === User._id)
-                const guestChat = res.find(x => (x.idRoom === user.idRoom && user.idAuth !== x.idAuth));
-                const guest = results.find(x => x._id === guestChat.idAuth)
+                const user = res.find(x => x.idAccount === User._id)
+                const guestChat = res.find(x => (x.idRoom === user.idRoom && user.idAccount !== x.idAccount));
+                const guest = results.find(x => x._id === guestChat.idAccount)
                 setNameGuest(guest.name)
                 setIdGuest(guest._id)
                 setListMessageChat(guestChat.message)
@@ -255,7 +254,7 @@ function Chat() {
     const handleOnClickFinishChat = () => {
         const id = User._id;
         // send to sever id guest
-        socket.emit("client-to-server-finnishChat", User.admin? idGuest : id)
+        socket.emit("client-to-server-finnishChat", User.role === "admin" ? idGuest : id)
     }
 
     const handleClickOption = (e) => {
@@ -297,7 +296,7 @@ function Chat() {
                     </div>
                     <div className={cx("chat__main__top__icon")}>
                         {
-                            User && User.admin && (
+                            User && User.role === "admin"  && (
                                 collapse ? (
                                     <div className={cx("chat__main__top__icon__cut")} onClick={handleClickCollapse}>
                                         <IconCollapseRightChat className={cx("chat__main__top__icon__cut__details")}/>
@@ -317,7 +316,7 @@ function Chat() {
             {
                 User ? (
                         <div className={cx("chat__main__bottom")}>
-                            {User && User.admin && (
+                            {User && User.role === "admin"  && (
                                 <div className={cx("chat__main__bottom__account")}>
                                     <div className={cx("chat__main__bottom__account__search")}>
                                         <div className={cx("chat__main__bottom__account__search__txtSearch")}>
@@ -340,7 +339,7 @@ function Chat() {
                                     </div>
                                     {idGuest && (showSidebar == 1 || showSidebar == 2) && (
                                         users.map((ur) => (
-                                            idGuest === ur._id && ur.admin === false && (
+                                            idGuest === ur._id && ur.role !== "admin" && (
                                                 <div className={cx("chat__main__bottom__account__details")} key={ur._id} onClick={handleOnClickChatting}>
                                                     <div className={cx("chat__main__bottom__account__details__avatar")}>
                                                         <Image src="https://cf.shopee.vn/file/792b99e3c472e88995b2e55d341f670e_tn" className={cx("chat__main__bottom__account__details__avatar__details")}/>
@@ -358,14 +357,14 @@ function Chat() {
                                         ))
                                     )}
                                     {
-                                        (showSidebar == 1 || showSidebar == 3) && (
+                                        (showSidebar === 1 || showSidebar === 3) && (
                                             <div className={cx("chat__main__bottom__account__listQueue")}>
                                                 <div className={cx("chat__main__bottom__account__listQueue__title")}>Khách hàng đang đợi: {listUser.length}</div>
                                                 <ul className={cx("chat__main__bottom__account__listQueue__list")}>
                                                     {
                                                         listUser.map((id) => (
                                                             users.map((ur) => (
-                                                                id === ur._id && ur.admin === false && (
+                                                                id === ur._id && ur.role !== "admin" && (
                                                                     <ChatGuest key={id} User={User} ur={ur} setNameGuest={setNameGuest} setBoolChatting={setBoolChatting} setIdRoom={setIdRoom}/>
                                                                 )
                                                             ))
@@ -378,7 +377,7 @@ function Chat() {
                                 </div>
                             )}
                             {collapse && (
-                                nameGuest !== "" || (User && User.admin === false) ? (
+                                nameGuest !== "" || (User && User.role === "admin"  === false) ? (
                                     <div className={cx("chat__main__bottom__content")}>
                                         <div className={cx("chat__main__bottom__content__option")}>
                                             {nameGuest === "" ? (
@@ -398,18 +397,18 @@ function Chat() {
                                                 </>
                                             ) }
                                         </div>
-                                        <div ref={refMainMessage} style={{display: boolChatting || (User && User.admin === false) ? "block" : "none"}} className={cx("chat__main__bottom__content__main")} >
+                                        <div ref={refMainMessage} style={{display: boolChatting || (User && User.role === "admin"  === false) ? "block" : "none"}} className={cx("chat__main__bottom__content__main")} >
                                         {
                                             listMessageChat.length !== 0 && (
                                                 listMessageChat.map((x, index) => (
                                                     x.admin ? (
-                                                        User.admin ? (
+                                                        User.role === "admin"  ? (
                                                             <Message key={index} message={x.admin} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
                                                             <Message key={index} message={x.admin} style={{"justifyContent": "left"}} right={false}/>
                                                         )
                                                     ) : (
-                                                        !User.admin ? (
+                                                        !User.role === "admin"  ? (
                                                             <Message key={index} message={x.user} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
                                                             <Message key={index} message={x.user} style={{"justifyContent": "left"}} right={false}/>
@@ -420,7 +419,7 @@ function Chat() {
                                         }
                                         </div>
                                         {
-                                            boolChatting === true  || User.admin === false ? (
+                                            boolChatting === true  || User.role === "admin"  === false ? (
                                                 <div className={cx("chat__main__bottom__content__input")}>
                                                     <div className={cx("chat__main__bottom__content__input__import")}>
                                                         <textarea type="text" placeholder="Nhập nội dung tin nhắn" className={cx("chat__main__bottom__content__input__import__text")} ref={ref} value={messageInput} onInput={handleOnInputText}></textarea>

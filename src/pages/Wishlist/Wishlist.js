@@ -6,8 +6,6 @@ import { useEffect } from "react";
 import WishlistChild from "./WishlistChild/WishlistChild";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "~/redux/selector";
-import {CreateAxios} from "~/Components/CreateInstance/CreateInstance";
-import { loginAccount } from "../Account/accountSlice";
 
 const cx = classNames.bind(styles);
 
@@ -16,9 +14,6 @@ function Wishlist() {
     const [reload, setReload] = useState(false);
 
     const user = useSelector(getUser);
-    const dispatch = useDispatch();
-
-    const axiosJWT = CreateAxios(user, dispatch, loginAccount)
 
     useEffect(() => {
         const fetchAPI = async () => {

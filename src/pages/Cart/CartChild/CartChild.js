@@ -8,6 +8,7 @@ import { imgs } from "~/assest/imgs";
 import { Fragment, memo, useEffect,  useState } from "react";
 import * as ProductServices from '~/services/ProductServices';
 import * as CartServices from '~/services/CartServices';
+import * as MainServices from '~/services/MainServices';
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "~/redux/selector";
 import { loginAccount } from "~/pages/Account/accountSlice";
@@ -17,7 +18,7 @@ import ToastInformation from "~/Components/ToastInfomation/ToastInformation";
 const cx = classNames.bind(styles);
 
 function CartChild({resultCart, setReload, reload}) {
-    const [listResultCart, setListResultCart] = useState({});
+    const [cartItem, setCartItem] = useState({});
     const [quality, setQuality] = useState(1);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState("");
@@ -28,6 +29,7 @@ function CartChild({resultCart, setReload, reload}) {
     const dispatch = useDispatch();
     
     let axiosJWT = CreateAxios(user, dispatch, loginAccount)
+    
 
     const handleOnChangeValueQuality = (e) => {
         if(e.target.value > 0 || e.target.value === "")
@@ -42,26 +44,49 @@ function CartChild({resultCart, setReload, reload}) {
         }
     }
 
-    const handleOnClickUpQuality = (e) => {
+    const handleOnClickUpQuality = async (e) => {
         setQuality(Number(quality) + 1);
-        const id = e.target.closest(".cartChild__column6__input__upDown__iconUp--handle").getAttribute("data-id");
-        const fetchAPI = async () => {
+        if (user?.accessToken) {
+            const id = e.target.closest(".cartChild__column6__input__upDown__iconUp--handle").getAttribute("data-id");
             await CartServices.updateCart(user?.accessToken, id, Number(quality) + 1, axiosJWT); 
             setReload(!reload);
         }
-        fetchAPI();
+        else {
+            const { id } = await MainServices.getIDHardware();
+            const data = await CartServices.getCartNoLogin(id);
+            const listCartRedis = data.data;
+            listCartRedis.map(async (cart, index) => {
+            if(cart.idProduct === resultCart.idProduct)
+            {
+                await CartServices.updateCartNoLogin(id, {idProduct: resultCart.idProduct, count: Number(quality) + 1}, index);
+                setReload(!reload);
+            }
+            })
+        }
+
     }
 
-    const handleOnClickDownQuality = (e) => {
+    const handleOnClickDownQuality = async (e) => {
         if(quality !== 1)
         {
             setQuality(Number(quality) - 1);
-            const id = e.target.closest(".cartChild__column6__input__upDown__iconDown--handle").getAttribute("data-id");
-            const fetchAPI = async () => {
+            if (user?.accessToken) {
+                const id = e.target.closest(".cartChild__column6__input__upDown__iconDown--handle").getAttribute("data-id");
                 await CartServices.updateCart(user?.accessToken, id, Number(quality) - 1, axiosJWT); 
                 setReload(!reload);
             }
-            fetchAPI();
+            else {
+                const { id } = await MainServices.getIDHardware();
+                const data = await CartServices.getCartNoLogin(id);
+                const listCartRedis = data.data;
+                listCartRedis.map(async (cart, index) => {
+                if(cart.idProduct === resultCart.idProduct)
+                {
+                    await CartServices.updateCartNoLogin(id, {idProduct: resultCart.idProduct, count: Number(quality) - 1}, index);
+                    setReload(!reload);
+                }
+                })
+            }   
         }
     }
 
@@ -72,7 +97,7 @@ function CartChild({resultCart, setReload, reload}) {
             res.map((data) => {
                 if(resultCart.idProduct === data._id)
                 {
-                    setListResultCart(data);
+                    setCartItem(data);
                     setQuality(resultCart.count)
                     setLoading(false);
                 }
@@ -82,10 +107,11 @@ function CartChild({resultCart, setReload, reload}) {
     }, [])
 
 
-    const handleOnClickDeleteCart = (e) => {
+    const handleOnClickDeleteCart = async (e) => {
         setBool(false);
-        const id = e.target.closest(".cartChild__column1__exit--icon--handle").getAttribute("data-id");
-        const fetchAPI = async () => {
+        if (user?.accessToken)
+        {
+            const id = e.target.closest(".cartChild__column1__exit--icon--handle").getAttribute("data-id");
             const res = await CartServices.deleteCart(user?.accessToken, id, axiosJWT);
             if(res === "Success")
             {
@@ -103,7 +129,18 @@ function CartChild({resultCart, setReload, reload}) {
                 setBool(true);
             }
         }
-        fetchAPI();
+        else {
+            const { id } = await MainServices.getIDHardware();
+            await CartServices.deleteCartNoLogin(id, resultCart);
+            setContent("Success");
+            setTitle("Sản phẩm xóa thành công!");
+            setBool(true);
+            setTimeout(() => {
+                setReload(!reload);
+            }, 3000)
+
+        }
+        
     }
     
     return ( 
@@ -120,21 +157,21 @@ function CartChild({resultCart, setReload, reload}) {
                         </div>
                     </td>
                     <td className={cx("cartChild__column2", "cartChild__column")}> 
-                        <Image alt = "ảnh sản phẩm" src={imgs.anhSound} className={cx("cartChild__column2__img")} />
+                        <Image alt = "ảnh sản phẩm" src={cartItem.image} className={cx("cartChild__column2__img")} />
                     </td>
                     <td className={cx("cartChild__column3", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {listResultCart.name}
+                            {cartItem.name}
                         </div>
                     </td>
                     <td className={cx("cartChild__column4", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {quality * listResultCart.price}
+                            {quality * cartItem.price}
                         </div>
                     </td>
                     <td className={cx("cartChild__column5", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {listResultCart.discount ? listResultCart.discount : 0}
+                            {cartItem.discount ? cartItem.discount : 0}
                         </div>
                     </td>
                     <td className={cx("cartChild__column6", "cartChild__column")}>
@@ -148,12 +185,14 @@ function CartChild({resultCart, setReload, reload}) {
                     </td>
                     <td className={cx("cartChild__column7", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {quality * listResultCart.price - listResultCart.discount}
+                            {quality * cartItem.price - cartItem.discount}
                         </div>
                     </td>
                 </Fragment>
             )}
-            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            <td>
+                {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            </td>
         </tr>
     )
 }

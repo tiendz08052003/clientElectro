@@ -8,7 +8,6 @@ import Path from "../Components/Path";
 const cx = classNames.bind(styles);
 
 function HeaderAndFooterOnly( {namePage, children} ) {
-    console.log(namePage);
     return ( 
         <div className={cx("container")}>
             <Header/>

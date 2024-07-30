@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import * as AuthServices  from "~/services/AccountServices";
 
-export const CreateAxios = (user, dispatch, stateSuccess) => {
+export const CreateAxios = (user = null, dispatch = null, stateSuccess = null) => {
     const newInstance = axios.create({
         baseURL: "https://be-electro-api.onrender.com/api/",
         withCredentials: true,
@@ -12,7 +12,7 @@ export const CreateAxios = (user, dispatch, stateSuccess) => {
         async (config) => {
             const date = new Date();
             const decodedToken = jwt_decode(user?.accessToken);
-            if(decodedToken.exp < date.getTime() / 1000)
+            if(decodedToken?.exp < date.getTime() / 1000)
             {
                 const res = await AuthServices.refreshToken();
                 const refreshUser = {

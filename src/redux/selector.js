@@ -259,153 +259,156 @@ export const combineAllCaseShop = createSelector(getProduct, getDetailsType, get
 })  
 
 
-export const combineAllCaseSearch = createSelector(getResultSearch, getConditionSearch_, getDetailsType, getBrand, getColor,  getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, getIdDetailsCatalog, getListCombineProduct_CombineDetailsCatalog_CombineType_Catalog, getPriceCatalog, (resultSearch, conditionSearch, detailsTypes,brands, colors, typeSort, quality, numberPage, brand, color, catalog, listCombineProduct_CombineDetailsCatalog_CombineType_Catalog, price) => {
-    let products = [];
-    if(conditionSearch === "")
+export const combineAllCaseSearch = createSelector(getResultSearch, getConditionSearch_, getDetailsType, getBrand, getColor,  getTypeSort, getQualities, getNumberPage, sideBarBrandList, sideBarColorList, getIdDetailsCatalog, getListCombineProduct_CombineDetailsCatalog_CombineType_Catalog, getPriceCatalog, (resultSearch, conditionSearch, detailsTypes, brands, colors, typeSort, quality, numberPage, brand, color, catalog, listCombineProduct_CombineDetailsCatalog_CombineType_Catalog, price) => {
+    let products = [], listProduct = [], list = [];
+    if(resultSearch.length > 0)
     {
-        products = resultSearch;
-    }
-    else
-    {
-        const listDetailsType = detailsTypes.filter(x => x.idType === conditionSearch)
-        products = resultSearch.filter(result => {
-            const list = listDetailsType.filter(element => {
-                return result.idDetailsType === element._id
+        if(conditionSearch === "")
+        {
+            products = resultSearch;
+        }
+        else
+        {
+            const listDetailsType = detailsTypes.filter(x => x.idType === conditionSearch)
+            products = resultSearch.filter(result => {
+                const list = listDetailsType.filter(element => {
+                    return result.idDetailsType === element._id
+                })
+                if(list.length)
+                    return true;
+                return false;
             })
-            if(list.length)
-                return true;
-            return false;
+        }
+            list = products.filter(product => {
+            let bool = false;
+            if(catalog !== "")
+            {
+                listCombineProduct_CombineDetailsCatalog_CombineType_Catalog.map(x => {
+                    if(x.idProduct === product._id)
+                        bool = true;
+                })
+                if(bool === false)
+                    return bool;
+            }
+            if(brand.length !== 0){
+                const child = brands.filter(x => (product.idBrand === x._id ? true : false))
+                bool = brand.includes(child[0].name)
+                if(bool === false)
+                    return bool;
+            }
+            if(color.length !== 0){
+                const child = colors.filter(x => (product.idColor === x._id ? true : false))
+                bool = color.includes(child[0].name) 
+                if(bool === false)
+                    return bool;
+            }
+            if(Number(price.min) > 0 || Number(price.max) > 0)
+            {
+                if(Number(price.min) > 0 && Number(price.max) === 0)
+                {
+                    if(product.discount && Number(price.min) <= product.discount)
+                    {
+                        bool = true;
+                    }
+                    else if(!product.discount && Number(price.min) <= product.price)
+                    {
+                        bool = true;
+                    }
+                }
+                else if(Number(price.max) > 0 && Number(price.min) === 0)
+                {
+                    if(product.discount && Number(price.max) >= product.discount)
+                    {
+                        bool = true;
+                    }
+                    else if(!product.discount && Number(price.max) >= product.price)
+                    {
+                        bool = true;
+                    }
+                }
+                else
+                {
+                    if(product.discount && Number(price.max) >= product.discount && Number(price.min) <= product.discount)
+                    {
+                        bool = true;
+                    }
+                    else if(!product.discount && Number(price.max) >= product.price && Number(price.min) <= product.price)
+                    {
+                        bool = true;
+                    }
+                }
+                if(bool === false)
+                return bool;
+            }
+            return true;
         })
+    
+        switch(typeSort)
+        {
+            case "price": 
+            {
+                for(let i = 0; i < list.length - 1; i++)
+                {
+                    let min = (list[i].discount ? list[i].discount : list[i].price);
+                    for(let j = i + 1; j < list.length; j++)
+                    {
+                        if(min > (list[j].discount ? list[j].discount : list[j].price))
+                        {
+                            min = list[j].discount ? list[j].discount : list[j].price;
+                            const z = list[i];
+                            list[i] = list[j];
+                            list[j] = z;
+                        }
+                    }
+                }
+                break;
+            }
+            case "price-desc": 
+            {
+                for(let i = 0; i < list.length - 1; i++)
+                {
+                    let max = (list[i].discount ? list[i].discount : list[i].price);
+                    for(let j = i + 1; j < list.length; j++)
+                    {
+                        if(max < (list[j].discount ? list[j].discount : list[j].price))
+                        {
+                            max = list[j].discount ? list[j].discount : list[j].price;
+                            const z = list[i];
+                            list[i] = list[j];
+                            list[j] = z;
+                        }
+                    }
+                }
+                break;
+            }
+            case "date": 
+            {
+                for(let i = 0; i < list.length - 1; i++)
+                {
+                    let max = list[i].updatedAt;
+                    for(let j = i + 1; j < list.length; j++)
+                    {
+                        if(max < list[j].updatedAt)
+                        {
+                            max = list[j].updatedAt;
+                            const z = list[i];
+                            list[i] = list[j];
+                            list[j] = z;
+                        }
+                    }
+                }
+                break;
+            }
+            default: 
+                break;
+        }
+    
+        listProduct = quality !== "-1" ? list.slice(numberPage * quality, (numberPage + 1) * quality) : list;
+    
     }
-    const list = products.filter(product => {
-        let bool = false;
-        if(catalog !== "")
-        {
-            listCombineProduct_CombineDetailsCatalog_CombineType_Catalog.map(x => {
-                if(x.idProduct === product._id)
-                    bool = true;
-            })
-            if(bool === false)
-                return bool;
-        }
-        if(brand.length !== 0){
-            const child = brands.filter(x => (product.idBrand === x._id ? true : false))
-            bool = brand.includes(child[0].name)
-            if(bool === false)
-                return bool;
-        }
-        if(color.length !== 0){
-            const child = colors.filter(x => (product.idColor === x._id ? true : false))
-            bool = color.includes(child[0].name) 
-            if(bool === false)
-                return bool;
-        }
-        if(Number(price.min) > 0 || Number(price.max) > 0)
-        {
-            if(Number(price.min) > 0 && Number(price.max) === 0)
-            {
-                if(product.discount && Number(price.min) <= product.discount)
-                {
-                    bool = true;
-                }
-                else if(!product.discount && Number(price.min) <= product.price)
-                {
-                    bool = true;
-                }
-            }
-            else if(Number(price.max) > 0 && Number(price.min) === 0)
-            {
-                if(product.discount && Number(price.max) >= product.discount)
-                {
-                    bool = true;
-                }
-                else if(!product.discount && Number(price.max) >= product.price)
-                {
-                    bool = true;
-                }
-            }
-            else
-            {
-                if(product.discount && Number(price.max) >= product.discount && Number(price.min) <= product.discount)
-                {
-                    bool = true;
-                }
-                else if(!product.discount && Number(price.max) >= product.price && Number(price.min) <= product.price)
-                {
-                    bool = true;
-                }
-            }
-            if(bool === false)
-            return bool;
-        }
-        return true;
-    })
-
-    switch(typeSort)
-    {
-        case "price": 
-        {
-            for(let i = 0; i < list.length - 1; i++)
-            {
-                let min = (list[i].discount ? list[i].discount : list[i].price);
-                for(let j = i + 1; j < list.length; j++)
-                {
-                    if(min > (list[j].discount ? list[j].discount : list[j].price))
-                    {
-                        min = list[j].discount ? list[j].discount : list[j].price;
-                        const z = list[i];
-                        list[i] = list[j];
-                        list[j] = z;
-                    }
-                }
-            }
-            break;
-        }
-        case "price-desc": 
-        {
-            for(let i = 0; i < list.length - 1; i++)
-            {
-                let max = (list[i].discount ? list[i].discount : list[i].price);
-                for(let j = i + 1; j < list.length; j++)
-                {
-                    if(max < (list[j].discount ? list[j].discount : list[j].price))
-                    {
-                        max = list[j].discount ? list[j].discount : list[j].price;
-                        const z = list[i];
-                        list[i] = list[j];
-                        list[j] = z;
-                    }
-                }
-            }
-            break;
-        }
-        case "date": 
-        {
-            for(let i = 0; i < list.length - 1; i++)
-            {
-                let max = list[i].updatedAt;
-                for(let j = i + 1; j < list.length; j++)
-                {
-                    if(max < list[j].updatedAt)
-                    {
-                        max = list[j].updatedAt;
-                        const z = list[i];
-                        list[i] = list[j];
-                        list[j] = z;
-                    }
-                }
-            }
-            break;
-        }
-        default: 
-            break;
-    }
-
-    const listProduct = quality !== "-1" ? list.slice(numberPage * quality, (numberPage + 1) * quality) : list;
-
     return {
         list,
         products,
-        listProduct,
+        listProduct
     };
 })
