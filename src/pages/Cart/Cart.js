@@ -15,7 +15,7 @@ const cx = classNames.bind(styles);
 function Cart() {
     const [listResultCart, setListResultCart] = useState([])
     const [reload, setReload] = useState(true);
-    const [shipper, setShipper] = useState(50000);
+    const [shipper, setShipper] = useState(500);
     const [subtotal, setSubtotal] = useState(0);
 
     const user = useSelector(getUser);
@@ -54,7 +54,7 @@ function Cart() {
                     res1.map(childProduct => {
                         if(childCart.idProduct === childProduct._id)
                         {
-                            sum += childProduct.price * childCart.count - childProduct.discount;
+                            sum += childProduct.price * childCart.count - childProduct.discount * childCart.count;
                         }
                     })
                 })
@@ -135,7 +135,7 @@ function Cart() {
                                                         <strong>Subtotal</strong>
                                                     </div>
                                                     <div className={cx("cart__tableRow4__column1__total__table--sub--right")}>
-                                                        {subtotal}đ
+                                                        {subtotal}
                                                     </div>
                                                 </div>
                                                 <div className={cx("cart__tableRow4__column1__total__table--shipping")}>
@@ -146,7 +146,7 @@ function Cart() {
                                                         Flat rate:
                                                     </div>
                                                     <div className={cx("cart__tableRow4__column1__total__table--flat--right")}>
-                                                        {shipper}đ
+                                                        {shipper}
                                                     </div>
                                                 </div>
                                                 <div className={cx("cart__tableRow4__column1__total__table--ca")}>                                                
@@ -157,7 +157,7 @@ function Cart() {
                                                 </div>
                                                 <div className={cx("cart__tableRow4__column1__total__table--total")}>
                                                     <div className={cx("cart__tableRow4__column1__total__table--total--left")}><strong>Total</strong></div>
-                                                    <div className={cx("cart__tableRow4__column1__total__table--total--right")}><strong>{subtotal + shipper}đ</strong></div>
+                                                    <div className={cx("cart__tableRow4__column1__total__table--total--right")}><strong>{subtotal + shipper}</strong></div>
                                                 </div>
                                             </div>
                                         </div>
