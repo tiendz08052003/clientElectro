@@ -92,7 +92,6 @@ function Chat() {
     }
 
     const handleClickChatClient = () => {
-        console.log(idRoom)
         socket.emit("client-to-server-joinRoom", idRoom);
         setIdGuest(idRoom[0]);
         setBoolChatting(true);
@@ -109,9 +108,7 @@ function Chat() {
                 queue: false,
             })
             const results = await AccountServices.getAccount();
-            console.log(results);
             results.map(ur => {
-                console.log(obj.idAdmin, ur._id)
                 if((User.role === "admin"  &&  obj.idRoom === ur._id) || (User.role !== "admin"  && obj.idAdmin === ur._id))
                 {
                     setNameGuest(ur.name)
