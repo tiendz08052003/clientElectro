@@ -113,7 +113,6 @@ function Account() {
             return;
 
         if(test && (password === passwordAgain)) {
-            console.log(1)
             setBool(false);
 
             const res = await AccountServices.createAccount({
