@@ -57,8 +57,7 @@ function AccountForget() {
         const email = x.get("email");
         const hashEmail = x.get("hashEmail");
         const fetchAPI = async () => {
-            const res = await AuthServices.recoverPassword({ email , hashEmail , password });
-            console.log(res);
+            await AuthServices.recoverPassword({ email , hashEmail , password });
             navigate("/account?type=login");
         }
         fetchAPI();
