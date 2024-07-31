@@ -57,7 +57,7 @@ function WishlistChild({resultWishlist, setReload, reload}) {
                 setBool(true);
                 setTimeout(() => {
                     setReload(!reload);
-                }, 3000)
+                }, 1000)
             }
             else 
             {
@@ -84,7 +84,7 @@ function WishlistChild({resultWishlist, setReload, reload}) {
                         </div>
                     </td>
                     <td className={cx("wishlistChild__column2", "wishlistChild__column")}> 
-                        <Image alt = "ảnh sản phẩm" src={imgs.anhSound} className={cx("wishlistChild__column2__img")} />
+                        <Image alt = "ảnh sản phẩm" src={listResultCart.image} className={cx("wishlistChild__column2__img")} />
                     </td>
                     <td className={cx("wishlistChild__column3", "wishlistChild__column")}>
                         <div className={cx("wishlistChild__column__content")}>
@@ -103,7 +103,7 @@ function WishlistChild({resultWishlist, setReload, reload}) {
                     </td>
                 </Fragment>
             )}
-            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
         </tr>
     )
 }

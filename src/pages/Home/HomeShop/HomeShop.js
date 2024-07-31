@@ -72,7 +72,7 @@ function HomeShop({product, reloadCart, setReloadCart}) {
                 setContent("Warn");
                 setTitle("Bạn phải đăng nhập để thêm vào wishlist!");
                 setBool(true);
-            }, 300)
+            }, 1000)
         }
     }
     
@@ -146,11 +146,18 @@ function HomeShop({product, reloadCart, setReloadCart}) {
                         flag = true;
                         const fetchAPI1 = async () => {
                             count = data.count + 1;
-                            await CartServices.updateCart(user?.accessToken, data._id, count, axiosJWT);
-                            setContent("Success");
-                            setTitle("Thêm vào giỏ hàng thành công!");
-                            setBool(true);
-                            setReloadCart(!reloadCart);
+                            const res = await CartServices.updateCart(user?.accessToken, data._id, count, axiosJWT);
+                            if(res !== undefined) {
+                                setContent("Success");
+                                setTitle("Thêm vào giỏ hàng thành công!");
+                                setBool(true);
+                                setReloadCart(!reloadCart);
+                            }
+                            else {
+                                setContent("Error");
+                                setTitle("Thêm vào giỏ hàng thất bại!");
+                                setBool(true);
+                            }
                         }
                         fetchAPI1();
                     }
@@ -158,11 +165,18 @@ function HomeShop({product, reloadCart, setReloadCart}) {
             }
             if(flag === false)
             {
-                await CartServices.addCart(user?.accessToken, {idAccount: user._id, idProduct: id, count: 1}, axiosJWT);
-                setContent("Success");
-                setTitle("Thêm vào giỏ hàng thành công!");
-                setBool(true);
-                setReloadCart(!reloadCart);
+                const res = await CartServices.addCart(user?.accessToken, {idAccount: user._id, idProduct: id, count: 1}, axiosJWT);
+                if(res !== undefined) { 
+                    setContent("Success");
+                    setTitle("Thêm vào giỏ hàng thành công!");
+                    setBool(true);
+                    setReloadCart(!reloadCart);
+                }
+                else {
+                    setContent("Error");
+                    setTitle("Thêm vào giỏ hàng thất bại!");
+                    setBool(true);
+                }
             }
         }
         else{
@@ -173,23 +187,37 @@ function HomeShop({product, reloadCart, setReloadCart}) {
                 if(cart.idProduct === idProductDetails)
                 {
                     flag = true;
-                    await CartServices.updateCartNoLogin(id, {idProduct: idProductDetails, count: cart.count + 1}, index);
+                    const res = await CartServices.updateCartNoLogin(id, {idProduct: idProductDetails, count: cart.count + 1}, index);
+                    if(res !== undefined) { 
+                        setContent("Success");
+                        setTitle("Thêm vào giỏ hàng thành công!");
+                        setBool(true);
+                        setReloadCart(!reloadCart);
+                    }
+                    else {
+                        setContent("Error");
+                        setTitle("Thêm vào giỏ hàng thất bại!");
+                        setBool(true);
+                    }
+                }
+            })
+            if(!flag)
+            {
+                const res = await CartServices.addCartNoLogin(id, {
+                    idProduct: idProductDetails, 
+                    count: 1
+                });
+                if(res !== undefined) { 
                     setContent("Success");
                     setTitle("Thêm vào giỏ hàng thành công!");
                     setBool(true);
                     setReloadCart(!reloadCart);
                 }
-            })
-            if(!flag)
-            {
-                await CartServices.addCartNoLogin(id, {
-                    idProduct: idProductDetails, 
-                    count: 1
-                });
-                setContent("Success");
-                setTitle("Thêm vào giỏ hàng thành công!");
-                setBool(true);
-                setReloadCart(!reloadCart);
+                else {
+                    setContent("Error");
+                    setTitle("Thêm vào giỏ hàng thất bại!");
+                    setBool(true);
+                }
             }
         }
     }
@@ -199,6 +227,7 @@ function HomeShop({product, reloadCart, setReloadCart}) {
         const typeName = listType?.find(x => x._id === detailsType?.idType);
         setNameType(typeName?.name);
     }, [listType, listDetailsType])
+    
     return ( 
         <a href={"/productDetails/" + product?.slug} className={cx("homeShop__link")}>
             <li className={cx("homeShop", "homeShop--handle", "grid__column-10-2", "grid__column-12-3", "grid__column-12-4", "grid__column-12-6", "grid__column-12-12")}>
@@ -237,7 +266,7 @@ function HomeShop({product, reloadCart, setReloadCart}) {
                     </div>  
                 </div>
             </li>
-            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
         </a>
      );
 }

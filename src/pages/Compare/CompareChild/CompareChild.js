@@ -48,7 +48,7 @@ function CompareChild({compareChild, setReload, reload, handleOnClickCheckBox, i
                 setBool(true);
                 setTimeout(() => {
                     setReload(!reload);
-                }, 3000)
+                }, 1000)
             }
             else 
             {
@@ -97,7 +97,7 @@ function CompareChild({compareChild, setReload, reload, handleOnClickCheckBox, i
                     </td>
                 </Fragment>
             )}
-            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
         </tr>
     )
 }

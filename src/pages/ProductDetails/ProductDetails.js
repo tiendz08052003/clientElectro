@@ -21,7 +21,7 @@ import * as MainServices from "~/services/MainServices";
 
 const cx = classNames.bind(style);
 
-function ProductDetails() {
+function ProductDetails({reloadCart, setReloadCart}) {
 
     const { slug } = useParams();
     const user = useSelector(getUser);
@@ -208,20 +208,38 @@ function ProductDetails() {
                     {
                         flag = true;
                         const fetchAPI1 = async () => { 
-                            await CartServices.updateCart(user?.accessToken, idProductDetails, Number(quality) + cart.count, axiosJWT); 
-                            setContent("Success");
-                            setTitle("Thêm vào giỏ hàng thành công!");
-                            setBool(true);
+                            console.log(idProductDetails);
+                            console.log(Number(quality) + cart.count);
+                            const res1 = await CartServices.updateCart(user?.accessToken, cart._id, Number(quality) + cart.count, axiosJWT);
+                            if(res1 !== undefined) { 
+                                setContent("Success");
+                                setTitle("Thêm vào giỏ hàng thành công!");
+                                setBool(true);
+                                setReloadCart(!reloadCart);
+                            }
+                            else {
+                                setContent("Error");
+                                setTitle("Thêm vào giỏ hàng thất bại!");
+                                setBool(true);
+                            }
                         }
                         fetchAPI1();
                     }
                 })
                 if(flag === false)
                 {
-                    await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: Number(quality)}, axiosJWT);
-                    setContent("Success");
-                    setTitle("Thêm vào giỏ hàng thành công!");
-                    setBool(true);
+                    const res1 = await CartServices.addCart(user?.accessToken, {idProduct: idProductDetails, count: Number(quality)}, axiosJWT);
+                    if(res1 !== undefined) { 
+                        setContent("Success");
+                        setTitle("Thêm vào giỏ hàng thành công!");
+                        setBool(true);
+                        setReloadCart(!reloadCart);
+                    }
+                    else {
+                        setContent("Error");
+                        setTitle("Thêm vào giỏ hàng thất bại!");
+                        setBool(true);
+                    }
                 }
             }
             else
@@ -233,21 +251,37 @@ function ProductDetails() {
                     if(cart.idProduct === idProductDetails)
                     {
                         flag = true;
-                        await CartServices.updateCartNoLogin(id, {idProduct: idProductDetails, count: Number(quality) + cart.count}, index);
-                        setContent("Success");
-                        setTitle("Thêm vào giỏ hàng thành công!");
-                        setBool(true);
+                        const res1 = await CartServices.updateCartNoLogin(id, {idProduct: cart._id, count: Number(quality) + cart.count}, index);
+                        if(res1 !== undefined) { 
+                            setContent("Success");
+                            setTitle("Thêm vào giỏ hàng thành công!");
+                            setBool(true);
+                            setReloadCart(!reloadCart);
+                        }
+                        else {
+                            setContent("Error");
+                            setTitle("Thêm vào giỏ hàng thất bại!");
+                            setBool(true);
+                        }
                     }
                 })
                 if(!flag)
                 {
-                    await CartServices.addCartNoLogin(id, {
+                    const res1 = await CartServices.addCartNoLogin(id, {
                         idProduct: idProductDetails, 
                         count: Number(quality)
                     });
-                    setContent("Success");
-                    setTitle("Thêm vào giỏ hàng thành công!");
-                    setBool(true);
+                    if(res1 !== undefined) { 
+                        setContent("Success");
+                        setTitle("Thêm vào giỏ hàng thành công!");
+                        setBool(true);
+                        setReloadCart(!reloadCart);
+                    }
+                    else {
+                        setContent("Error");
+                        setTitle("Thêm vào giỏ hàng thất bại!");
+                        setBool(true);
+                    }
                 }
             }
         }

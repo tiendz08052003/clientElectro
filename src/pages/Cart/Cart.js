@@ -13,7 +13,7 @@ import { getUser } from "~/redux/selector";
 const cx = classNames.bind(styles);
 
 function Cart({reloadCart, setReloadCart}) {
-    const [listResultCart, setListResultCart] = useState([])
+    const [listResultCart, setListResultCart] = useState({})
     const [reload, setReload] = useState(true);
     const [shipper, setShipper] = useState(500);
     const [subtotal, setSubtotal] = useState(0);

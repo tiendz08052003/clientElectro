@@ -134,7 +134,7 @@ function Account() {
                 setTimeout(() => {
                     setRegisOrLogin(true);
                     navigate("/account?type=login");
-                }, 3000)
+                }, 1000)
             }
             else
             {
@@ -235,7 +235,7 @@ function Account() {
                 setBool(true);
                 setTimeout(() => {
                     navigate("/");
-                }, 3000)
+                }, 1000)
                 handleUpdateCartWhenLogin(res, id);
                 handleDeleteKeyCartRedis(id);
             }
@@ -373,7 +373,7 @@ function Account() {
             setBool(true);
             setTimeout(() => {
                 navigate("/");
-            }, 3000)
+            }, 1000)
         }    
         else
         {
@@ -524,7 +524,7 @@ function Account() {
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </div>
             </a>
-            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+            {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
         </div>
      );
 }

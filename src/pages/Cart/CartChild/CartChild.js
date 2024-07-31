@@ -119,7 +119,7 @@ function CartChild({resultCart, setReload, reload}) {
                 setBool(true);
                 setTimeout(() => {
                     setReload(!reload);
-                }, 3000)
+                }, 1000)
             }
             else 
             {
@@ -136,7 +136,7 @@ function CartChild({resultCart, setReload, reload}) {
             setBool(true);
             setTimeout(() => {
                 setReload(!reload);
-            }, 3000)
+            }, 1000)
 
         }
         
@@ -190,7 +190,7 @@ function CartChild({resultCart, setReload, reload}) {
                 </Fragment>
             )}
             <td>
-                {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool}/>}
+                {bool && <ToastInformation content={content} title={title} bool={bool} setBool={setBool} timeOut={1000}/>}
             </td>
         </tr>
     )
