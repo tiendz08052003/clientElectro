@@ -33,7 +33,7 @@ function Cart() {
                         res1.map(childProduct => {
                             if(childCart.idProduct === childProduct._id)
                             {
-                                sum += childProduct.price * childCart.count - childProduct.discount;
+                                sum += childProduct.price * childCart.count - childProduct.discount * childCart.count;
                             }
                         })
                     }
