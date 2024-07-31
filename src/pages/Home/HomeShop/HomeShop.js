@@ -85,12 +85,23 @@ function HomeShop({product, reloadCart, setReloadCart}) {
             const res = await CompareServices.getCompare();
             let flag = true;
             res.map(compare => {
-                if(compare.idProduct === e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id"))
-                {
-                    flag = false;
-                    setContent("Warn");
-                    setTitle("Sản phẩm được thêm vào compare!");
-                    setBool(true);
+                if(user?.accessToken) {
+                    if(compare.idProduct === e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id") && compare.idProduct === user._id)
+                    {
+                        flag = false;
+                        setContent("Warn");
+                        setTitle("Sản phẩm được thêm vào compare!");
+                        setBool(true);
+                    }
+                }
+                else {
+                    if(compare.idProduct === e.target.closest(".homeShop__child__interact__compare--icon--handle").getAttribute("data-id") && compare.idHardware === id)
+                    {
+                        flag = false;
+                        setContent("Warn");
+                        setTitle("Sản phẩm được thêm vào compare!");
+                        setBool(true);
+                    }
                 }
             })
             if(flag)
