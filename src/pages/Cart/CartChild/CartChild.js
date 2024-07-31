@@ -185,7 +185,7 @@ function CartChild({resultCart, setReload, reload}) {
                     </td>
                     <td className={cx("cartChild__column7", "cartChild__column")}>
                         <div className={cx("cartChild__column__content")}>
-                            {quality * cartItem.price - cartItem.discount}
+                            {(quality * cartItem.price) - (quality * cartItem.discount)}
                         </div>
                     </td>
                 </Fragment>
