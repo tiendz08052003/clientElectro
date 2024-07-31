@@ -34,6 +34,7 @@ function Chat() {
     const [showSidebar, setShowSidebar] = useState(1);
     const [valueInput, setValueInput] = useState("");
     const [collapse, setCollapse] = useState(true);
+    const [messages, setMessages] = useState([]);
     const ref = useRef(null);
     const refMainMessage = useRef(null);
     socket.connect();
@@ -59,11 +60,23 @@ function Chat() {
 
     const handleClickButtonCloseChat = () => {
         setView(!view);
-        setFresh(false)
+        setFresh(false);
+        setListMessageChat([]);
         if(nameGuest === "")
         {
             socket.emit("client-send-server-disconnect")
         }
+        // const x = refMainMessage.current;
+        // // Kiểm tra x có tồn tại hay không trước khi thực hiện xóa
+        // if (x) {
+        //     let child = x.lastElementChild;
+        //     while (child) {
+        //         if (x.contains(child)) {
+        //             x.removeChild(child);
+        //         }
+        //         child = x.lastElementChild;
+        //     }
+        // }
     }
 
     useEffect(() => {
@@ -127,39 +140,24 @@ function Chat() {
 
         socket.on("server-send-client-message", (data) => {
             setMessageSummary(data.messageInput)
-            const x = refMainMessage.current;
-            if(data.User._id === User._id)
-                x.insertAdjacentHTML("beforeend", `
-                    <div style="display: flex;
-                        justify-content: end;
-                        padding: 2px 10px;
-                        word-wrap: break-word;">
-                        <span style="
-                            background-color: #0084ff;
-                            max-width: 60%;
-                            word-wrap: break-word;
-                            padding: 10px 15px;
-                            border-radius: 15px;
-                            overflow: hidden;"
-                        >${data.messageInput}</span>
-                    </div>
-                `);
+            if(data.User.role === "admin")
+            {
+                setListMessageChat((prevMessages) => [
+                    ...prevMessages,
+                    {
+                        admin: data.messageInput,
+                    },
+                ]);
+            }
             else
-                x.insertAdjacentHTML("beforeend", `
-                    <div style="display: flex;
-                        padding: 2px 10px;
-                        word-wrap: break-word;">
-                        <span style="
-                            max-width: 60%;
-                            word-wrap: break-word;
-                            background-color: #ddd;
-                            padding: 10px 15px;
-                            border-radius: 15px;
-                            overflow: hidden;"
-                        >${data.messageInput}</span>
-                    </div>
-                `);
-                    
+            {
+                setListMessageChat((prevMessages) => [
+                    ...prevMessages,
+                    {
+                        user: data.messageInput,
+                    },
+                ]);
+            }
         })
 
         socket.on("server-send-client-finishChat", () => {
@@ -176,11 +174,7 @@ function Chat() {
             fetchAPI();
             setNameGuest("")
             setIdGuest("")
-            const x = refMainMessage.current;
-            if(x)
-            {
-                x.innerHTML = "";
-            }
+            setListMessageChat([])
             console.log("Đã kết thúc cuộc trò chuyện!")
         })
 
@@ -192,18 +186,15 @@ function Chat() {
             console.log("Đã kết nối: ", id)
         })
 
-        socket.on("server-send-client-loadAgain", () => {
-            const fetchAPI = async () => {
-                const res = await ChatServices.getChat()                 
-                const results = await AccountServices.getAccount();
-                const user = res.find(x => x.idAccount === User._id)
-                const guestChat = res.find(x => (x.idRoom === user.idRoom && user.idAccount !== x.idAccount));
-                const guest = results.find(x => x._id === guestChat.idAccount)
-                setNameGuest(guest.name)
-                setIdGuest(guest._id)
-                setListMessageChat(guestChat.message)
-            }
-            fetchAPI();
+        socket.on("server-send-client-loadAgain", async () => {
+            const res = await ChatServices.getChat()     
+            const results = await AccountServices.getAccount();
+            const user = res.find(x => x.idAccount === User._id)
+            const guestChat = res.find(x => user.idAccount !== x.idAccount);
+            const guest = results.find(x => x._id === guestChat.idAccount)
+            setNameGuest(guest.name)
+            setIdGuest(guest._id)
+            setListMessageChat(guestChat.message)
         })
 
         socket.on("server-send-client-disConnect", () => {
@@ -220,6 +211,7 @@ function Chat() {
           socket.off("server-send-client-reload");
           socket.off("server-send-client-finishChat");
           socket.off("server-send-client-message");
+          socket.off("server-send-client-loadAgain");
           socket.off("server-send-client-disConnect");
         };
     }, []);
@@ -237,6 +229,7 @@ function Chat() {
         setMessageInput("");
         setStyleSend(false);
         ref.current.focus();
+        console.log(1)
     }
 
     const handleOnClickChatting = () => {
@@ -252,6 +245,7 @@ function Chat() {
         const id = User._id;
         // send to sever id guest
         socket.emit("client-to-server-finnishChat", User.role === "admin" ? idGuest : id)
+        setListMessageChat([]);
     }
 
     const handleClickOption = (e) => {
@@ -275,7 +269,6 @@ function Chat() {
     const handleClickCollapse = () => {
         setCollapse(!collapse)
     }
-
     return ( 
         <div className={cx("chat")} style={styleChat}>
             <div className={cx("chat__main")} style={{display: view ? "block": "none"}}>
@@ -334,7 +327,7 @@ function Chat() {
                                             </select>
                                         </div>
                                     </div>
-                                    {idGuest && (showSidebar == 1 || showSidebar == 2) && (
+                                    {idGuest && (showSidebar === 1 || showSidebar === 2) && (
                                         users.map((ur) => (
                                             idGuest === ur._id && ur.role !== "admin" && (
                                                 <div className={cx("chat__main__bottom__account__details")} key={ur._id} onClick={handleOnClickChatting}>
@@ -397,21 +390,23 @@ function Chat() {
                                         <div ref={refMainMessage} style={{display: boolChatting || (User && User.role === "admin"  === false) ? "block" : "none"}} className={cx("chat__main__bottom__content__main")} >
                                         {
                                             listMessageChat.length !== 0 && (
-                                                listMessageChat.map((x, index) => (
-                                                    x.admin ? (
+                                                listMessageChat.map((x, index) => {
+                                                    return (
+                                                        x.admin ? (
                                                         User.role === "admin"  ? (
                                                             <Message key={index} message={x.admin} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
                                                             <Message key={index} message={x.admin} style={{"justifyContent": "left"}} right={false}/>
                                                         )
-                                                    ) : (
-                                                        User.role !== "admin"  ? (
-                                                            <Message key={index} message={x.user} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
-                                                            <Message key={index} message={x.user} style={{"justifyContent": "left"}} right={false}/>
+                                                            User.role !== "admin"  ? (
+                                                                <Message key={index} message={x.user} style={{"justifyContent": "right"}} right={true}/>
+                                                            ) : (
+                                                                <Message key={index} message={x.user} style={{"justifyContent": "left"}} right={false}/>
+                                                            )
                                                         )
                                                     )
-                                                ))
+                                                })
                                             ) 
                                         }
                                         </div>
