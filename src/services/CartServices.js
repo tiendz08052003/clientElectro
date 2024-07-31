@@ -35,7 +35,6 @@ export const addManyMultipleCart = async (accessToken, data) => {
 }
 
 export const updateCart = async (accessToken, id, count, axiosJWT = undefined) => {
-    console.log(accessToken, id, count, axiosJWT)
     try {
         const res = await httpRequest.patch(`/cart/update/${id}/${count}`, {}, {
             headers: {token: `Bearer ${accessToken}`}

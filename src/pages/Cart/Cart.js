@@ -12,7 +12,7 @@ import { getUser } from "~/redux/selector";
 
 const cx = classNames.bind(styles);
 
-function Cart() {
+function Cart({reloadCart, setReloadCart}) {
     const [listResultCart, setListResultCart] = useState([])
     const [reload, setReload] = useState(true);
     const [shipper, setShipper] = useState(500);
@@ -40,6 +40,7 @@ function Cart() {
                 })
                 setSubtotal(sum);
                 setListResultCart(res2.filter(x => x.idAccount === user._id));
+                setReloadCart(!reloadCart);
             }
             fetchAPI();
         }
@@ -60,6 +61,7 @@ function Cart() {
                 })
                 setSubtotal(sum);
                 setListResultCart(res2);
+                setReloadCart(!reloadCart);
             })();
         }
     }, [reload])
