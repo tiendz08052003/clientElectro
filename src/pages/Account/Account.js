@@ -112,8 +112,8 @@ function Account() {
         if(flag)
             return;
 
-
-        if(test && (password !== passwordAgain)) {
+        if(test && (password === passwordAgain)) {
+            console.log(1)
             setBool(false);
 
             const res = await AccountServices.createAccount({
@@ -161,7 +161,6 @@ function Account() {
                 setValidatePasswordAgain("Vui lòng nhập mật khẩu trùng!");
                 setStyleValidatePasswordAgain(true);
             }
-
         }
     }
 

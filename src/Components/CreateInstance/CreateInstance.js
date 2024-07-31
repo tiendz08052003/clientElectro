@@ -4,7 +4,7 @@ import * as AuthServices  from "~/services/AccountServices";
 
 export const CreateAxios = (user = null, dispatch = null, stateSuccess = null) => {
     const newInstance = axios.create({
-        baseURL: "https://be-electro-api.onrender.com/api/",
+        baseURL: "http://localhost:3001/api/",
         withCredentials: true,
     })
 
