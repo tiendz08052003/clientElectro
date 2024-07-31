@@ -145,6 +145,10 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                 setContent("Error");
                 setTitle("Logout thất bại!");
                 setBool(true);
+                setTimeout(() => {
+                   window.location.href = "/";
+                    // navigate("/");
+                }, 1000)
             }
         }        
         fetchAPI();
@@ -340,7 +344,7 @@ function HeaderBody({handleOnClickIconMenu, reloadCart}) {
                                 ) : (
                                     <div className={cx("header__middle__child__selec__acc__hover")} style={onAccount ? styleHover : {}}>
                                         <div className={cx("header__middle__child__selec__acc__hover__userName")}>
-                                            {user.name}
+                                            {user?.name}
                                         </div>
                                         <div className={cx("header__middle__child__selec__acc__hover__info")}>
                                             <a href={`/account?type=detailAccount`} style={{"textDecoration": "none", "color": "currentcolor"}}>

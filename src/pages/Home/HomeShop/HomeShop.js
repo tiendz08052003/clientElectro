@@ -140,7 +140,6 @@ function HomeShop({product, reloadCart, setReloadCart}) {
             const res1 = await CartServices.getCart();
             if(res1.length > 0)
             {
-                console.log(id);
                 res1.map((data, index) => {
                     if(data.idProduct?.includes(id))
                     {
