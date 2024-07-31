@@ -405,7 +405,7 @@ function Chat() {
                                                             <Message key={index} message={x.admin} style={{"justifyContent": "left"}} right={false}/>
                                                         )
                                                     ) : (
-                                                        !User.role === "admin"  ? (
+                                                        User.role !== "admin"  ? (
                                                             <Message key={index} message={x.user} style={{"justifyContent": "right"}} right={true}/>
                                                         ) : (
                                                             <Message key={index} message={x.user} style={{"justifyContent": "left"}} right={false}/>
