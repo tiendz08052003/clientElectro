@@ -66,6 +66,7 @@ function Cart({reloadCart, setReloadCart}) {
         }
     }, [reload])
 
+
     return ( 
         <div className={cx("cart")}>
             <div className={cx("cart__topic")}>

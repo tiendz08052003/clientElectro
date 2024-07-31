@@ -4,8 +4,7 @@ import styles from "./CartChild.module.scss";
 import { faCaretDown, faCaretUp, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "~/Components/Image/Image";
-import { imgs } from "~/assest/imgs";
-import { Fragment, memo, useEffect,  useState } from "react";
+import { Fragment, useEffect,  useState } from "react";
 import * as ProductServices from '~/services/ProductServices';
 import * as CartServices from '~/services/CartServices';
 import * as MainServices from '~/services/MainServices';
@@ -91,6 +90,7 @@ function CartChild({resultCart, setReload, reload}) {
     }
 
     useEffect(() => {
+        console.log(1);
         const fetchAPI = async () => {
             setLoading(true);
             const res = await ProductServices.shop();
@@ -104,8 +104,7 @@ function CartChild({resultCart, setReload, reload}) {
             })
         }
         fetchAPI();
-    }, [])
-
+    }, [resultCart])
 
     const handleOnClickDeleteCart = async (e) => {
         setBool(false);
@@ -197,4 +196,4 @@ function CartChild({resultCart, setReload, reload}) {
     )
 }
 
-export default memo(CartChild);
+export default CartChild;
